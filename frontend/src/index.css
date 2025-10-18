@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+@media (max-width: 720px) {
+  .custom-hide-text {
+    display: none;
+  }
+}
