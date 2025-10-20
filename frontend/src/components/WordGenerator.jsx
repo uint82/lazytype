@@ -1,9 +1,12 @@
 import { useRef, useEffect, useState } from "react";
+import Caret from "./Carret";
 
 const WordGenerator = ({ text, input }) => {
   const containerRef = useRef(null);
   const lastLineRef = useRef(-1);
   const [jumpOffset, setJumpOffset] = useState(0);
+  const [caretPosition, setCaretPosition] = useState({ x: 0, y: 0 });
+  const [isTyping, setIsTyping] = useState(false);
 
   const words = text.split(" ");
   const inputWords = input.trim().length ? input.split(" ") : [""];
@@ -34,13 +37,42 @@ const WordGenerator = ({ text, input }) => {
     const lineIndex = lineTops.indexOf(activeTop);
 
     if (lineIndex >= 2 && lineIndex > lastLineRef.current) {
-      const lineHeight = 48; // adjust if font ever happens to changes (likely not)
+      const lineHeight = 48;
       setJumpOffset((prev) => prev + lineHeight);
       lastLineRef.current = lineIndex;
     } else {
       lastLineRef.current = Math.max(lineIndex, lastLineRef.current);
     }
-  }, [currentWordIndex, input, text]);
+
+    const letterElements = activeWord.querySelectorAll("span");
+    if (letterElements.length > 0) {
+      const targetLetter =
+        letterElements[currentWordInput.length] ||
+        letterElements[letterElements.length - 1];
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const letterRect = targetLetter.getBoundingClientRect();
+
+      const x =
+        currentWordInput.length < letterElements.length
+          ? letterRect.left - containerRect.left
+          : letterRect.right - containerRect.left;
+      const y = letterRect.top - containerRect.top;
+
+      setCaretPosition({ x, y });
+    }
+  }, [currentWordIndex, input, text, currentWordInput.length]);
+
+  useEffect(() => {
+    if (input.trim().length === 0) {
+      setIsTyping(false);
+      return;
+    }
+
+    setIsTyping(true);
+    const timeout = setTimeout(() => setIsTyping(false), 600);
+
+    return () => clearTimeout(timeout);
+  }, [input]);
 
   return (
     <div
@@ -53,6 +85,8 @@ const WordGenerator = ({ text, input }) => {
         lineHeight: "2rem",
       }}
     >
+      <Caret x={caretPosition.x} y={caretPosition.y} isTyping={isTyping} />
+
       <div
         className="flex flex-wrap transition-none"
         style={{
@@ -85,8 +119,6 @@ const WordGenerator = ({ text, input }) => {
                       currentWordInput[charIndex] === char
                         ? "text-white"
                         : "text-red-500";
-                  } else if (charIndex === currentWordInput.length) {
-                    letterClass = "border-b-2 border-blue-400";
                   }
                 } else if (wordIndex < currentWordIndex) {
                   if (charIndex < (inputWords[wordIndex]?.length || 0)) {

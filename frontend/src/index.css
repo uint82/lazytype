@@ -1,5 +1,25 @@
 @import "tailwindcss";
 
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+.caret {
+  width: 3px;
+  height: 2.5rem;
+  background-color: #d1a918;
+  pointer-events: none;
+  border-radius: 1px;
+}
+
 @media (max-width: 720px) {
   .custom-hide-text {
     display: none;
