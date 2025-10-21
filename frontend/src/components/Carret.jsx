@@ -10,7 +10,7 @@ const Caret = ({ x, y, isTyping }) => {
       }}
       transition={{
         type: "spring",
-        stiffness: 700,
+        stiffness: 800,
         damping: 22,
         mass: 0.01,
       }}

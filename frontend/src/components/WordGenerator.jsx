@@ -35,20 +35,32 @@ const WordGenerator = ({ text, input }) => {
 
     const activeTop = Math.round(activeWord.getBoundingClientRect().top);
     const lineIndex = lineTops.indexOf(activeTop);
+    const lineHeight = 48;
 
-    if (lineIndex >= 2 && lineIndex > lastLineRef.current) {
-      const lineHeight = 48;
-      setJumpOffset((prev) => prev + lineHeight);
+    const willJump = lineIndex >= 2 && lineIndex > lastLineRef.current;
+
+    if (willJump) {
       lastLineRef.current = lineIndex;
+      setJumpOffset((prev) => prev + lineHeight);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          measureCaret(true);
+        });
+      });
     } else {
       lastLineRef.current = Math.max(lineIndex, lastLineRef.current);
+      requestAnimationFrame(() => measureCaret(false));
     }
 
-    const letterElements = activeWord.querySelectorAll("span");
-    if (letterElements.length > 0) {
+    function measureCaret(hasJumped) {
+      const letterElements = activeWord.querySelectorAll("span");
+      if (!letterElements.length) return;
+
       const targetLetter =
         letterElements[currentWordInput.length] ||
         letterElements[letterElements.length - 1];
+
       const containerRect = containerRef.current.getBoundingClientRect();
       const letterRect = targetLetter.getBoundingClientRect();
 
@@ -56,11 +68,14 @@ const WordGenerator = ({ text, input }) => {
         currentWordInput.length < letterElements.length
           ? letterRect.left - containerRect.left
           : letterRect.right - containerRect.left;
-      const y = letterRect.top - containerRect.top;
+
+      const y = hasJumped
+        ? letterRect.top - containerRect.top - lineHeight
+        : letterRect.top - containerRect.top;
 
       setCaretPosition({ x, y });
     }
-  }, [currentWordIndex, input, text, currentWordInput.length]);
+  }, [currentWordIndex, input, text, currentWordInput.length, jumpOffset]);
 
   useEffect(() => {
     if (input.trim().length === 0) {
