@@ -10,9 +10,9 @@ const Caret = ({ x, y, isTyping }) => {
       }}
       transition={{
         type: "spring",
-        stiffness: 800,
-        damping: 22,
-        mass: 0.01,
+        stiffness: 600,
+        damping: 30,
+        mass: 0.4,
       }}
       style={{
         animation: isTyping ? "none" : "blink 1.1s ease-in-out infinite",
