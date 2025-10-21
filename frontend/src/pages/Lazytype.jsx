@@ -13,6 +13,10 @@ const Lazytype = () => {
     const q = getRandomQuote(selectedGroup);
     setQuote(q);
     setInput("");
+
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   }, [selectedGroup]);
 
   const handleInputChange = (e) => setInput(e.target.value);
