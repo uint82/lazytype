@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { getRandomQuote } from "../controllers/quotes-controller";
+import { getRandomWords } from "../controllers/words-controller";
 import WordGenerator from "../components/WordGenerator";
 import TestConfig from "../components/TestConfig";
 
@@ -24,6 +25,10 @@ const Lazytype = () => {
   useEffect(() => {
     if (selectedMode !== "words") return;
 
+    const wordCount = 500;
+    const randomWords = getRandomWords(wordCount);
+
+    setQuote({ text: randomWords });
     setInput("");
 
     if (inputRef.current) inputRef.current.focus();
@@ -31,10 +36,13 @@ const Lazytype = () => {
 
   const handleInputChange = (e) => setInput(e.target.value);
 
-  const handleNewQuote = () => {
+  const handleNewTest = () => {
     if (selectedMode === "quotes") {
       const q = getRandomQuote(selectedGroup);
       setQuote(q);
+    } else if (selectedMode === "words") {
+      const randomWords = getRandomWords(500);
+      setQuote({ text: randomWords });
     }
 
     setInput("");
@@ -84,7 +92,7 @@ const Lazytype = () => {
       </div>
 
       <button
-        onClick={handleNewQuote}
+        onClick={handleNewTest}
         className="mt-8 px-4 py-2 rounded text-4xl text-gray-600 cursor-pointer hover:text-white transition"
       >
         ⟳
