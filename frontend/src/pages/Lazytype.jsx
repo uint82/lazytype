@@ -7,23 +7,36 @@ const Lazytype = () => {
   const [quote, setQuote] = useState(null);
   const [input, setInput] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(null);
+  const [selectedMode, setSelectedMode] = useState("quotes");
+  const [selectedDuration, setSelectedDuration] = useState(60);
   const inputRef = useRef(null);
 
   useEffect(() => {
+    if (selectedMode !== "quotes") return;
+
     const q = getRandomQuote(selectedGroup);
     setQuote(q);
     setInput("");
 
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [selectedGroup]);
+    if (inputRef.current) inputRef.current.focus();
+  }, [selectedGroup, selectedMode]);
+
+  useEffect(() => {
+    if (selectedMode !== "words") return;
+
+    setInput("");
+
+    if (inputRef.current) inputRef.current.focus();
+  }, [selectedMode, selectedDuration]);
 
   const handleInputChange = (e) => setInput(e.target.value);
 
   const handleNewQuote = () => {
-    const q = getRandomQuote(selectedGroup);
-    setQuote(q);
+    if (selectedMode === "quotes") {
+      const q = getRandomQuote(selectedGroup);
+      setQuote(q);
+    }
+
     setInput("");
     inputRef.current.focus();
   };
@@ -38,6 +51,10 @@ const Lazytype = () => {
       <TestConfig
         selectedGroup={selectedGroup}
         setSelectedGroup={setSelectedGroup}
+        selectedMode={selectedMode}
+        setSelectedMode={setSelectedMode}
+        selectedDuration={selectedDuration}
+        setSelectedDuration={setSelectedDuration}
       />
 
       <div
@@ -60,10 +77,9 @@ const Lazytype = () => {
               className="opacity-0 absolute"
               autoFocus
             />
-            <p className="text-sm text-[#a89984] mt-3">— {quote.source}</p>
           </>
         ) : (
-          <p className="text-[#ebdbb2]">Loading quote...</p>
+          <p className="text-[#ebdbb2]">Loading test...</p>
         )}
       </div>
 
