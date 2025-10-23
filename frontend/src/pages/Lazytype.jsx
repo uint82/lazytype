@@ -1,53 +1,24 @@
-import { useState, useEffect, useRef } from "react";
-import { getRandomQuote } from "../controllers/quotes-controller";
-import { getRandomWords } from "../controllers/words-controller";
 import WordGenerator from "../components/WordGenerator";
 import TestConfig from "../components/TestConfig";
+import useTypingTest from "../hooks/useTypingTest";
 
 const Lazytype = () => {
-  const [quote, setQuote] = useState(null);
-  const [input, setInput] = useState("");
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [selectedMode, setSelectedMode] = useState("quotes");
-  const [selectedDuration, setSelectedDuration] = useState(60);
-  const inputRef = useRef(null);
-
-  useEffect(() => {
-    if (selectedMode !== "quotes") return;
-
-    const q = getRandomQuote(selectedGroup);
-    setQuote(q);
-    setInput("");
-
-    if (inputRef.current) inputRef.current.focus();
-  }, [selectedGroup, selectedMode]);
-
-  useEffect(() => {
-    if (selectedMode !== "words") return;
-
-    const wordCount = 500;
-    const randomWords = getRandomWords(wordCount);
-
-    setQuote({ text: randomWords });
-    setInput("");
-
-    if (inputRef.current) inputRef.current.focus();
-  }, [selectedMode, selectedDuration]);
-
-  const handleInputChange = (e) => setInput(e.target.value);
-
-  const handleNewTest = () => {
-    if (selectedMode === "quotes") {
-      const q = getRandomQuote(selectedGroup);
-      setQuote(q);
-    } else if (selectedMode === "words") {
-      const randomWords = getRandomWords(500);
-      setQuote({ text: randomWords });
-    }
-
-    setInput("");
-    inputRef.current.focus();
-  };
+  const {
+    quote,
+    words,
+    input,
+    inputRef,
+    selectedGroup,
+    setSelectedGroup,
+    selectedMode,
+    setSelectedMode,
+    selectedDuration,
+    setSelectedDuration,
+    handleInputChange,
+    handleWordComplete,
+    handleNewTest,
+    isInfinityMode,
+  } = useTypingTest();
 
   return (
     <div className="flex flex-col items-center text-center mx-auto w-full">
@@ -72,11 +43,17 @@ const Lazytype = () => {
             "calc((calc(var(--content-max-width) + 12rem) - var(--content-max-width)) / 2)",
         }}
         className="relative mx-auto text-gray-600 w-full max-w-[1736px] px-[var(--breakout-size)]"
-        onClick={() => inputRef.current.focus()}
+        onClick={() => inputRef.current?.focus()}
       >
         {quote ? (
           <>
-            <WordGenerator text={quote.text} input={input} />
+            <WordGenerator
+              key={`${selectedMode}-${words.substring(0, 20)}`}
+              text={words}
+              input={input}
+              onWordComplete={handleWordComplete}
+              isInfinityMode={isInfinityMode}
+            />
             <input
               ref={inputRef}
               type="text"

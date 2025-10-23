@@ -1,3 +1,4 @@
+// we don't need this anymore. maybe idk. that's why i left it here and not deleting it
 import { useEffect } from "react";
 import useLineJump from "./useLineJump";
 import useCaretTracking from "./useCaretTracking";

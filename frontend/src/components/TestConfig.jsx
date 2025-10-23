@@ -14,7 +14,7 @@ const TestConfig = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCompactView, setIsCompactView] = useState(false);
 
-  const wordDurations = [15, 30, 60, 120];
+  const testDurations = [15, 30, 60, 120];
 
   useEffect(() => {
     const loadedGroups = getQuoteGroups();
@@ -35,8 +35,8 @@ const TestConfig = ({
     setIsModalOpen(false);
   };
 
-  const handleSelectWords = (duration) => {
-    setSelectedMode("words");
+  const handleSelectTime = (duration) => {
+    setSelectedMode("time");
     setSelectedDuration(duration);
     setIsModalOpen(false);
   };
@@ -47,13 +47,13 @@ const TestConfig = ({
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex gap-2">
             <button
-              onClick={() => setSelectedMode("words")}
-              className={`px-4 py-2 rounded font-medium transition-all ${selectedMode === "words"
+              onClick={() => setSelectedMode("time")}
+              className={`px-4 py-2 rounded font-medium transition-all ${selectedMode === "time"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] hover:bg-[#504945]"
                 }`}
             >
-              Words
+              Time
             </button>
             <button
               onClick={() => setSelectedMode("quotes")}
@@ -68,13 +68,13 @@ const TestConfig = ({
 
           <span className="text-[#a89984]">|</span>
 
-          {selectedMode === "words" ? (
+          {selectedMode === "time" ? (
             <div className="flex flex-wrap gap-2 items-center">
-              {wordDurations.map((duration) => (
+              {testDurations.map((duration) => (
                 <button
                   key={duration}
-                  onClick={() => handleSelectWords(duration)}
-                  className={`px-3 py-1 rounded transition-all text-sm ${selectedMode === "words" && selectedDuration === duration
+                  onClick={() => handleSelectTime(duration)}
+                  className={`px-3 py-1 rounded transition-all text-sm ${selectedMode === "time" && selectedDuration === duration
                       ? "bg-[#D8AB19] text-[#282828]"
                       : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
                     }`}
@@ -116,7 +116,7 @@ const TestConfig = ({
               selectedMode={selectedMode}
               selectedDuration={selectedDuration}
               onSelectGroup={handleSelectGroup}
-              onSelectWords={handleSelectWords}
+              onSelectWords={handleSelectTime}
               onClose={() => setIsModalOpen(false)}
             />
           )}

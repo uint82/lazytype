@@ -1,20 +1,35 @@
 import { useRef } from "react";
 import Caret from "./Carret";
 import WordDisplay from "./WordDisplay";
-import useCaretManager from "../hooks/useCaretManager";
+import useTypingState from "../hooks/useTypingState";
 
-const WordGenerator = ({ text, input }) => {
+import useTypingDisplay from "../hooks/useWordGenerator/useTypingDisplay";
+import useWordProgress from "../hooks/useWordGenerator/useWordProgress";
+import useWordCompletion from "../hooks/useWordGenerator/useWordCompletion";
+
+const WordGenerator = ({ text, input, onWordComplete }) => {
   const containerRef = useRef(null);
-  const { caretPosition, jumpOffset, isTyping } = useCaretManager(
-    text,
-    input,
-    containerRef,
-  );
 
-  const words = text.split(" ");
-  const inputWords = input.trim().length ? input.split(" ") : [""];
-  const currentWordIndex = inputWords.length - 1;
-  const currentWordInput = inputWords[currentWordIndex] || "";
+  const {
+    visibleWords,
+    caretPosition,
+    deletedCount,
+    updateLineDelete,
+    measureCaret,
+  } = useTypingDisplay(text, containerRef);
+
+  const { currentWordIndex, currentWordInput, adjustedInputWords } =
+    useWordProgress(input, deletedCount);
+
+  const isTyping = useTypingState(input);
+
+  useWordCompletion(input, onWordComplete, {
+    currentWordIndex,
+    currentWordInput,
+    updateLineDelete,
+    measureCaret,
+    containerRef,
+  });
 
   return (
     <div
@@ -29,16 +44,11 @@ const WordGenerator = ({ text, input }) => {
     >
       <Caret x={caretPosition.x} y={caretPosition.y} isTyping={isTyping} />
 
-      <div
-        className="flex flex-wrap transition-none"
-        style={{
-          transform: `translateY(-${jumpOffset}px)`,
-        }}
-      >
+      <div className="flex flex-wrap">
         <WordDisplay
-          words={words}
-          inputWords={inputWords}
-          currentWordIndex={currentWordIndex}
+          words={visibleWords}
+          inputWords={adjustedInputWords}
+          currentWordIndex={currentWordIndex - deletedCount}
           currentWordInput={currentWordInput}
         />
       </div>

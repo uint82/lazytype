@@ -1,3 +1,54 @@
+import { memo } from "react";
+
+const Character = memo(({ char, isCorrect, isTyped, shouldTransition }) => {
+  const colorClass = isTyped
+    ? isCorrect
+      ? "text-white"
+      : "text-red-500"
+    : "text-[#635851]";
+
+  return (
+    <span
+      className={`${colorClass} ${shouldTransition ? "transition-colors duration-150" : ""}`}
+    >
+      {char}
+    </span>
+  );
+});
+
+Character.displayName = "Character";
+
+const Word = memo(({ word, isActive, isTyped, userInput }) => {
+  const wordClass = isActive ? "word active" : isTyped ? "word typed" : "word";
+
+  return (
+    <div
+      className={wordClass}
+      style={{
+        display: "inline-block",
+        margin: "0.25em 0.3em",
+      }}
+    >
+      {word.split("").map((char, charIndex) => {
+        const hasInput = userInput && charIndex < userInput.length;
+        const isCorrect = hasInput && userInput[charIndex] === char;
+
+        return (
+          <Character
+            key={charIndex}
+            char={char}
+            isCorrect={isCorrect}
+            isTyped={hasInput}
+            shouldTransition={isActive || isTyped}
+          />
+        );
+      })}
+    </div>
+  );
+});
+
+Word.displayName = "Word";
+
 const WordDisplay = ({
   words,
   inputWords,
@@ -6,52 +57,26 @@ const WordDisplay = ({
 }) => {
   return (
     <>
-      {words.map((word, wordIndex) => {
-        let wordClass = "word";
-        if (wordIndex === currentWordIndex) wordClass = "word active";
-        else if (wordIndex < currentWordIndex) wordClass = "word typed";
+      {words.map((wordObj, wordIndex) => {
+        const word = typeof wordObj === "string" ? wordObj : wordObj.word;
+        const key = typeof wordObj === "string" ? wordIndex : wordObj.id;
+        const isActive = wordIndex === currentWordIndex;
+        const isTyped = wordIndex < currentWordIndex;
+        const userInput = isActive
+          ? currentWordInput
+          : isTyped
+            ? inputWords[wordIndex]
+            : null;
 
         return (
-          <div
-            key={wordIndex}
-            className={wordClass}
-            style={{
-              display: "inline-block",
-              marginRight: "0.3em",
-              marginLeft: "0.3em",
-              marginTop: "0.25em",
-              marginBottom: "0.25em",
-            }}
-          >
-            {word.split("").map((char, charIndex) => {
-              let letterClass = "";
-
-              if (wordIndex === currentWordIndex) {
-                if (charIndex < currentWordInput.length) {
-                  letterClass =
-                    currentWordInput[charIndex] === char
-                      ? "text-white"
-                      : "text-red-500";
-                }
-              } else if (wordIndex < currentWordIndex) {
-                if (charIndex < (inputWords[wordIndex]?.length || 0)) {
-                  letterClass =
-                    inputWords[wordIndex][charIndex] === char
-                      ? "text-white"
-                      : "text-red-500";
-                }
-              }
-
-              return (
-                <span
-                  key={charIndex}
-                  className={`transition-colors ${letterClass}`}
-                >
-                  {char}
-                </span>
-              );
-            })}
-          </div>
+          <Word
+            key={key}
+            word={word}
+            wordIndex={wordIndex}
+            isActive={isActive}
+            isTyped={isTyped}
+            userInput={userInput}
+          />
         );
       })}
     </>
