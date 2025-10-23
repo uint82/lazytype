@@ -5,8 +5,8 @@ const Caret = ({ x, y, isTyping }) => {
     <motion.div
       className="caret absolute"
       initial={{
-        left: x + 9.1,
-        top: y + 5,
+        left: x + 8,
+        top: y + 8,
       }}
       animate={{
         left: x - 2,
