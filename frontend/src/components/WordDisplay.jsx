@@ -9,7 +9,8 @@ const Character = memo(({ char, isCorrect, isTyped, shouldTransition }) => {
 
   return (
     <span
-      className={`${colorClass} ${shouldTransition ? "transition-colors duration-150" : ""}`}
+      className={`${colorClass} ${shouldTransition ? "transition-colors duration-150" : ""
+        }`}
     >
       {char}
     </span>
@@ -19,7 +20,13 @@ const Character = memo(({ char, isCorrect, isTyped, shouldTransition }) => {
 Character.displayName = "Character";
 
 const Word = memo(({ word, isActive, isTyped, userInput }) => {
-  const wordClass = isActive ? "word active" : isTyped ? "word typed" : "word";
+  const hasError =
+    userInput && userInput.split("").some((char, i) => char !== word[i]);
+
+  let wordClass = "word";
+  if (isActive) wordClass += " active";
+  else if (isTyped && hasError) wordClass += " error-typed";
+  else if (isTyped) wordClass += " typed";
 
   return (
     <div
