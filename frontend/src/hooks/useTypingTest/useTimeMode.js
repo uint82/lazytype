@@ -14,7 +14,7 @@ export default function useTimeMode(
   useEffect(() => {
     if (selectedMode !== "time") return;
 
-    const randomWords = getRandomWords(100);
+    const randomWords = getRandomWords();
     setQuote({ text: randomWords });
     setWords(randomWords);
     setInput("");

@@ -34,7 +34,7 @@ const WordGenerator = ({ text, input, onWordComplete }) => {
   return (
     <div
       ref={containerRef}
-      className="relative overflow-hidden select-none pointer-events-none"
+      className="relative overflow-hidden select-none"
       style={{
         height: "156px",
         fontFamily: "'Roboto Mono', monospace",
