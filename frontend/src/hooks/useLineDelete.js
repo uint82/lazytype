@@ -62,9 +62,11 @@ export default function useLineDelete(text) {
       (el) => Math.round(el.getBoundingClientRect().top) === firstLineTop,
     );
 
-    setVisibleWords((prev) => prev.slice(firstLineWords.length));
-    setDeletedCount((prev) => prev + firstLineWords.length);
-    lastLineIndexRef.current = 1;
+    requestAnimationFrame(() => {
+      setVisibleWords((prev) => prev.slice(firstLineWords.length));
+      setDeletedCount((prev) => prev + firstLineWords.length);
+      lastLineIndexRef.current = 1;
+    });
   }, []);
 
   const updateLineDelete = useCallback(

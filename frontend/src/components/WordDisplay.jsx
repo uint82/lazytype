@@ -19,7 +19,7 @@ const Character = memo(({ char, isCorrect, isTyped, shouldTransition }) => {
 
 Character.displayName = "Character";
 
-const Word = memo(({ word, isActive, isTyped, userInput }) => {
+const Word = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
   const hasError =
     userInput && userInput.split("").some((char, i) => char !== word[i]);
 
@@ -31,6 +31,7 @@ const Word = memo(({ word, isActive, isTyped, userInput }) => {
   return (
     <div
       className={wordClass}
+      data-word-index={wordIndex}
       style={{
         display: "inline-block",
         margin: "0.25em 0.3em",

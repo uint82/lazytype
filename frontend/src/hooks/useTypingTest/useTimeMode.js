@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import { getRandomWords } from "../../controllers/words-controller";
 
 export default function useTimeMode(
@@ -9,13 +9,16 @@ export default function useTimeMode(
   setInput,
   inputRef,
 ) {
+  const wordCountRef = useRef(0);
+
   useEffect(() => {
     if (selectedMode !== "time") return;
 
-    const randomWords = getRandomWords(50);
+    const randomWords = getRandomWords(100);
     setQuote({ text: randomWords });
     setWords(randomWords);
     setInput("");
+    wordCountRef.current = randomWords.split(" ").length;
 
     requestAnimationFrame(() => {
       inputRef.current?.focus();
@@ -24,8 +27,10 @@ export default function useTimeMode(
 
   const handleWordComplete = useCallback(() => {
     if (selectedMode !== "time") return;
+
     const newWord = getRandomWords(1);
     setWords((prev) => prev + " " + newWord);
+    wordCountRef.current += 1;
   }, [selectedMode, setWords]);
 
   return { handleWordComplete };
