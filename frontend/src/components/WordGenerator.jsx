@@ -29,6 +29,8 @@ const WordGenerator = ({ text, input, onWordComplete }) => {
     updateLineDelete,
     measureCaret,
     containerRef,
+    text,
+    deletedCount,
   });
 
   return (

@@ -1,16 +1,17 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { tokenizeText } from "../utils/textTokenizer";
 
 export default function useLineDelete(text) {
-  const [visibleWords, setVisibleWords] = useState(() =>
-    text.split(" ").map((word, idx) => ({ word, id: idx })),
-  );
+  const [visibleWords, setVisibleWords] = useState(() => {
+    const words = tokenizeText(text);
+    return words.map((word, idx) => ({ word, id: idx }));
+  });
   const [deletedCount, setDeletedCount] = useState(0);
-
   const lastLineIndexRef = useRef(-1);
   const nextIdRef = useRef(visibleWords.length);
 
   useEffect(() => {
-    const newWords = text.split(" ");
+    const newWords = tokenizeText(text);
     const totalWords = newWords.length;
     const currentVisibleCount = visibleWords.length;
 
@@ -41,11 +42,9 @@ export default function useLineDelete(text) {
 
     wordElements.forEach((el, index) => {
       const top = Math.round(el.getBoundingClientRect().top);
-
       if (!lineTops.has(top)) {
         lineTops.set(top, lineTops.size);
       }
-
       elementToLine.set(index, lineTops.get(top));
     });
 
@@ -79,6 +78,7 @@ export default function useLineDelete(text) {
 
       const adjustedIndex = currentWordIndex - deletedCount;
       const activeWord = wordElements[adjustedIndex];
+
       if (!activeWord) return { activeWord: null, lineIndex: 0 };
 
       const { elementToLine } = getLinePositions(wordElements);

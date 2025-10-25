@@ -1,5 +1,6 @@
 import WordGenerator from "../components/WordGenerator";
 import TestConfig from "../components/TestConfig";
+import TestStatus from "../components/TestStatus";
 import useTypingTest from "../hooks/useTypingTest";
 
 const Lazytype = () => {
@@ -18,23 +19,41 @@ const Lazytype = () => {
     handleWordComplete,
     handleNewTest,
     isInfinityMode,
+    wordsTyped,
+    totalWords,
+    showConfig,
+    timeElapsed,
+    showConfigOnMouseMove,
   } = useTypingTest();
 
   return (
-    <div className="flex flex-col items-center text-center mx-auto w-full">
+    <div
+      className="flex flex-col items-center text-center mx-auto w-full"
+      onMouseMove={showConfigOnMouseMove}
+    >
       <link
         href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap"
         rel="stylesheet"
       />
 
-      <TestConfig
-        selectedGroup={selectedGroup}
-        setSelectedGroup={setSelectedGroup}
-        selectedMode={selectedMode}
-        setSelectedMode={setSelectedMode}
-        selectedDuration={selectedDuration}
-        setSelectedDuration={setSelectedDuration}
-      />
+      {showConfig ? (
+        <TestConfig
+          selectedGroup={selectedGroup}
+          setSelectedGroup={setSelectedGroup}
+          selectedMode={selectedMode}
+          setSelectedMode={setSelectedMode}
+          selectedDuration={selectedDuration}
+          setSelectedDuration={setSelectedDuration}
+        />
+      ) : (
+        <TestStatus
+          selectedMode={selectedMode}
+          selectedDuration={selectedDuration}
+          totalWords={totalWords}
+          wordsTyped={wordsTyped}
+          timeElapsed={timeElapsed}
+        />
+      )}
 
       <div
         style={{

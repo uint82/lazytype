@@ -3,6 +3,7 @@ import useQuoteMode from "./useQuoteMode";
 import useTimeMode from "./useTimeMode";
 import useTestControls from "./useTestControls";
 import useInputRef from "./useInputRef";
+import useTestState from "../useTestState";
 
 export default function useTypingTest() {
   const [quote, setQuote] = useState(null);
@@ -14,6 +15,19 @@ export default function useTypingTest() {
 
   const inputRef = useInputRef();
 
+  const {
+    isTestActive,
+    wordsTyped,
+    totalWords,
+    showConfig,
+    timeElapsed,
+    startTest,
+    incrementWordsTyped,
+    resetTest,
+    showConfigOnMouseMove,
+    hideConfig,
+  } = useTestState(selectedMode, selectedDuration, words);
+
   useQuoteMode(
     selectedMode,
     selectedGroup,
@@ -22,7 +36,8 @@ export default function useTypingTest() {
     setInput,
     inputRef,
   );
-  const { handleWordComplete } = useTimeMode(
+
+  const { handleWordComplete: originalHandleWordComplete } = useTimeMode(
     selectedMode,
     selectedDuration,
     setQuote,
@@ -31,7 +46,10 @@ export default function useTypingTest() {
     inputRef,
   );
 
-  const { handleInputChange, handleNewTest } = useTestControls(
+  const {
+    handleInputChange: originalHandleInputChange,
+    handleNewTest: originalHandleNewTest,
+  } = useTestControls(
     selectedMode,
     selectedGroup,
     setQuote,
@@ -39,6 +57,26 @@ export default function useTypingTest() {
     setInput,
     inputRef,
   );
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    if (value.length > 0 && !isTestActive) {
+      startTest();
+    } else if (value.length > 0 && isTestActive) {
+      hideConfig();
+    }
+    originalHandleInputChange(e);
+  };
+
+  const handleWordComplete = () => {
+    incrementWordsTyped();
+    originalHandleWordComplete();
+  };
+
+  const handleNewTest = () => {
+    resetTest();
+    originalHandleNewTest();
+  };
 
   return {
     quote,
@@ -55,5 +93,12 @@ export default function useTypingTest() {
     handleWordComplete,
     handleNewTest,
     isInfinityMode: selectedMode === "time",
+    isTestActive,
+    wordsTyped,
+    totalWords,
+    showConfig,
+    timeElapsed,
+    showConfigOnMouseMove,
+    hideConfig,
   };
 }

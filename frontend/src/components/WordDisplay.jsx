@@ -1,12 +1,12 @@
 import { memo } from "react";
+import { normalizeForComparison } from "../utils/textTokenizer";
 
 const Character = memo(({ char, isCorrect, isTyped, shouldTransition }) => {
   const colorClass = isTyped
     ? isCorrect
-      ? "text-white"
+      ? "text-[#DBCBA6]"
       : "text-red-500"
     : "text-[#635851]";
-
   return (
     <span
       className={`${colorClass} ${shouldTransition ? "transition-colors duration-150" : ""
@@ -16,12 +16,14 @@ const Character = memo(({ char, isCorrect, isTyped, shouldTransition }) => {
     </span>
   );
 });
-
 Character.displayName = "Character";
 
 const Word = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
+  const normalizedWord = normalizeForComparison(word);
+
   const hasError =
-    userInput && userInput.split("").some((char, i) => char !== word[i]);
+    userInput &&
+    userInput.split("").some((char, i) => char !== normalizedWord[i]);
 
   let wordClass = "word";
   if (isActive) wordClass += " active";
@@ -38,9 +40,9 @@ const Word = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
       }}
     >
       {word.split("").map((char, charIndex) => {
+        const normalizedChar = normalizeForComparison(char);
         const hasInput = userInput && charIndex < userInput.length;
-        const isCorrect = hasInput && userInput[charIndex] === char;
-
+        const isCorrect = hasInput && userInput[charIndex] === normalizedChar;
         return (
           <Character
             key={charIndex}
@@ -54,7 +56,6 @@ const Word = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
     </div>
   );
 });
-
 Word.displayName = "Word";
 
 const WordDisplay = ({
@@ -75,7 +76,6 @@ const WordDisplay = ({
           : isTyped
             ? inputWords[wordIndex]
             : null;
-
         return (
           <Word
             key={key}
