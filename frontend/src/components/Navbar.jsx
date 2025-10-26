@@ -10,7 +10,7 @@ const Navbar = () => {
           className="flex items-center space-x-3 hover:opacity-80 transition"
         >
           <Keyboard className="w-10 h-10 text-[#D8AB19]" />
-          <span className="font-semibold text-2xl text-white hidden sm:inline custom-hide-text">
+          <span className="font-semibold text-2xl text-[#D6C7A3] hidden sm:inline custom-hide-text">
             LazyType
           </span>
         </Link>
