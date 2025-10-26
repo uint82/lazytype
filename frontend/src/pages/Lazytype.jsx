@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import WordGenerator from "../components/WordGenerator";
 import TestConfig from "../components/TestConfig";
 import TestStatus from "../components/TestStatus";
@@ -26,6 +27,47 @@ const Lazytype = () => {
     showConfigOnMouseMove,
   } = useTypingTest();
 
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [displayWords, setDisplayWords] = useState(words);
+  const prevConfigRef = useRef({
+    selectedMode,
+    selectedDuration,
+    selectedGroup,
+  });
+  const prevWordsRef = useRef(words);
+
+  useEffect(() => {
+    const configChanged =
+      prevConfigRef.current.selectedMode !== selectedMode ||
+      prevConfigRef.current.selectedDuration !== selectedDuration ||
+      prevConfigRef.current.selectedGroup !== selectedGroup;
+
+    if (words !== displayWords && words) {
+      const isAddition =
+        prevWordsRef.current && words.startsWith(prevWordsRef.current);
+
+      if (configChanged || !isAddition) {
+        prevConfigRef.current = {
+          selectedMode,
+          selectedDuration,
+          selectedGroup,
+        };
+        prevWordsRef.current = words;
+        setIsTransitioning(true);
+
+        setTimeout(() => {
+          setDisplayWords(words);
+          setTimeout(() => {
+            setIsTransitioning(false);
+          }, 50);
+        }, 150);
+      } else {
+        setDisplayWords(words);
+        prevWordsRef.current = words;
+      }
+    }
+  }, [words, displayWords, selectedMode, selectedDuration, selectedGroup]);
+
   return (
     <div
       className="flex flex-col items-center text-center mx-auto w-full"
@@ -38,7 +80,7 @@ const Lazytype = () => {
 
       <div className="relative h-24 w-full flex items-center justify-center">
         <div
-          className={`absolute transition-all duration-200 ease-in-out ${showConfig
+          className={`absolute transition-all duration-300 ease-in-out ${showConfig
               ? "opacity-100 translate-y-0"
               : "opacity-0 -translate-y-4 pointer-events-none"
             }`}
@@ -54,7 +96,7 @@ const Lazytype = () => {
         </div>
 
         <div
-          className={`absolute transition-all duration-200 ease-in-out ${!showConfig
+          className={`absolute transition-all duration-300 ease-in-out ${!showConfig
               ? "opacity-100 translate-y-0"
               : "opacity-0 translate-y-4 pointer-events-none"
             }`}
@@ -78,74 +120,79 @@ const Lazytype = () => {
         className="relative mx-auto text-gray-600 w-full max-w-[1736px] px-[var(--breakout-size)]"
         onClick={() => inputRef.current?.focus()}
       >
-        {quote ? (
-          <>
-            <WordGenerator
-              key={`${selectedMode}-${words.substring(0, 20)}`}
-              text={words}
-              input={input}
-              onWordComplete={handleWordComplete}
-              isInfinityMode={isInfinityMode}
-            />
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={handleInputChange}
-              className="opacity-0 absolute"
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === " ") {
-                  const words = input.split(" ");
-                  const currentWord = words[words.length - 1];
-                  if (currentWord.length === 0) {
-                    e.preventDefault();
-                    return;
-                  }
-                }
-
-                if (e.key === "Backspace") {
-                  const quoteWords = words.trim().split(" ");
-                  const inputWords = input.trim().split(" ");
-
-                  const hasTrailingSpace = input.endsWith(" ");
-                  const currentWordIndex = hasTrailingSpace
-                    ? inputWords.length
-                    : inputWords.length - 1;
-
-                  const prevWordIndex = hasTrailingSpace
-                    ? currentWordIndex - 1
-                    : currentWordIndex - 1;
-
-                  if (prevWordIndex >= 0) {
-                    const prevInputWord = inputWords[prevWordIndex];
-                    const correctPrevWord = quoteWords[prevWordIndex];
-
-                    const isPrevWordPerfect =
-                      prevInputWord &&
-                      correctPrevWord &&
-                      prevInputWord.length === correctPrevWord.length &&
-                      prevInputWord
-                        .split("")
-                        .every((c, i) => c === correctPrevWord[i]);
-
-                    const caretAtWordBoundary =
-                      hasTrailingSpace ||
-                      input.slice(-1) === " " ||
-                      inputWords.length > quoteWords.length;
-
-                    if (isPrevWordPerfect && caretAtWordBoundary) {
+        <div
+          className={`transition-opacity duration-200 ${isTransitioning ? "opacity-0" : "opacity-100"
+            }`}
+        >
+          {quote ? (
+            <>
+              <WordGenerator
+                key={`${selectedMode}-${displayWords.substring(0, 20)}`}
+                text={displayWords}
+                input={input}
+                onWordComplete={handleWordComplete}
+                isInfinityMode={isInfinityMode}
+              />
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={handleInputChange}
+                className="opacity-0 absolute"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === " ") {
+                    const words = input.split(" ");
+                    const currentWord = words[words.length - 1];
+                    if (currentWord.length === 0) {
                       e.preventDefault();
                       return;
                     }
                   }
-                }
-              }}
-            />
-          </>
-        ) : (
-          <p className="text-[#ebdbb2]">Loading test...</p>
-        )}
+
+                  if (e.key === "Backspace") {
+                    const quoteWords = displayWords.trim().split(" ");
+                    const inputWords = input.trim().split(" ");
+
+                    const hasTrailingSpace = input.endsWith(" ");
+                    const currentWordIndex = hasTrailingSpace
+                      ? inputWords.length
+                      : inputWords.length - 1;
+
+                    const prevWordIndex = hasTrailingSpace
+                      ? currentWordIndex - 1
+                      : currentWordIndex - 1;
+
+                    if (prevWordIndex >= 0) {
+                      const prevInputWord = inputWords[prevWordIndex];
+                      const correctPrevWord = quoteWords[prevWordIndex];
+
+                      const isPrevWordPerfect =
+                        prevInputWord &&
+                        correctPrevWord &&
+                        prevInputWord.length === correctPrevWord.length &&
+                        prevInputWord
+                          .split("")
+                          .every((c, i) => c === correctPrevWord[i]);
+
+                      const caretAtWordBoundary =
+                        hasTrailingSpace ||
+                        input.slice(-1) === " " ||
+                        inputWords.length > quoteWords.length;
+
+                      if (isPrevWordPerfect && caretAtWordBoundary) {
+                        e.preventDefault();
+                        return;
+                      }
+                    }
+                  }
+                }}
+              />
+            </>
+          ) : (
+            <p className="text-[#ebdbb2]">Loading test...</p>
+          )}
+        </div>
       </div>
 
       <button
