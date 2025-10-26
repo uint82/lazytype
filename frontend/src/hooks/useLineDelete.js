@@ -1,14 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { tokenizeText } from "../utils/textTokenizer";
 
+let globalWordId = 0;
+
 export default function useLineDelete(text) {
   const [visibleWords, setVisibleWords] = useState(() => {
     const words = tokenizeText(text);
-    return words.map((word, idx) => ({ word, id: idx }));
+    return words.map((word) => ({ word, id: globalWordId++ }));
   });
   const [deletedCount, setDeletedCount] = useState(0);
   const lastLineIndexRef = useRef(-1);
-  const nextIdRef = useRef(visibleWords.length);
 
   useEffect(() => {
     const newWords = tokenizeText(text);
@@ -19,20 +20,18 @@ export default function useLineDelete(text) {
       const wordsToAdd = newWords.slice(currentVisibleCount + deletedCount);
       setVisibleWords((prev) => [
         ...prev,
-        ...wordsToAdd.map((word, idx) => ({
+        ...wordsToAdd.map((word) => ({
           word,
-          id: nextIdRef.current + idx,
+          id: globalWordId++,
         })),
       ]);
-      nextIdRef.current += wordsToAdd.length;
       return;
     }
 
     if (totalWords < currentVisibleCount + deletedCount) {
-      setVisibleWords(newWords.map((word, idx) => ({ word, id: idx })));
+      setVisibleWords(newWords.map((word) => ({ word, id: globalWordId++ })));
       setDeletedCount(0);
       lastLineIndexRef.current = -1;
-      nextIdRef.current = newWords.length;
     }
   }, [text, visibleWords.length, deletedCount]);
 
