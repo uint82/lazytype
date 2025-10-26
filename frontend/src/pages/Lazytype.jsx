@@ -36,24 +36,38 @@ const Lazytype = () => {
         rel="stylesheet"
       />
 
-      {showConfig ? (
-        <TestConfig
-          selectedGroup={selectedGroup}
-          setSelectedGroup={setSelectedGroup}
-          selectedMode={selectedMode}
-          setSelectedMode={setSelectedMode}
-          selectedDuration={selectedDuration}
-          setSelectedDuration={setSelectedDuration}
-        />
-      ) : (
-        <TestStatus
-          selectedMode={selectedMode}
-          selectedDuration={selectedDuration}
-          totalWords={totalWords}
-          wordsTyped={wordsTyped}
-          timeElapsed={timeElapsed}
-        />
-      )}
+      <div className="relative h-24 w-full flex items-center justify-center">
+        <div
+          className={`absolute transition-all duration-200 ease-in-out ${showConfig
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 -translate-y-4 pointer-events-none"
+            }`}
+        >
+          <TestConfig
+            selectedGroup={selectedGroup}
+            setSelectedGroup={setSelectedGroup}
+            selectedMode={selectedMode}
+            setSelectedMode={setSelectedMode}
+            selectedDuration={selectedDuration}
+            setSelectedDuration={setSelectedDuration}
+          />
+        </div>
+
+        <div
+          className={`absolute transition-all duration-200 ease-in-out ${!showConfig
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-4 pointer-events-none"
+            }`}
+        >
+          <TestStatus
+            selectedMode={selectedMode}
+            selectedDuration={selectedDuration}
+            totalWords={totalWords}
+            wordsTyped={wordsTyped}
+            timeElapsed={timeElapsed}
+          />
+        </div>
+      </div>
 
       <div
         style={{
