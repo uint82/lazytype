@@ -9,7 +9,25 @@ export default function useTestControls(
   setInput,
   inputRef,
 ) {
-  const handleInputChange = (e) => setInput(e.target.value);
+  const handleInputChange = (e, words) => {
+    const newValue = e.target.value;
+    const inputWords = newValue.split(" ");
+    const currentWordIndex = inputWords.length - 1;
+    const currentWord = inputWords[currentWordIndex] || "";
+
+    const wordsArray =
+      typeof words === "string"
+        ? words.split(" ")
+        : words.map((w) => (typeof w === "string" ? w : w.word));
+    const correctWord = wordsArray[currentWordIndex] || "";
+
+    const maxLength = correctWord.length + 19;
+    if (currentWord.length > maxLength) {
+      return;
+    }
+
+    setInput(newValue);
+  };
 
   const handleNewTest = () => {
     const q =

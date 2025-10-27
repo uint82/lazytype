@@ -12,7 +12,6 @@ export default function useTypingTest() {
   const [selectedMode, setSelectedMode] = useState("quotes");
   const [selectedDuration, setSelectedDuration] = useState(60);
   const [words, setWords] = useState("");
-
   const inputRef = useInputRef();
 
   const {
@@ -65,7 +64,7 @@ export default function useTypingTest() {
     } else if (value.length > 0 && isTestActive) {
       hideConfig();
     }
-    originalHandleInputChange(e);
+    originalHandleInputChange(e, words);
   };
 
   const handleWordComplete = () => {

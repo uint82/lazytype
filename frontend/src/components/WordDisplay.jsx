@@ -30,6 +30,11 @@ const Word = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
   else if (isTyped && hasError) wordClass += " error-typed";
   else if (isTyped) wordClass += " typed";
 
+  const extraChars =
+    userInput && userInput.length > word.length
+      ? userInput.slice(word.length, word.length + 19)
+      : "";
+
   return (
     <div
       className={wordClass}
@@ -45,7 +50,7 @@ const Word = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
         const isCorrect = hasInput && userInput[charIndex] === normalizedChar;
         return (
           <Character
-            key={charIndex}
+            key={`${wordIndex}-${charIndex}`}
             char={char}
             isCorrect={isCorrect}
             isTyped={hasInput}
@@ -53,6 +58,15 @@ const Word = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
           />
         );
       })}
+      {extraChars.split("").map((char, extraIndex) => (
+        <Character
+          key={`${wordIndex}-extra-${extraIndex}`}
+          char={char}
+          isCorrect={false}
+          isTyped={true}
+          shouldTransition={isActive || isTyped}
+        />
+      ))}
     </div>
   );
 });
