@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createPortal } from "react-dom";
 
 const GroupModal = ({
   groups,
@@ -6,7 +7,7 @@ const GroupModal = ({
   selectedMode,
   selectedDuration,
   onSelectGroup,
-  onSelectWords,
+  onSelectTime,
   onClose,
 }) => {
   const [activeTab, setActiveTab] = useState(selectedMode || "quotes");
@@ -16,26 +17,44 @@ const GroupModal = ({
     if (e.target === e.currentTarget) onClose();
   };
 
-  return (
+  const handleSelectGroup = (groupIndex) => {
+    onSelectGroup(groupIndex !== undefined ? groupIndex : null);
+  };
+
+  const handleSelectTime = (duration) => {
+    onSelectTime(duration || 60);
+  };
+
+  const modalContent = (
     <div
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]"
       onClick={handleOverlayClick}
     >
       <div className="bg-[#282828] p-5 rounded-lg shadow-lg w-[90%] max-w-[320px] text-center">
         <div className="flex flex-col gap-3 max-h-[70vh] overflow-y-auto">
           <div className="flex flex-col gap-2">
             <button
-              onClick={() => setActiveTab("words")}
-              className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "words"
+              onClick={() => {
+                setActiveTab("time");
+                handleSelectTime(
+                  selectedMode === "time" ? selectedDuration : 60,
+                );
+              }}
+              className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "time"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
                 }`}
             >
-              Words
+              Time
             </button>
 
             <button
-              onClick={() => setActiveTab("quotes")}
+              onClick={() => {
+                setActiveTab("quotes");
+                handleSelectGroup(
+                  selectedMode === "quotes" ? selectedGroup : null,
+                );
+              }}
               className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "quotes"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
@@ -46,15 +65,14 @@ const GroupModal = ({
           </div>
 
           <div className="flex flex-col gap-2 mt-3">
-            {activeTab === "words"
+            {activeTab === "time"
               ? wordDurations.map((duration) => (
                 <button
                   key={duration}
-                  onClick={() => {
-                    onSelectWords(duration);
-                    onClose();
-                  }}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedMode === "words" && selectedDuration === duration
+                  onClick={() => handleSelectTime(duration)}
+                  className={`w-full px-4 py-2 rounded text-sm transition-all ${(selectedMode === "time" &&
+                      selectedDuration === duration) ||
+                      (selectedMode !== "time" && duration === 60)
                       ? "bg-[#D8AB19] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
                     }`}
@@ -65,11 +83,10 @@ const GroupModal = ({
               : groups.map((group) => (
                 <button
                   key={group.index ?? "all"}
-                  onClick={() => {
-                    onSelectGroup(group.index);
-                    onClose();
-                  }}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedMode === "quotes" && selectedGroup === group.index
+                  onClick={() => handleSelectGroup(group.index)}
+                  className={`w-full px-4 py-2 rounded text-sm transition-all ${(selectedMode === "quotes" &&
+                      selectedGroup === group.index) ||
+                      (selectedMode !== "quotes" && group.index === null)
                       ? "bg-[#D8AB19] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
                     }`}
@@ -82,6 +99,8 @@ const GroupModal = ({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 export default GroupModal;

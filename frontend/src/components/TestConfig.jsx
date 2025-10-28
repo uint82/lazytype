@@ -35,13 +35,11 @@ const TestConfig = ({
   const handleSelectGroup = (groupIndex) => {
     setSelectedMode("quotes");
     setSelectedGroup(groupIndex);
-    setIsModalOpen(false);
   };
 
   const handleSelectTime = (duration) => {
     setSelectedMode("time");
     setSelectedDuration(duration);
-    setIsModalOpen(false);
   };
 
   return (

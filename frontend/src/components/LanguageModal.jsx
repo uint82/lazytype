@@ -1,3 +1,5 @@
+import { createPortal } from "react-dom";
+
 const LanguageModal = ({
   languages,
   selectedLanguage,
@@ -8,9 +10,9 @@ const LanguageModal = ({
     if (e.target === e.currentTarget) onClose();
   };
 
-  return (
+  const modalContent = (
     <div
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]"
       onClick={handleOverlayClick}
     >
       <div className="bg-[#282828] p-5 rounded-lg shadow-lg w-[90%] max-w-[320px] text-center">
@@ -35,6 +37,8 @@ const LanguageModal = ({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 export default LanguageModal;

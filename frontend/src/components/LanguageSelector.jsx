@@ -18,7 +18,7 @@ const LanguageSelector = ({ selectedLanguage, setSelectedLanguage }) => {
     <div className="flex justify-center items-center mt-2">
       <button
         onClick={() => setIsModalOpen(true)}
-        className="px-4 py-2 rounded text-[#ebdbb2] hover:text-[#D8AB19] transition-all flex items-center gap-2"
+        className="px-4 py-2 rounded text-[#635851] hover:text-[#D8AB19] transition-all flex items-center gap-2"
       >
         <BookA size={20} />
         <span>{currentLanguage?.name}</span>
