@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import Caret from "./Carret";
 import WordDisplay from "./WordDisplay";
 import useTypingState from "../hooks/useTypingState";
@@ -7,7 +7,12 @@ import useTypingDisplay from "../hooks/useWordGenerator/useTypingDisplay";
 import useWordProgress from "../hooks/useWordGenerator/useWordProgress";
 import useWordCompletion from "../hooks/useWordGenerator/useWordCompletion";
 
-const WordGenerator = ({ text, input, onWordComplete }) => {
+const WordGenerator = ({
+  text,
+  input,
+  onWordComplete,
+  onDeletedCountChange,
+}) => {
   const containerRef = useRef(null);
 
   const {
@@ -22,6 +27,12 @@ const WordGenerator = ({ text, input, onWordComplete }) => {
     useWordProgress(input, deletedCount);
 
   const isTyping = useTypingState(input);
+
+  useEffect(() => {
+    if (onDeletedCountChange) {
+      onDeletedCountChange(deletedCount);
+    }
+  }, [deletedCount, onDeletedCountChange]);
 
   useWordCompletion(input, onWordComplete, {
     currentWordIndex,

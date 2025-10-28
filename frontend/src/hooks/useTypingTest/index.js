@@ -12,6 +12,7 @@ export default function useTypingTest() {
   const [selectedMode, setSelectedMode] = useState("quotes");
   const [selectedDuration, setSelectedDuration] = useState(60);
   const [words, setWords] = useState("");
+  const [deletedCount, setDeletedCount] = useState(0);
   const inputRef = useInputRef();
 
   const {
@@ -55,6 +56,7 @@ export default function useTypingTest() {
     setWords,
     setInput,
     inputRef,
+    deletedCount,
   );
 
   const handleInputChange = (e) => {
@@ -64,7 +66,7 @@ export default function useTypingTest() {
     } else if (value.length > 0 && isTestActive) {
       hideConfig();
     }
-    originalHandleInputChange(e, words);
+    originalHandleInputChange(e, words, input);
   };
 
   const handleWordComplete = () => {
@@ -74,6 +76,7 @@ export default function useTypingTest() {
 
   const handleNewTest = () => {
     resetTest();
+    setDeletedCount(0);
     originalHandleNewTest();
   };
 
@@ -99,5 +102,6 @@ export default function useTypingTest() {
     timeElapsed,
     showConfigOnMouseMove,
     hideConfig,
+    setDeletedCount,
   };
 }

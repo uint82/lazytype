@@ -25,6 +25,7 @@ const Lazytype = () => {
     showConfig,
     timeElapsed,
     showConfigOnMouseMove,
+    setDeletedCount,
   } = useTypingTest();
 
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -132,6 +133,7 @@ const Lazytype = () => {
                 input={input}
                 onWordComplete={handleWordComplete}
                 isInfinityMode={isInfinityMode}
+                onDeletedCountChange={setDeletedCount}
               />
               <input
                 ref={inputRef}
