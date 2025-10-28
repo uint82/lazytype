@@ -16,6 +16,8 @@ const Lazytype = () => {
     setSelectedMode,
     selectedDuration,
     setSelectedDuration,
+    selectedLanguage,
+    setSelectedLanguage,
     handleInputChange,
     handleWordComplete,
     handleNewTest,
@@ -34,6 +36,7 @@ const Lazytype = () => {
     selectedMode,
     selectedDuration,
     selectedGroup,
+    selectedLanguage,
   });
   const prevWordsRef = useRef(words);
 
@@ -41,7 +44,8 @@ const Lazytype = () => {
     const configChanged =
       prevConfigRef.current.selectedMode !== selectedMode ||
       prevConfigRef.current.selectedDuration !== selectedDuration ||
-      prevConfigRef.current.selectedGroup !== selectedGroup;
+      prevConfigRef.current.selectedGroup !== selectedGroup ||
+      prevConfigRef.current.selectedLanguage !== selectedLanguage;
 
     if (words !== displayWords && words) {
       const isAddition =
@@ -52,6 +56,7 @@ const Lazytype = () => {
           selectedMode,
           selectedDuration,
           selectedGroup,
+          selectedLanguage,
         };
         prevWordsRef.current = words;
         setIsTransitioning(true);
@@ -67,7 +72,14 @@ const Lazytype = () => {
         prevWordsRef.current = words;
       }
     }
-  }, [words, displayWords, selectedMode, selectedDuration, selectedGroup]);
+  }, [
+    words,
+    displayWords,
+    selectedMode,
+    selectedDuration,
+    selectedGroup,
+    selectedLanguage,
+  ]);
 
   return (
     <div
@@ -79,7 +91,7 @@ const Lazytype = () => {
         rel="stylesheet"
       />
 
-      <div className="relative h-24 w-full flex items-center justify-center">
+      <div className="relative h-32 w-full flex items-center justify-center">
         <div
           className={`absolute transition-all duration-300 ease-in-out ${showConfig
               ? "opacity-100 translate-y-0"
@@ -93,6 +105,8 @@ const Lazytype = () => {
             setSelectedMode={setSelectedMode}
             selectedDuration={selectedDuration}
             setSelectedDuration={setSelectedDuration}
+            selectedLanguage={selectedLanguage}
+            setSelectedLanguage={setSelectedLanguage}
           />
         </div>
 
@@ -128,7 +142,7 @@ const Lazytype = () => {
           {quote ? (
             <>
               <WordGenerator
-                key={`${selectedMode}-${displayWords.substring(0, 20)}`}
+                key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(0, 20)}`}
                 text={displayWords}
                 input={input}
                 onWordComplete={handleWordComplete}

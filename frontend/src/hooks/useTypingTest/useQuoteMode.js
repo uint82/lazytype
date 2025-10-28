@@ -8,17 +8,23 @@ export default function useQuoteMode(
   setWords,
   setInput,
   inputRef,
+  selectedLanguage = "english",
 ) {
   useEffect(() => {
-    if (selectedMode !== "quotes") return;
-
-    const q = getRandomQuote(selectedGroup);
-    setQuote(q);
-    setWords(q.text);
-    setInput("");
-
-    requestAnimationFrame(() => {
+    if (selectedMode === "quotes") {
+      const q = getRandomQuote(selectedGroup, selectedLanguage);
+      setQuote(q);
+      setWords(q.text);
+      setInput("");
       inputRef.current?.focus();
-    });
-  }, [selectedMode, selectedGroup, setInput, setQuote, setWords, inputRef]);
+    }
+  }, [
+    selectedMode,
+    selectedGroup,
+    selectedLanguage,
+    setQuote,
+    setWords,
+    setInput,
+    inputRef,
+  ]);
 }

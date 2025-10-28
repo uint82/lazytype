@@ -1,7 +1,13 @@
 import english from "../data/languages/english.json";
+import indonesian from "../data/languages/indonesian.json";
 
-let shuffledWords = null;
-let currentIndex = 0;
+const languageData = {
+  english: english,
+  indonesian: indonesian,
+};
+
+let shuffledWords = {};
+let currentIndex = {};
 
 function shuffleArray(array) {
   const arr = [...array];
@@ -16,26 +22,37 @@ function shuffleArray(array) {
  * Generates a random list of words
  * Uses Fisher-Yates shuffle and maintains state for infinite generation
  */
-export function getRandomWords(count = 50) {
-  if (!shuffledWords || currentIndex >= shuffledWords.length) {
-    shuffledWords = shuffleArray(english.words);
-    currentIndex = 0;
+export function getRandomWords(count = 50, language = "english") {
+  const data = languageData[language] || english;
+
+  if (
+    !shuffledWords[language] ||
+    currentIndex[language] >= shuffledWords[language].length
+  ) {
+    shuffledWords[language] = shuffleArray(data.words);
+    currentIndex[language] = 0;
   }
 
   const selected = [];
   for (let i = 0; i < count; i++) {
-    selected.push(shuffledWords[currentIndex]);
-    currentIndex = (currentIndex + 1) % shuffledWords.length;
+    selected.push(shuffledWords[language][currentIndex[language]]);
+    currentIndex[language] =
+      (currentIndex[language] + 1) % shuffledWords[language].length;
 
-    if (currentIndex === 0 && i < count - 1) {
-      shuffledWords = shuffleArray(english.words);
+    if (currentIndex[language] === 0 && i < count - 1) {
+      shuffledWords[language] = shuffleArray(data.words);
     }
   }
 
   return selected.join(" ");
 }
 
-export function resetWordGenerator() {
-  shuffledWords = null;
-  currentIndex = 0;
+export function resetWordGenerator(language = null) {
+  if (language) {
+    shuffledWords[language] = null;
+    currentIndex[language] = 0;
+  } else {
+    shuffledWords = {};
+    currentIndex = {};
+  }
 }

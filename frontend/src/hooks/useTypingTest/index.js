@@ -11,6 +11,7 @@ export default function useTypingTest() {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [selectedMode, setSelectedMode] = useState("quotes");
   const [selectedDuration, setSelectedDuration] = useState(60);
+  const [selectedLanguage, setSelectedLanguage] = useState("english");
   const [words, setWords] = useState("");
   const [deletedCount, setDeletedCount] = useState(0);
   const inputRef = useInputRef();
@@ -35,6 +36,7 @@ export default function useTypingTest() {
     setWords,
     setInput,
     inputRef,
+    selectedLanguage,
   );
 
   const { handleWordComplete: originalHandleWordComplete } = useTimeMode(
@@ -44,6 +46,7 @@ export default function useTypingTest() {
     setWords,
     setInput,
     inputRef,
+    selectedLanguage,
   );
 
   const {
@@ -57,6 +60,7 @@ export default function useTypingTest() {
     setInput,
     inputRef,
     deletedCount,
+    selectedLanguage,
   );
 
   const handleInputChange = (e) => {
@@ -91,6 +95,8 @@ export default function useTypingTest() {
     setSelectedMode,
     selectedDuration,
     setSelectedDuration,
+    selectedLanguage,
+    setSelectedLanguage,
     handleInputChange,
     handleWordComplete,
     handleNewTest,

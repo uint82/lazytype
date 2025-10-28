@@ -9,6 +9,7 @@ export default function useTestControls(
   setInput,
   inputRef,
   deletedCount = 0,
+  selectedLanguage = "english",
 ) {
   const handleInputChange = (e, words, prevInput = "") => {
     const newValue = e.target.value;
@@ -66,8 +67,8 @@ export default function useTestControls(
   const handleNewTest = () => {
     const q =
       selectedMode === "quotes"
-        ? getRandomQuote(selectedGroup)
-        : { text: getRandomWords(50) };
+        ? getRandomQuote(selectedGroup, selectedLanguage)
+        : { text: getRandomWords(50, selectedLanguage) };
 
     setQuote(q);
     setWords(q.text);
