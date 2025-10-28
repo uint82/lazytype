@@ -7,7 +7,7 @@ const TestStatus = ({
 }) => {
   const formatTime = (seconds) => {
     if (seconds < 60) {
-      return `${seconds}s`;
+      return `${seconds}`;
     }
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -23,7 +23,7 @@ const TestStatus = ({
     <div className="text-[#C68C22] text-2xl font-medium mt-10">
       {selectedMode === "quotes" ? (
         <div>
-          {wordsTyped}/{totalWords}
+          {wordsTyped} / {totalWords}
         </div>
       ) : (
         <div>{formatTime(getTimeRemaining())}</div>
