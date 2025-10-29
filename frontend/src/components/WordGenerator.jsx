@@ -1,7 +1,5 @@
 import { useRef, useEffect } from "react";
-import Caret from "./Carret";
 import WordDisplay from "./WordDisplay";
-import useTypingState from "../hooks/useTypingState";
 
 import useTypingDisplay from "../hooks/useWordGenerator/useTypingDisplay";
 import useWordProgress from "../hooks/useWordGenerator/useWordProgress";
@@ -12,6 +10,7 @@ const WordGenerator = ({
   input,
   onWordComplete,
   onDeletedCountChange,
+  onCaretPositionChange,
 }) => {
   const containerRef = useRef(null);
 
@@ -26,13 +25,17 @@ const WordGenerator = ({
   const { currentWordIndex, currentWordInput, adjustedInputWords } =
     useWordProgress(input, deletedCount);
 
-  const isTyping = useTypingState(input);
-
   useEffect(() => {
     if (onDeletedCountChange) {
       onDeletedCountChange(deletedCount);
     }
   }, [deletedCount, onDeletedCountChange]);
+
+  useEffect(() => {
+    if (onCaretPositionChange) {
+      onCaretPositionChange(caretPosition);
+    }
+  }, [caretPosition, onCaretPositionChange]);
 
   useWordCompletion(input, onWordComplete, {
     currentWordIndex,
@@ -55,8 +58,6 @@ const WordGenerator = ({
         lineHeight: "2rem",
       }}
     >
-      <Caret x={caretPosition.x} y={caretPosition.y} isTyping={isTyping} />
-
       <div className="flex flex-wrap">
         <WordDisplay
           words={visibleWords}

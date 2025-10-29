@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import WordGenerator from "../components/WordGenerator";
 import TestConfig from "../components/TestConfig";
 import TestStatus from "../components/TestStatus";
+import Caret from "../components/Carret";
 import useTypingTest from "../hooks/useTypingTest";
 
 const Lazytype = ({ onShowConfigChange }) => {
@@ -32,6 +33,7 @@ const Lazytype = ({ onShowConfigChange }) => {
 
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayWords, setDisplayWords] = useState(words);
+  const [caretPosition, setCaretPosition] = useState({ x: 0, y: 0 });
   const prevConfigRef = useRef({
     selectedMode,
     selectedDuration,
@@ -85,6 +87,8 @@ const Lazytype = ({ onShowConfigChange }) => {
     selectedLanguage,
   ]);
 
+  const isTyping = !showConfig;
+
   return (
     <div
       className="flex flex-col items-center text-center mx-auto w-full"
@@ -136,6 +140,11 @@ const Lazytype = ({ onShowConfigChange }) => {
         >
           {quote ? (
             <>
+              <Caret
+                x={caretPosition.x}
+                y={caretPosition.y}
+                isTyping={isTyping}
+              />
               <WordGenerator
                 key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(
                   0,
@@ -146,6 +155,8 @@ const Lazytype = ({ onShowConfigChange }) => {
                 onWordComplete={handleWordComplete}
                 isInfinityMode={isInfinityMode}
                 onDeletedCountChange={setDeletedCount}
+                onCaretPositionChange={setCaretPosition}
+                showConfig={showConfig}
               />
               <input
                 ref={inputRef}
