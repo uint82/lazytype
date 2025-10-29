@@ -154,6 +154,62 @@ const Lazytype = ({ onShowConfigChange }) => {
                 onChange={handleInputChange}
                 className="opacity-0 absolute"
                 autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === " ") {
+                    const words = input.split(" ");
+
+                    const currentWord = words[words.length - 1];
+
+                    if (currentWord.length === 0) {
+                      e.preventDefault();
+
+                      return;
+                    }
+                  }
+
+                  if (e.key === "Backspace") {
+                    const quoteWords = displayWords.trim().split(" ");
+
+                    const inputWords = input.trim().split(" ");
+
+                    const hasTrailingSpace = input.endsWith(" ");
+
+                    const currentWordIndex = hasTrailingSpace
+                      ? inputWords.length
+                      : inputWords.length - 1;
+
+                    const prevWordIndex = hasTrailingSpace
+                      ? currentWordIndex - 1
+                      : currentWordIndex - 1;
+
+                    if (prevWordIndex >= 0) {
+                      const prevInputWord = inputWords[prevWordIndex];
+
+                      const correctPrevWord = quoteWords[prevWordIndex];
+
+                      const isPrevWordPerfect =
+                        prevInputWord &&
+                        correctPrevWord &&
+                        prevInputWord.length === correctPrevWord.length &&
+                        prevInputWord
+
+                          .split("")
+
+                          .every((c, i) => c === correctPrevWord[i]);
+
+                      const caretAtWordBoundary =
+                        hasTrailingSpace ||
+                        input.slice(-1) === " " ||
+                        inputWords.length > quoteWords.length;
+
+                      if (isPrevWordPerfect && caretAtWordBoundary) {
+                        e.preventDefault();
+
+                        return;
+                      }
+                    }
+                  }
+                }}
               />
             </>
           ) : (
