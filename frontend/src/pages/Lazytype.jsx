@@ -140,11 +140,17 @@ const Lazytype = ({ onShowConfigChange }) => {
         >
           {quote ? (
             <>
-              <Caret
-                x={caretPosition.x}
-                y={caretPosition.y}
-                isTyping={isTyping}
-              />
+              <div
+                className={`transition-opacity duration-100 ${isTransitioning ? "opacity-0" : "opacity-100"
+                  }`}
+              >
+                <Caret
+                  key={`caret-${selectedMode}-${selectedLanguage}-${displayWords.substring(0, 20)}`}
+                  x={caretPosition.x}
+                  y={caretPosition.y}
+                  isTyping={isTyping}
+                />
+              </div>
               <WordGenerator
                 key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(
                   0,
