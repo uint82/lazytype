@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Navbar = ({ isTyping }) => {
   return (
     <nav className="w-full z-20 top-0 left-0">
-      <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div className="navbar-container py-3 flex items-center justify-between">
         <Link
           to="/"
           className="flex items-center space-x-3 hover:opacity-80 transition"

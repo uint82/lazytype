@@ -25,3 +25,91 @@
     display: none;
   }
 }
+
+.navbar-container,
+.footer-container,
+.typing-test-container {
+  max-width: 1536px;
+  margin: 0 auto;
+  padding-left: 0rem;
+  padding-right: 0rem;
+}
+
+/* 120% zoom */
+@media (min-resolution: 115dpi) and (max-resolution: 134dpi) {
+
+  .navbar-container,
+  .footer-container,
+  .typing-test-container {
+    max-width: 1280px;
+  }
+}
+
+/* 150% zoom */
+@media (min-resolution: 135dpi) and (max-resolution: 164dpi) {
+
+  .navbar-container,
+  .footer-container,
+  .typing-test-container {
+    max-width: 1024px;
+  }
+}
+
+@media (min-resolution: 155dpi) and (max-resolution: 174dpi) {
+
+  .navbar-container,
+  .footer-container,
+  .typing-test-container {
+    max-width: 1024px;
+  }
+}
+
+/* 200% zoom */
+@media (min-resolution: 165dpi) and (max-resolution: 214dpi) {
+
+  .navbar-container,
+  .footer-container,
+  .typing-test-container {
+    max-width: 768px;
+  }
+}
+
+/* 240% zoom */
+@media (min-resolution: 215dpi) {
+
+  .navbar-container,
+  .footer-container,
+  .typing-test-container {
+    max-width: 725px;
+  }
+}
+
+/* 300% zoom */
+@media (min-resolution: 270dpi) and (max-resolution: 359dpi) {
+
+  .navbar-container,
+  .footer-container,
+  .typing-test-container {
+    max-width: 600px;
+  }
+}
+
+/* 400% zoom */
+@media (min-resolution: 360dpi) and (max-resolution: 449dpi) {
+
+  .navbar-container,
+  .footer-container,
+  .typing-test-container {
+    max-width: 442px;
+  }
+}
+
+/* 500% zoom */
+@media (min-resolution: 450dpi) {
+
+  .navbar-container,
+  .footer-container,
+  .typing-test-container {
+    max-width: 347px;
+  }
+}

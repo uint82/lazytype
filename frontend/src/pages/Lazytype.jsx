@@ -127,12 +127,7 @@ const Lazytype = ({ onShowConfigChange }) => {
       </div>
 
       <div
-        style={{
-          "--content-max-width": "1736px",
-          "--breakout-size":
-            "calc((calc(var(--content-max-width) + 12rem) - var(--content-max-width)) / 2)",
-        }}
-        className="relative mx-auto text-gray-600 w-full max-w-[1736px] px-[var(--breakout-size)]"
+        className="typing-test-container relative mx-auto text-gray-600 w-full"
         onClick={() => inputRef.current?.focus()}
       >
         <div

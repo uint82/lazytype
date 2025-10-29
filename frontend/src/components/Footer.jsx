@@ -21,7 +21,7 @@ const Footer = ({ isTyping }) => {
         </span>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between text-[#ebdbb2] text-sm">
+      <div className="footer-container flex flex-col sm:flex-row items-center justify-between text-[#ebdbb2] text-sm">
         <div className="flex space-x-6 mb-3 sm:mb-0">
           <Link to="/contact" className="hover:text-[#fe8019] transition">
             Contact
