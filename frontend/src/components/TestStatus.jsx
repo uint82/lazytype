@@ -13,12 +13,11 @@ const TestStatus = ({
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
-
   const getTimeRemaining = () => {
-    const remaining = selectedDuration - timeElapsed;
+    const timeElapsedInSeconds = Math.floor(timeElapsed / 1000);
+    const remaining = selectedDuration - timeElapsedInSeconds;
     return Math.max(0, remaining);
   };
-
   return (
     <div className="text-[#C68C22] text-2xl font-medium mt-10">
       {selectedMode === "quotes" ? (
@@ -31,5 +30,4 @@ const TestStatus = ({
     </div>
   );
 };
-
 export default TestStatus;

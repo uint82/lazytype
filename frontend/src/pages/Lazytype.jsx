@@ -2,10 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import WordGenerator from "../components/WordGenerator";
 import TestConfig from "../components/TestConfig";
 import TestStatus from "../components/TestStatus";
+import TestResults from "../components/TestResults";
 import Caret from "../components/Carret";
 import useTypingTest from "../hooks/useTypingTest";
 
-const Lazytype = ({ onShowConfigChange }) => {
+const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const {
     quote,
     words,
@@ -19,16 +20,19 @@ const Lazytype = ({ onShowConfigChange }) => {
     setSelectedDuration,
     selectedLanguage,
     setSelectedLanguage,
+    actualQuoteGroup,
     handleInputChange,
     handleWordComplete,
     handleNewTest,
     isInfinityMode,
+    isTestComplete,
     wordsTyped,
     totalWords,
     showConfig,
     timeElapsed,
     showConfigOnMouseMove,
     setDeletedCount,
+    stats,
   } = useTypingTest();
 
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -45,6 +49,10 @@ const Lazytype = ({ onShowConfigChange }) => {
   useEffect(() => {
     if (onShowConfigChange) onShowConfigChange(showConfig);
   }, [showConfig, onShowConfigChange]);
+
+  useEffect(() => {
+    if (onTestCompleteChange) onTestCompleteChange(isTestComplete);
+  }, [isTestComplete, onTestCompleteChange]);
 
   useEffect(() => {
     const configChanged =
@@ -99,140 +107,146 @@ const Lazytype = ({ onShowConfigChange }) => {
         rel="stylesheet"
       />
 
-      <div className="relative h-32 w-full flex items-center justify-center">
-        <div
-          className={`absolute transition-all duration-100 ease-in-out ${showConfig ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
-        >
-          <TestConfig
-            selectedGroup={selectedGroup}
-            setSelectedGroup={setSelectedGroup}
-            selectedMode={selectedMode}
-            setSelectedMode={setSelectedMode}
-            selectedDuration={selectedDuration}
-            setSelectedDuration={setSelectedDuration}
-            selectedLanguage={selectedLanguage}
-            setSelectedLanguage={setSelectedLanguage}
-          />
-        </div>
+      <div
+        className={`relative w-full flex items-center justify-center ${!isTestComplete ? "h-32" : "h-0"}`}
+      >
+        {!isTestComplete && (
+          <>
+            <div
+              className={`absolute transition-all duration-100 ease-in-out ${showConfig ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
+            >
+              <TestConfig
+                selectedGroup={selectedGroup}
+                setSelectedGroup={setSelectedGroup}
+                selectedMode={selectedMode}
+                setSelectedMode={setSelectedMode}
+                selectedDuration={selectedDuration}
+                setSelectedDuration={setSelectedDuration}
+                selectedLanguage={selectedLanguage}
+                setSelectedLanguage={setSelectedLanguage}
+                onNewTest={handleNewTest}
+              />
+            </div>
 
-        <div
-          className={`absolute transition-all duration-100 ease-in-out ${!showConfig ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
-        >
-          <TestStatus
-            selectedMode={selectedMode}
-            selectedDuration={selectedDuration}
-            totalWords={totalWords}
-            wordsTyped={wordsTyped}
-            timeElapsed={timeElapsed}
-          />
-        </div>
+            <div
+              className={`absolute transition-all duration-100 ease-in-out ${!showConfig ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
+            >
+              <TestStatus
+                selectedMode={selectedMode}
+                selectedDuration={selectedDuration}
+                totalWords={totalWords}
+                wordsTyped={wordsTyped}
+                timeElapsed={timeElapsed}
+              />
+            </div>
+          </>
+        )}
       </div>
 
       <div
         className="typing-test-container relative mx-auto text-gray-600 w-full"
-        onClick={() => inputRef.current?.focus()}
+        onClick={() => !isTestComplete && inputRef.current?.focus()}
       >
-        <div
-          className={`transition-opacity duration-100 ${isTransitioning ? "opacity-0" : "opacity-100"
-            }`}
-        >
-          {quote ? (
-            <>
-              <div
-                className={`transition-opacity duration-100 ${isTransitioning ? "opacity-0" : "opacity-100"
-                  }`}
-              >
-                <Caret
-                  key={`caret-${selectedMode}-${selectedLanguage}-${displayWords.substring(0, 20)}`}
-                  x={caretPosition.x}
-                  y={caretPosition.y}
-                  isTyping={isTyping}
+        {isTestComplete ? (
+          <TestResults
+            stats={stats}
+            timeElapsed={timeElapsed}
+            selectedMode={selectedMode}
+            selectedDuration={selectedDuration}
+            selectedGroup={selectedGroup}
+            selectedLanguage={selectedLanguage}
+            actualQuoteGroup={actualQuoteGroup}
+            quote={quote}
+            onNextTest={handleNewTest}
+          />
+        ) : (
+          <div
+            className={`transition-opacity duration-100 ${isTransitioning ? "opacity-0" : "opacity-100"
+              }`}
+          >
+            {quote ? (
+              <>
+                <div
+                  className={`transition-opacity duration-100 ${isTransitioning ? "opacity-0" : "opacity-100"
+                    }`}
+                >
+                  <Caret
+                    key={`caret-${selectedMode}-${selectedLanguage}-${displayWords.substring(0, 20)}`}
+                    x={caretPosition.x}
+                    y={caretPosition.y}
+                    isTyping={isTyping}
+                  />
+                </div>
+                <WordGenerator
+                  key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(
+                    0,
+                    20,
+                  )}`}
+                  text={displayWords}
+                  input={input}
+                  onWordComplete={handleWordComplete}
+                  isInfinityMode={isInfinityMode}
+                  onDeletedCountChange={setDeletedCount}
+                  onCaretPositionChange={setCaretPosition}
+                  showConfig={showConfig}
                 />
-              </div>
-              <WordGenerator
-                key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(
-                  0,
-                  20,
-                )}`}
-                text={displayWords}
-                input={input}
-                onWordComplete={handleWordComplete}
-                isInfinityMode={isInfinityMode}
-                onDeletedCountChange={setDeletedCount}
-                onCaretPositionChange={setCaretPosition}
-                showConfig={showConfig}
-              />
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={handleInputChange}
-                className="opacity-0 absolute"
-                autoFocus
-                onKeyDown={(e) => {
-                  if (e.key === " ") {
-                    const words = input.split(" ");
-
-                    const currentWord = words[words.length - 1];
-
-                    if (currentWord.length === 0) {
-                      e.preventDefault();
-
-                      return;
-                    }
-                  }
-
-                  if (e.key === "Backspace") {
-                    const quoteWords = displayWords.trim().split(" ");
-
-                    const inputWords = input.trim().split(" ");
-
-                    const hasTrailingSpace = input.endsWith(" ");
-
-                    const currentWordIndex = hasTrailingSpace
-                      ? inputWords.length
-                      : inputWords.length - 1;
-
-                    const prevWordIndex = hasTrailingSpace
-                      ? currentWordIndex - 1
-                      : currentWordIndex - 1;
-
-                    if (prevWordIndex >= 0) {
-                      const prevInputWord = inputWords[prevWordIndex];
-
-                      const correctPrevWord = quoteWords[prevWordIndex];
-
-                      const isPrevWordPerfect =
-                        prevInputWord &&
-                        correctPrevWord &&
-                        prevInputWord.length === correctPrevWord.length &&
-                        prevInputWord
-
-                          .split("")
-
-                          .every((c, i) => c === correctPrevWord[i]);
-
-                      const caretAtWordBoundary =
-                        hasTrailingSpace ||
-                        input.slice(-1) === " " ||
-                        inputWords.length > quoteWords.length;
-
-                      if (isPrevWordPerfect && caretAtWordBoundary) {
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={input}
+                  onChange={handleInputChange}
+                  className="opacity-0 absolute"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === " ") {
+                      const words = input.split(" ");
+                      const currentWord = words[words.length - 1];
+                      if (currentWord.length === 0) {
                         e.preventDefault();
-
                         return;
                       }
                     }
-                  }
-                }}
-              />
-            </>
-          ) : (
-            <p className="text-[#ebdbb2]">Loading test...</p>
-          )}
-        </div>
+
+                    if (e.key === "Backspace") {
+                      const quoteWords = displayWords.trim().split(" ");
+                      const inputWords = input.trim().split(" ");
+                      const hasTrailingSpace = input.endsWith(" ");
+                      const currentWordIndex = hasTrailingSpace
+                        ? inputWords.length
+                        : inputWords.length - 1;
+                      const prevWordIndex = hasTrailingSpace
+                        ? currentWordIndex - 1
+                        : currentWordIndex - 1;
+                      if (prevWordIndex >= 0) {
+                        const prevInputWord = inputWords[prevWordIndex];
+                        const correctPrevWord = quoteWords[prevWordIndex];
+                        const isPrevWordPerfect =
+                          prevInputWord &&
+                          correctPrevWord &&
+                          prevInputWord.length === correctPrevWord.length &&
+                          prevInputWord
+                            .split("")
+                            .every((c, i) => c === correctPrevWord[i]);
+                        const caretAtWordBoundary =
+                          hasTrailingSpace ||
+                          input.slice(-1) === " " ||
+                          inputWords.length > quoteWords.length;
+                        if (isPrevWordPerfect && caretAtWordBoundary) {
+                          e.preventDefault();
+                          return;
+                        }
+                      }
+                    }
+                  }}
+                />
+              </>
+            ) : (
+              <p className="text-[#ebdbb2]">Loading test...</p>
+            )}
+          </div>
+        )}
       </div>
 
       <button

@@ -2,11 +2,14 @@ import { useState, useEffect, useRef } from "react";
 
 export default function useTestState(selectedMode, selectedDuration, words) {
   const [isTestActive, setIsTestActive] = useState(false);
+  const [isTestComplete, setIsTestComplete] = useState(false);
   const [wordsTyped, setWordsTyped] = useState(0);
   const [totalWords, setTotalWords] = useState(0);
   const [showConfig, setShowConfig] = useState(true);
   const [timeElapsed, setTimeElapsed] = useState(0);
-  const timerIntervalRef = useRef(null);
+
+  const startTimestampRef = useRef(null);
+  const rafRef = useRef(null);
 
   useEffect(() => {
     if (words) {
@@ -19,72 +22,66 @@ export default function useTestState(selectedMode, selectedDuration, words) {
   }, [words]);
 
   useEffect(() => {
-    setIsTestActive(false);
-    setWordsTyped(0);
-    setShowConfig(true);
-    setTimeElapsed(0);
-    if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-      timerIntervalRef.current = null;
-    }
-  }, [selectedMode, selectedDuration]);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
 
-  useEffect(() => {
-    if (isTestActive && !timerIntervalRef.current) {
-      timerIntervalRef.current = setInterval(() => {
-        setTimeElapsed((prev) => prev + 1);
-      }, 1000);
+  const tick = () => {
+    if (!startTimestampRef.current) return;
+    const now = performance.now();
+    const elapsed = now - startTimestampRef.current; // in ms
+    setTimeElapsed(elapsed);
+
+    if (selectedMode === "time" && elapsed >= selectedDuration * 1000) {
+      completeTest();
+      return;
     }
 
-    return () => {
-      if (timerIntervalRef.current) {
-        clearInterval(timerIntervalRef.current);
-      }
-    };
-  }, [isTestActive]);
+    rafRef.current = requestAnimationFrame(tick);
+  };
 
   const startTest = () => {
     if (!isTestActive) {
       setIsTestActive(true);
+      setIsTestComplete(false);
       setShowConfig(false);
+
+      startTimestampRef.current = performance.now();
+      rafRef.current = requestAnimationFrame(tick);
     }
   };
 
-  const showConfigOnMouseMove = () => {
-    if (isTestActive) {
-      setShowConfig(true);
-    }
-  };
-
-  const hideConfig = () => {
-    if (isTestActive) {
-      setShowConfig(false);
-    }
-  };
-
-  const incrementWordsTyped = () => {
-    setWordsTyped((prev) => prev + 1);
+  const completeTest = () => {
+    setIsTestActive(false);
+    setIsTestComplete(true);
+    cancelAnimationFrame(rafRef.current);
   };
 
   const resetTest = () => {
     setIsTestActive(false);
+    setIsTestComplete(false);
     setWordsTyped(0);
     setShowConfig(true);
     setTimeElapsed(0);
-    if (timerIntervalRef.current) {
-      clearInterval(timerIntervalRef.current);
-      timerIntervalRef.current = null;
-    }
+    startTimestampRef.current = null;
+    cancelAnimationFrame(rafRef.current);
   };
+
+  const incrementWordsTyped = () => setWordsTyped((prev) => prev + 1);
+  const showConfigOnMouseMove = () =>
+    isTestActive && !isTestComplete && setShowConfig(true);
+  const hideConfig = () =>
+    isTestActive && !isTestComplete && setShowConfig(false);
 
   return {
     isTestActive,
+    isTestComplete,
     wordsTyped,
     totalWords,
     showConfig,
     timeElapsed,
     startTest,
     incrementWordsTyped,
+    completeTest,
     resetTest,
     showConfigOnMouseMove,
     hideConfig,

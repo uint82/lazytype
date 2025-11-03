@@ -30,7 +30,7 @@ export default function useTimeMode(
 
   const handleWordComplete = () => {
     if (selectedMode === "time") {
-      const additionalWords = getRandomWords(10, selectedLanguage);
+      const additionalWords = getRandomWords(1, selectedLanguage);
       setWords((prevWords) => prevWords + " " + additionalWords);
     }
   };

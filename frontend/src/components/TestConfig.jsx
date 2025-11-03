@@ -12,6 +12,7 @@ const TestConfig = ({
   setSelectedDuration,
   selectedLanguage,
   setSelectedLanguage,
+  onNewTest,
 }) => {
   const [groups, setGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,6 +41,9 @@ const TestConfig = ({
   const handleSelectTime = (duration) => {
     setSelectedMode("time");
     setSelectedDuration(duration);
+    if (onNewTest) {
+      onNewTest();
+    }
   };
 
   return (

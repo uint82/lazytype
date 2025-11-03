@@ -9,7 +9,6 @@ const languageData = {
 export function getRandomQuote(groupIndex = null, language = "english") {
   const data = languageData[language] || englishData;
   let selectedGroupIndex = groupIndex;
-
   if (groupIndex === null) {
     selectedGroupIndex = Math.floor(Math.random() * data.groups.length);
   }
@@ -26,7 +25,19 @@ export function getRandomQuote(groupIndex = null, language = "english") {
   if (filtered.length === 0) return null;
 
   const randomIndex = Math.floor(Math.random() * filtered.length);
-  return filtered[randomIndex];
+  const quote = filtered[randomIndex];
+
+  let actualGroup = groupIndex;
+
+  // if "all" was selected (groupIndex null), return which group was actually used
+  // the UI expects: null=all, 0=short, 1=medium, 2=long, 3=very long
+  // but data.groups is: 0=short, 1=medium, 2=long, 3=very long
+  // so we just return selectedGroupIndex as-is since it matches the UI indices
+  if (groupIndex === null) {
+    actualGroup = selectedGroupIndex;
+  }
+
+  return { quote, actualGroup };
 }
 
 export function getQuoteGroups(language = "english") {
@@ -37,6 +48,5 @@ export function getQuoteGroups(language = "english") {
     label: labels[index + 1] || `Group ${index + 1}`,
     range,
   }));
-
   return [{ index: null, label: labels[0], range: null }, ...groups];
 }

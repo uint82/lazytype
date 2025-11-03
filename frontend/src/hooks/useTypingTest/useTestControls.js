@@ -10,19 +10,18 @@ export default function useTestControls(
   inputRef,
   deletedCount = 0,
   selectedLanguage = "english",
+  setActualQuoteGroup,
 ) {
   const handleInputChange = (e, words, prevInput = "") => {
     const newValue = e.target.value;
     const inputWords = newValue.split(" ");
     const currentWordIndex = inputWords.length - 1;
     const currentWord = inputWords[currentWordIndex] || "";
-
     const wordsArray =
       typeof words === "string"
         ? words.split(" ")
         : words.map((w) => (typeof w === "string" ? w : w.word));
     const correctWord = wordsArray[currentWordIndex] || "";
-
     const isDeleting = newValue.length < prevInput.length;
 
     if (!isDeleting && currentWord.length > correctWord.length) {
@@ -33,7 +32,6 @@ export default function useTestControls(
 
       if (activeWordEl) {
         const currentLineTop = activeWordEl.offsetTop;
-
         const measureSpan = document.createElement("span");
         const computedStyle = window.getComputedStyle(
           activeWordEl.querySelector("span") || activeWordEl,
@@ -43,11 +41,8 @@ export default function useTestControls(
         measureSpan.className = "text-red-500";
         measureSpan.textContent = currentWord[currentWord.length - 1] || "M";
         measureSpan.style.visibility = "hidden";
-
         activeWordEl.appendChild(measureSpan);
-
         const newLineTop = activeWordEl.offsetTop;
-
         activeWordEl.removeChild(measureSpan);
 
         if (newLineTop !== currentLineTop) {
@@ -65,13 +60,20 @@ export default function useTestControls(
   };
 
   const handleNewTest = () => {
-    const q =
-      selectedMode === "quotes"
-        ? getRandomQuote(selectedGroup, selectedLanguage)
-        : { text: getRandomWords(50, selectedLanguage) };
+    if (selectedMode === "quotes") {
+      const { quote, actualGroup } = getRandomQuote(
+        selectedGroup,
+        selectedLanguage,
+      );
+      setQuote(quote);
+      setWords(quote.text);
+      setActualQuoteGroup(actualGroup);
+    } else {
+      const q = { text: getRandomWords(50, selectedLanguage) };
+      setQuote(q);
+      setWords(q.text);
+    }
 
-    setQuote(q);
-    setWords(q.text);
     setInput("");
     inputRef.current?.focus();
   };

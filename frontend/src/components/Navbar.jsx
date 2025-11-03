@@ -10,12 +10,12 @@ const Navbar = ({ isTyping }) => {
           className="flex items-center space-x-3 hover:opacity-80 transition"
         >
           <Keyboard
-            className={`w-10 h-10 transition-colors ${isTyping ? "text-[#635851]" : "text-[#D8AB19]"}`}
+            className={`w-10 h-15 transition-colors ${isTyping ? "text-[#635851]" : "text-[#D8AB19]"}`}
           />
           <span
-            className={`font-semibold text-2xl hidden sm:inline custom-hide-text transition-colors ${isTyping ? "text-[#635851]" : "text-[#D6C7A3]"}`}
+            className={`font-semibold text-3xl hidden sm:inline custom-hide-text transition-colors ${isTyping ? "text-[#635851]" : "text-[#D6C7A3]"}`}
           >
-            LazyType
+            lazytype
           </span>
         </Link>
 

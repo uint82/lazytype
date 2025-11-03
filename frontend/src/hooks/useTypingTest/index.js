@@ -4,6 +4,7 @@ import useTimeMode from "./useTimeMode";
 import useTestControls from "./useTestControls";
 import useInputRef from "./useInputRef";
 import useTestState from "../useTestState";
+import useTypingStats from "../useTypingStats";
 
 export default function useTypingTest() {
   const [quote, setQuote] = useState(null);
@@ -14,20 +15,26 @@ export default function useTypingTest() {
   const [selectedLanguage, setSelectedLanguage] = useState("english");
   const [words, setWords] = useState("");
   const [deletedCount, setDeletedCount] = useState(0);
+  const [actualQuoteGroup, setActualQuoteGroup] = useState(null);
+
   const inputRef = useInputRef();
 
   const {
     isTestActive,
+    isTestComplete,
     wordsTyped,
     totalWords,
     showConfig,
     timeElapsed,
     startTest,
     incrementWordsTyped,
+    completeTest,
     resetTest,
     showConfigOnMouseMove,
     hideConfig,
   } = useTestState(selectedMode, selectedDuration, words);
+
+  const stats = useTypingStats(input, words, timeElapsed);
 
   useQuoteMode(
     selectedMode,
@@ -37,6 +44,7 @@ export default function useTypingTest() {
     setInput,
     inputRef,
     selectedLanguage,
+    setActualQuoteGroup,
   );
 
   const { handleWordComplete: originalHandleWordComplete } = useTimeMode(
@@ -61,21 +69,38 @@ export default function useTypingTest() {
     inputRef,
     deletedCount,
     selectedLanguage,
+    setActualQuoteGroup,
   );
 
   const handleInputChange = (e) => {
     const value = e.target.value;
+
+    if (isTestComplete) return;
+
     if (value.length > 0 && !isTestActive) {
       startTest();
     } else if (value.length > 0 && isTestActive) {
       hideConfig();
     }
+
     originalHandleInputChange(e, words, input);
   };
 
   const handleWordComplete = () => {
     incrementWordsTyped();
     originalHandleWordComplete();
+
+    if (selectedMode === "quotes") {
+      const inputWords = input
+        .trim()
+        .split(" ")
+        .filter((w) => w.length > 0);
+      const targetWords = words.trim().split(" ");
+
+      if (inputWords.length === targetWords.length) {
+        setTimeout(() => completeTest(), 10);
+      }
+    }
   };
 
   const handleNewTest = () => {
@@ -102,6 +127,7 @@ export default function useTypingTest() {
     handleNewTest,
     isInfinityMode: selectedMode === "time",
     isTestActive,
+    isTestComplete,
     wordsTyped,
     totalWords,
     showConfig,
@@ -109,5 +135,7 @@ export default function useTypingTest() {
     showConfigOnMouseMove,
     hideConfig,
     setDeletedCount,
+    stats,
+    actualQuoteGroup,
   };
 }

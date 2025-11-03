@@ -28,7 +28,8 @@
 
 .navbar-container,
 .footer-container,
-.typing-test-container {
+.typing-test-container,
+.test-result-container {
   max-width: 1536px;
   margin: 0 auto;
   padding-left: 0rem;
@@ -40,7 +41,8 @@
 
   .navbar-container,
   .footer-container,
-  .typing-test-container {
+  .typing-test-container,
+  .test-result-container {
     max-width: 1280px;
   }
 }
@@ -50,7 +52,8 @@
 
   .navbar-container,
   .footer-container,
-  .typing-test-container {
+  .typing-test-container,
+  .test-result-container {
     max-width: 1024px;
   }
 }
@@ -59,7 +62,8 @@
 
   .navbar-container,
   .footer-container,
-  .typing-test-container {
+  .typing-test-container,
+  .test-result-container {
     max-width: 1024px;
   }
 }
@@ -69,7 +73,8 @@
 
   .navbar-container,
   .footer-container,
-  .typing-test-container {
+  .typing-test-container,
+  .test-result-container {
     max-width: 768px;
   }
 }
@@ -79,7 +84,8 @@
 
   .navbar-container,
   .footer-container,
-  .typing-test-container {
+  .typing-test-container,
+  .test-result-container {
     max-width: 725px;
   }
 }
@@ -89,7 +95,8 @@
 
   .navbar-container,
   .footer-container,
-  .typing-test-container {
+  .typing-test-container,
+  .test-result-container {
     max-width: 600px;
   }
 }
@@ -99,7 +106,8 @@
 
   .navbar-container,
   .footer-container,
-  .typing-test-container {
+  .typing-test-container,
+  .test-result-container {
     max-width: 442px;
   }
 }
@@ -109,7 +117,8 @@
 
   .navbar-container,
   .footer-container,
-  .typing-test-container {
+  .typing-test-container,
+  .test-result-container {
     max-width: 347px;
   }
 }

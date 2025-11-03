@@ -9,13 +9,18 @@ export default function useQuoteMode(
   setInput,
   inputRef,
   selectedLanguage = "english",
+  setActualQuoteGroup,
 ) {
   useEffect(() => {
     if (selectedMode === "quotes") {
-      const q = getRandomQuote(selectedGroup, selectedLanguage);
-      setQuote(q);
-      setWords(q.text);
+      const { quote, actualGroup } = getRandomQuote(
+        selectedGroup,
+        selectedLanguage,
+      );
+      setQuote(quote);
+      setWords(quote.text);
       setInput("");
+      setActualQuoteGroup(actualGroup);
       inputRef.current?.focus();
     }
   }, [
@@ -26,5 +31,6 @@ export default function useQuoteMode(
     setWords,
     setInput,
     inputRef,
+    setActualQuoteGroup,
   ]);
 }
