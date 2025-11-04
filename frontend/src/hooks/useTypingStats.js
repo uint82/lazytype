@@ -163,7 +163,9 @@ export default function useTypingStats(
       const targetWord = targetWords[i] || "";
       const isLast = i === inputWords.length - 1;
       const lastWordFinished = input.endsWith(" ");
-      if (isLast && !lastWordFinished) return;
+
+      const isAtFinalWordCount = inputWords.length === targetWords.length;
+      if (isLast && !lastWordFinished && !isAtFinalWordCount) return;
 
       if (typedWord === targetWord) correctWords++;
       else if (typedWord.length > 0 && targetWord.length > 0) incorrectWords++;
