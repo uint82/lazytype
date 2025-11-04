@@ -16,6 +16,7 @@ export default function useTypingTest() {
   const [words, setWords] = useState("");
   const [deletedCount, setDeletedCount] = useState(0);
   const [actualQuoteGroup, setActualQuoteGroup] = useState(null);
+  const [testId, setTestId] = useState(0);
 
   const inputRef = useInputRef();
 
@@ -107,6 +108,7 @@ export default function useTypingTest() {
     resetTest();
     setDeletedCount(0);
     originalHandleNewTest();
+    setTestId((prev) => prev + 1);
   };
 
   return {
@@ -131,6 +133,7 @@ export default function useTypingTest() {
     wordsTyped,
     totalWords,
     showConfig,
+    testId,
     timeElapsed,
     showConfigOnMouseMove,
     hideConfig,

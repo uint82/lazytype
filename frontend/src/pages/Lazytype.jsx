@@ -29,6 +29,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     wordsTyped,
     totalWords,
     showConfig,
+    testId,
     timeElapsed,
     showConfigOnMouseMove,
     setDeletedCount,
@@ -173,7 +174,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                     }`}
                 >
                   <Caret
-                    key={`caret-${selectedMode}-${selectedLanguage}-${displayWords.substring(0, 20)}`}
+                    key={`caret-${testId}-&{selectedMode}-${selectedLanguage}`}
                     x={caretPosition.x}
                     y={caretPosition.y}
                     isTyping={isTyping}
