@@ -55,7 +55,7 @@ const TestConfig = ({
               <button
                 onClick={() => setSelectedMode("time")}
                 className={`px-4 py-2 rounded font-medium transition-all ${selectedMode === "time"
-                    ? "bg-[#D8AB19] text-[#282828]"
+                    ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945]"
                   }`}
               >
@@ -64,7 +64,7 @@ const TestConfig = ({
               <button
                 onClick={() => setSelectedMode("quotes")}
                 className={`px-4 py-2 rounded font-medium transition-all ${selectedMode === "quotes"
-                    ? "bg-[#D8AB19] text-[#282828]"
+                    ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945]"
                   }`}
               >
@@ -81,7 +81,7 @@ const TestConfig = ({
                     key={duration}
                     onClick={() => handleSelectTime(duration)}
                     className={`px-3 py-1 rounded transition-all text-sm ${selectedMode === "time" && selectedDuration === duration
-                        ? "bg-[#D8AB19] text-[#282828]"
+                        ? "bg-[#83A598] text-[#282828]"
                         : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
                       }`}
                   >
@@ -96,7 +96,7 @@ const TestConfig = ({
                     key={group.index ?? "all"}
                     onClick={() => handleSelectGroup(group.index)}
                     className={`px-3 py-1 rounded transition-all text-sm ${selectedMode === "quotes" && selectedGroup === group.index
-                        ? "bg-[#D8AB19] text-[#282828]"
+                        ? "bg-[#83A598] text-[#282828]"
                         : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
                       }`}
                   >
