@@ -466,9 +466,17 @@ const TestResults = ({
 
             <div className="text-left">
               <div className="text-sm text-gray-500 mb-1">Time</div>
-              <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
-                {formatTime(timeElapsed)}
-              </div>
+              <TooltipHover
+                text={
+                  isQuoteMode
+                    ? `${(timeElapsed / 1000).toFixed(2)}s`
+                    : `${timeElapsedInSeconds}s`
+                }
+              >
+                <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
+                  {formatTime(timeElapsed)}
+                </div>
+              </TooltipHover>
             </div>
 
             <div className="text-left">
