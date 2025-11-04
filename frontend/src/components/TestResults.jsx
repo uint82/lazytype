@@ -1,3 +1,4 @@
+import { useState } from "react";
 import TooltipHover from "./TooltipHover";
 
 import {
@@ -20,6 +21,20 @@ const TestResults = ({
   actualQuoteGroup,
   quote,
 }) => {
+  const [visibleLines, setVisibleLines] = useState({
+    wpm: true,
+    rawWpm: true,
+    burst: true,
+    errors: true,
+  });
+
+  const toggleLine = (lineKey) => {
+    setVisibleLines((prev) => ({
+      ...prev,
+      [lineKey]: !prev[lineKey],
+    }));
+  };
+
   const timeElapsedInSeconds = Math.floor(timeElapsed / 1000);
 
   const formatTime = (milliseconds) => {
@@ -189,24 +204,30 @@ const TestResults = ({
           </div>
 
           <div className="flex flex-col gap-1">
-            <div className="flex justify-between">
-              <span className="text-[#fb4934]">Errors</span>
-              <span className="text-[#fb4934]">{data.errorCount}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#b8bb26] font-semibold">WPM</span>
-              <span className="text-[#b8bb26] font-semibold">{data.wpm}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-[#FF9D00]">Raw WPM</span>
-              <span className="text-[#FF9D00]">{data.rawWpm}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-[#625750]">Burst</span>
-              <span className="text-[#625750]">{data.burst}</span>
-            </div>
+            {visibleLines.errors && (
+              <div className="flex justify-between">
+                <span className="text-[#fb4934]">Errors</span>
+                <span className="text-[#fb4934]">{data.errorCount}</span>
+              </div>
+            )}
+            {visibleLines.wpm && (
+              <div className="flex justify-between">
+                <span className="text-[#b8bb26] font-semibold">WPM</span>
+                <span className="text-[#b8bb26] font-semibold">{data.wpm}</span>
+              </div>
+            )}
+            {visibleLines.rawWpm && (
+              <div className="flex justify-between">
+                <span className="text-[#FF9D00]">Raw WPM</span>
+                <span className="text-[#FF9D00]">{data.rawWpm}</span>
+              </div>
+            )}
+            {visibleLines.burst && (
+              <div className="flex justify-between">
+                <span className="text-[#625750]">Burst</span>
+                <span className="text-[#625750]">{data.burst}</span>
+              </div>
+            )}
           </div>
         </div>
       );
@@ -315,65 +336,92 @@ const TestResults = ({
 
                   <Tooltip content={<CustomTooltip />} />
 
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="burst"
-                    stroke="#625750"
-                    strokeWidth={3}
-                    name="Burst"
-                    dot={false}
-                  />
+                  {visibleLines.burst && (
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="burst"
+                      stroke="#625750"
+                      strokeWidth={3}
+                      name="Burst"
+                      dot={false}
+                      isAnimationActive={false}
+                    />
+                  )}
 
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="rawWpm"
-                    stroke="#FF9D00"
-                    strokeWidth={2}
-                    strokeDasharray="8 8"
-                    name="Raw WPM"
-                    dot={false}
-                  />
+                  {visibleLines.rawWpm && (
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="rawWpm"
+                      stroke="#FF9D00"
+                      strokeWidth={2}
+                      strokeDasharray="8 8"
+                      name="Raw WPM"
+                      dot={false}
+                      isAnimationActive={false}
+                    />
+                  )}
 
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="wpm"
-                    stroke="#b8bb26"
-                    strokeWidth={2}
-                    name="WPM"
-                    dot={false}
-                  />
+                  {visibleLines.wpm && (
+                    <Line
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="wpm"
+                      stroke="#b8bb26"
+                      strokeWidth={2}
+                      name="WPM"
+                      dot={false}
+                      isAnimationActive={false}
+                    />
+                  )}
 
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="errorCount"
-                    stroke="transparent"
-                    dot={<CustomDot />}
-                    isAnimationActive={false}
-                  />
+                  {visibleLines.errors && (
+                    <Line
+                      yAxisId="right"
+                      type="monotone"
+                      dataKey="errorCount"
+                      stroke="transparent"
+                      dot={<CustomDot />}
+                      isAnimationActive={false}
+                    />
+                  )}
                 </LineChart>
               </ResponsiveContainer>
 
               <div className="flex items-center justify-center gap-4 mt-2 text-xs text-gray-500">
-                <div className="flex items-center gap-2">
+                <button
+                  onClick={() => toggleLine("wpm")}
+                  className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.wpm ? "opacity-40 line-through" : ""
+                    }`}
+                >
                   <div className="w-5 h-0.5 bg-[#b8bb26]" />
                   <span>WPM</span>
-                </div>
+                </button>
 
-                <div className="flex items-center gap-2">
+                <button
+                  onClick={() => toggleLine("rawWpm")}
+                  className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.rawWpm ? "opacity-40 line-through" : ""
+                    }`}
+                >
                   <div className="w-5 h-[2px] bg-[linear-gradient(90deg,#fabd2f_0%,#fabd2f_40%,transparent_40%,transparent_60%,#fabd2f_60%,#fabd2f_100%)]" />
                   <span>Raw WPM</span>
-                </div>
+                </button>
 
-                <div className="flex items-center gap-2">
+                <button
+                  onClick={() => toggleLine("burst")}
+                  className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.burst ? "opacity-40 line-through" : ""
+                    }`}
+                >
                   <div className="w-5 h-0.5 bg-[#625750]" />
                   <span>Burst</span>
-                </div>
+                </button>
 
-                <div className="flex items-center gap-2">
+                <button
+                  onClick={() => toggleLine("errors")}
+                  className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.errors ? "opacity-40 line-through" : ""
+                    }`}
+                >
                   <svg width="12" height="12" viewBox="0 0 16 16">
                     <line
                       x1="3"
@@ -393,7 +441,7 @@ const TestResults = ({
                     />
                   </svg>
                   <span>Errors</span>
-                </div>
+                </button>
               </div>
 
               {isQuoteMode && quote?.source && (
