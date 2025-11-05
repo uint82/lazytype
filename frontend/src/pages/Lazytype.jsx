@@ -24,6 +24,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     handleInputChange,
     handleWordComplete,
     handleNewTest,
+    handleRepeatTest,
     isInfinityMode,
     isTestComplete,
     wordsTyped,
@@ -161,6 +162,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
             actualQuoteGroup={actualQuoteGroup}
             quote={quote}
             onNextTest={handleNewTest}
+            onRepeatTest={handleRepeatTest}
           />
         ) : (
           <div
@@ -250,12 +252,14 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
         )}
       </div>
 
-      <button
-        onClick={handleNewTest}
-        className="mt-8 mb-8 px-4 py-2 rounded text-4xl text-gray-600 cursor-pointer hover:text-white transition"
-      >
-        ⟳
-      </button>
+      {!isTestComplete && (
+        <button
+          onClick={handleNewTest}
+          className="mt-8 mb-8 px-4 py-2 rounded text-4xl text-gray-600 cursor-pointer hover:text-white transition"
+        >
+          ⟳
+        </button>
+      )}
     </div>
   );
 };

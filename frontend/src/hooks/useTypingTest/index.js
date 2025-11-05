@@ -61,6 +61,7 @@ export default function useTypingTest() {
   const {
     handleInputChange: originalHandleInputChange,
     handleNewTest: originalHandleNewTest,
+    handleRepeatTest,
   } = useTestControls(
     selectedMode,
     selectedGroup,
@@ -71,6 +72,7 @@ export default function useTypingTest() {
     deletedCount,
     selectedLanguage,
     setActualQuoteGroup,
+    resetTest,
   );
 
   const handleInputChange = (e) => {
@@ -140,5 +142,6 @@ export default function useTypingTest() {
     setDeletedCount,
     stats,
     actualQuoteGroup,
+    handleRepeatTest,
   };
 }

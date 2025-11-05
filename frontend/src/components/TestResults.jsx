@@ -1,6 +1,5 @@
 import { useState } from "react";
 import TooltipHover from "./TooltipHover";
-
 import {
   LineChart,
   Line,
@@ -20,6 +19,8 @@ const TestResults = ({
   selectedLanguage,
   actualQuoteGroup,
   quote,
+  onNextTest,
+  onRepeatTest,
 }) => {
   const [visibleLines, setVisibleLines] = useState({
     wpm: true,
@@ -48,7 +49,6 @@ const TestResults = ({
     if (selectedMode === "quote" || selectedMode === "quotes") {
       const groupNames = ["short", "medium", "long", "very long"];
       let groupName;
-
       if (
         selectedGroup === null &&
         actualQuoteGroup !== null &&
@@ -60,12 +60,10 @@ const TestResults = ({
       } else {
         groupName = "all";
       }
-
       return `quote ${groupName} ${selectedLanguage}`;
     } else if (selectedMode === "time") {
       return `time ${selectedDuration} ${selectedLanguage}`;
     }
-
     return `${selectedMode} ${selectedLanguage}`;
   };
 
@@ -110,11 +108,9 @@ const TestResults = ({
   const generateXAxisTicks = () => {
     if (!isQuoteMode) {
       const duration = timeElapsedInSeconds;
-
       if (duration <= 30) {
         return Array.from({ length: duration }, (_, i) => i + 1);
       }
-
       if (duration <= 60) {
         const ticks = [];
         for (let i = 1; i <= duration; i += 3) {
@@ -125,7 +121,6 @@ const TestResults = ({
         }
         return ticks;
       }
-
       if (duration <= 120) {
         const ticks = [];
         for (let i = 1; i <= duration; i += 5) {
@@ -136,7 +131,6 @@ const TestResults = ({
         }
         return ticks;
       }
-
       const interval = duration <= 240 ? 10 : 15;
       const ticks = [];
       for (let i = interval; i <= duration; i += interval) {
@@ -147,7 +141,6 @@ const TestResults = ({
       }
       return ticks;
     }
-
     const ticks = [];
     const exactFinalSeconds = parseFloat((timeElapsed / 1000).toFixed(2));
     for (let i = 1; i <= Math.floor(exactFinalSeconds); i++) ticks.push(i);
@@ -185,7 +178,6 @@ const TestResults = ({
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
-
       return (
         <div
           className="backdrop-blur-md border border-[#3c3836]/80 bg-[#1d2021]/90 rounded-xl shadow-lg p-3 text-xs text-[#ebdbb2] space-y-1.5"
@@ -202,7 +194,6 @@ const TestResults = ({
                 : `${data.time}`}
             </span>
           </div>
-
           <div className="flex flex-col gap-1">
             {visibleLines.errors && (
               <div className="flex justify-between">
@@ -250,7 +241,6 @@ const TestResults = ({
                   </div>
                 </TooltipHover>
               </div>
-
               <div className="text-left">
                 <div className="text-sm text-gray-500 mb-1">Accuracy</div>
                 <TooltipHover
@@ -271,7 +261,6 @@ const TestResults = ({
                   </div>
                 </TooltipHover>
               </div>
-
               <div className="text-left">
                 <div className="text-sm text-gray-500 mb-1">Test Type</div>
                 <div className="text-lg font-medium text-gray-400">
@@ -279,16 +268,15 @@ const TestResults = ({
                 </div>
               </div>
             </div>
-
             {/* graph */}
-            <div className="flex-1 bg-[#282828] p-4 rounded-lg" tabIndex={-1}>
+            <div className="flex-1 bg-[#282828] p-4 rounded-lg">
               <ResponsiveContainer width="100%" height={200}>
                 <LineChart
                   data={transformedData}
                   margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
+                  tabIndex={-1}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#3c3836" />
-
                   <XAxis
                     dataKey={getXAxisKey()}
                     stroke="#928374"
@@ -305,7 +293,6 @@ const TestResults = ({
                       v % 1 === 0 ? `${v}` : `${v.toFixed(2)}`
                     }
                   />
-
                   <YAxis
                     yAxisId="left"
                     stroke="#928374"
@@ -318,7 +305,6 @@ const TestResults = ({
                       fontSize: 12,
                     }}
                   />
-
                   <YAxis
                     yAxisId="right"
                     orientation="right"
@@ -333,9 +319,7 @@ const TestResults = ({
                       fontSize: 12,
                     }}
                   />
-
                   <Tooltip content={<CustomTooltip />} />
-
                   {visibleLines.burst && (
                     <Line
                       yAxisId="left"
@@ -348,7 +332,6 @@ const TestResults = ({
                       isAnimationActive={false}
                     />
                   )}
-
                   {visibleLines.rawWpm && (
                     <Line
                       yAxisId="left"
@@ -362,7 +345,6 @@ const TestResults = ({
                       isAnimationActive={false}
                     />
                   )}
-
                   {visibleLines.wpm && (
                     <Line
                       yAxisId="left"
@@ -375,7 +357,6 @@ const TestResults = ({
                       isAnimationActive={false}
                     />
                   )}
-
                   {visibleLines.errors && (
                     <Line
                       yAxisId="right"
@@ -388,37 +369,37 @@ const TestResults = ({
                   )}
                 </LineChart>
               </ResponsiveContainer>
-
               <div className="flex items-center justify-center gap-4 mt-2 text-xs text-gray-500">
                 <button
                   onClick={() => toggleLine("wpm")}
+                  tabIndex={-1}
                   className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.wpm ? "opacity-40 line-through" : ""
                     }`}
                 >
                   <div className="w-5 h-0.5 bg-[#b8bb26]" />
                   <span>WPM</span>
                 </button>
-
                 <button
                   onClick={() => toggleLine("rawWpm")}
+                  tabIndex={-1}
                   className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.rawWpm ? "opacity-40 line-through" : ""
                     }`}
                 >
                   <div className="w-5 h-[2px] bg-[linear-gradient(90deg,#fabd2f_0%,#fabd2f_40%,transparent_40%,transparent_60%,#fabd2f_60%,#fabd2f_100%)]" />
                   <span>Raw WPM</span>
                 </button>
-
                 <button
                   onClick={() => toggleLine("burst")}
+                  tabIndex={-1}
                   className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.burst ? "opacity-40 line-through" : ""
                     }`}
                 >
                   <div className="w-5 h-0.5 bg-[#625750]" />
                   <span>Burst</span>
                 </button>
-
                 <button
                   onClick={() => toggleLine("errors")}
+                  tabIndex={-1}
                   className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.errors ? "opacity-40 line-through" : ""
                     }`}
                 >
@@ -443,7 +424,6 @@ const TestResults = ({
                   <span>Errors</span>
                 </button>
               </div>
-
               {isQuoteMode && quote?.source && (
                 <div className="mt-3 pt-3 border-t border-[#3c3836] text-center">
                   <span className="text-sm text-gray-500 italic">
@@ -463,7 +443,6 @@ const TestResults = ({
                 </div>
               </TooltipHover>
             </div>
-
             <div className="text-left">
               <div className="text-sm text-gray-500 mb-1">Time</div>
               <TooltipHover
@@ -478,28 +457,24 @@ const TestResults = ({
                 </div>
               </TooltipHover>
             </div>
-
             <div className="text-left">
               <div className="text-sm text-gray-500 mb-1">Correct Words</div>
               <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                 {stats.correctWords}
               </div>
             </div>
-
             <div className="text-left">
               <div className="text-sm text-gray-500 mb-1">Correct Chars</div>
               <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                 {stats.correctChars}
               </div>
             </div>
-
             <div className="text-left">
               <div className="text-sm text-gray-500 mb-1">Incorrect Chars</div>
               <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                 {stats.incorrectChars}
               </div>
             </div>
-
             <div className="text-left">
               <div className="text-sm text-gray-500 mb-1">Extra Chars</div>
               <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
@@ -515,6 +490,41 @@ const TestResults = ({
           </div>
         </div>
       )}
+
+      {/* Action Buttons */}
+      <div className="flex gap-4 mt-8 mb-8">
+        <button
+          onClick={onNextTest}
+          className="flex items-center gap-2 px-8 py-3 bg-[#282828] hover:bg-[#3c3836] text-[#b8bb26] rounded-lg transition-all border border-[#3c3836] hover:border-[#b8bb26] font-medium"
+          aria-label="Next Test"
+        >
+          <span className="text-base">Next Test</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M6 3L11 8L6 13V3Z" />
+          </svg>
+        </button>
+        <button
+          onClick={onRepeatTest}
+          className="flex items-center gap-2 px-8 py-3 bg-[#282828] hover:bg-[#3c3836] text-[#fabd2f] rounded-lg transition-all border border-[#3c3836] hover:border-[#fabd2f] font-medium"
+          aria-label="Repeat Test"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C10.3 2 12.3 3.2 13.4 5M13 2V5H10"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="text-base">Repeat Test</span>
+        </button>
+      </div>
     </div>
   );
 };

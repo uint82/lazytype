@@ -11,6 +11,7 @@ export default function useTestControls(
   deletedCount = 0,
   selectedLanguage = "english",
   setActualQuoteGroup,
+  resetTest,
 ) {
   const handleInputChange = (e, words, prevInput = "") => {
     const newValue = e.target.value;
@@ -78,5 +79,11 @@ export default function useTestControls(
     inputRef.current?.focus();
   };
 
-  return { handleInputChange, handleNewTest };
+  const handleRepeatTest = () => {
+    resetTest();
+    setInput("");
+    inputRef.current?.focus();
+  };
+
+  return { handleInputChange, handleNewTest, handleRepeatTest };
 }
