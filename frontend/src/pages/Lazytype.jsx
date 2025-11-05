@@ -24,7 +24,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     handleInputChange,
     handleWordComplete,
     handleNewTest,
-    handleRepeatTest,
+    handleRepeatTestWrapper,
     isInfinityMode,
     isTestComplete,
     wordsTyped,
@@ -97,6 +97,18 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     selectedLanguage,
   ]);
 
+  useEffect(() => {
+    if (!isTestComplete && words && testId > 0) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setDisplayWords(words);
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 50);
+      }, 150);
+    }
+  }, [testId, isTestComplete, words]);
+
   const isTyping = !showConfig;
 
   return (
@@ -162,7 +174,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
             actualQuoteGroup={actualQuoteGroup}
             quote={quote}
             onNextTest={handleNewTest}
-            onRepeatTest={handleRepeatTest}
+            onRepeatTest={handleRepeatTestWrapper}
           />
         ) : (
           <div
@@ -183,7 +195,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                   />
                 </div>
                 <WordGenerator
-                  key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(
+                  key={`${testId}-${selectedMode}-${selectedLanguage}-${displayWords.substring(
                     0,
                     20,
                   )}`}
