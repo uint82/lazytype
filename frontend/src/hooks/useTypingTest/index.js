@@ -106,11 +106,6 @@ export default function useTypingTest() {
     }
   };
 
-  const handleRepeatTestWrapper = () => {
-    handleRepeatTest();
-    setTestId((prev) => prev + 1);
-  };
-
   const handleNewTest = () => {
     resetTest();
     setDeletedCount(0);
@@ -148,6 +143,5 @@ export default function useTypingTest() {
     stats,
     actualQuoteGroup,
     handleRepeatTest,
-    handleRepeatTestWrapper,
   };
 }
