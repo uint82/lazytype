@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { getQuoteGroups } from "../controllers/quotes-controller";
 import GroupModal from "./GroupModal";
-import LanguageSelector from "./LanguageSelector";
 
 const TestConfig = ({
   selectedGroup,
@@ -11,7 +10,6 @@ const TestConfig = ({
   selectedDuration,
   setSelectedDuration,
   selectedLanguage,
-  setSelectedLanguage,
   onNewTest,
 }) => {
   const [groups, setGroups] = useState([]);
@@ -129,11 +127,6 @@ const TestConfig = ({
           </>
         )}
       </div>
-
-      <LanguageSelector
-        selectedLanguage={selectedLanguage}
-        setSelectedLanguage={setSelectedLanguage}
-      />
     </div>
   );
 };

@@ -55,7 +55,7 @@ const WordGenerator = ({
         height: "156px",
         fontFamily: "'Roboto Mono', monospace",
         fontSize: "2rem",
-        lineHeight: "2rem",
+        lineHeight: "2.2rem",
       }}
     >
       <div className="flex flex-wrap">

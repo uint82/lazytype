@@ -21,6 +21,7 @@ const TestResults = ({
   quote,
   onNextTest,
   onRepeatTest,
+  onTransitionStart,
 }) => {
   const [visibleLines, setVisibleLines] = useState({
     wpm: true,
@@ -28,6 +29,13 @@ const TestResults = ({
     burst: true,
     errors: true,
   });
+
+  const handleNextTest = () => {
+    if (onTransitionStart) onTransitionStart();
+    setTimeout(() => {
+      onNextTest();
+    }, 150);
+  };
 
   const toggleLine = (lineKey) => {
     setVisibleLines((prev) => ({
@@ -491,10 +499,9 @@ const TestResults = ({
         </div>
       )}
 
-      {/* Action Buttons */}
-      <div className="flex gap-4 mt-8 mb-8">
+      <div className="flex gap-4 mt-2">
         <button
-          onClick={onNextTest}
+          onClick={handleNextTest}
           className="flex items-center gap-2 px-8 py-3 bg-[#282828] hover:bg-[#3c3836] text-[#b8bb26] rounded-lg transition-all border border-[#3c3836] hover:border-[#b8bb26] font-medium"
           aria-label="Next Test"
         >

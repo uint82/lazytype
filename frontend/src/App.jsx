@@ -12,7 +12,7 @@ const App = () => {
     <div className="flex flex-col min-h-screen bg-[#282828] antialiased">
       <Navbar isTyping={!showConfig && !isTestComplete} />
 
-      <main className="flex-grow flex items-center justify-center">
+      <main className="flex-grow flex justify-center">
         <div className="w-full">
           <Routes>
             <Route

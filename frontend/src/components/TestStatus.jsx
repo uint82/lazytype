@@ -19,7 +19,7 @@ const TestStatus = ({
     return Math.max(0, remaining);
   };
   return (
-    <div className="text-[#C68C22] text-2xl font-medium mt-10">
+    <div className="text-[#C68C22] text-2xl font-medium m-[0.25em_0.3em] pt-3">
       {selectedMode === "quotes" ? (
         <div>
           {wordsTyped} / {totalWords}
