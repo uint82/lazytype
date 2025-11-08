@@ -8,7 +8,6 @@ import useTypingStats from "../useTypingStats";
 import { loadTestConfig, saveTestConfig } from "../../utils/localStorage";
 
 export default function useTypingTest() {
-  // Load saved configuration
   const savedConfig = loadTestConfig();
 
   const [quote, setQuote] = useState(null);
