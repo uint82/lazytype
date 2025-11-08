@@ -283,7 +283,7 @@ export default function useTypingStats(
     setStats((prev) => {
       const next = {
         ...prev,
-        correctChars: correctWordChars + correctSpaces, // Monkeytype style: correctWordChars + correctSpaces
+        correctChars: correctWordChars + correctSpaces,
         incorrectChars,
         extraChars,
         missedChars: totalMissedChars,
