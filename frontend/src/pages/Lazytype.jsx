@@ -6,6 +6,7 @@ import TestResults from "../components/TestResults";
 import Caret from "../components/Carret";
 import useTypingTest from "../hooks/useTypingTest";
 import LanguageSelector from "../components/LanguageSelector";
+import { saveTestConfig } from "../utils/localStorage";
 
 const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const {
@@ -66,6 +67,15 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   useEffect(() => {
     if (onTestCompleteChange) onTestCompleteChange(isTestComplete);
   }, [isTestComplete, onTestCompleteChange]);
+
+  useEffect(() => {
+    saveTestConfig({
+      mode: selectedMode,
+      group: selectedGroup,
+      duration: selectedDuration,
+      language: selectedLanguage,
+    });
+  }, [selectedMode, selectedGroup, selectedDuration, selectedLanguage]);
 
   useEffect(() => {
     const configChanged =

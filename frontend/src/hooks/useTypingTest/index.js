@@ -1,18 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useQuoteMode from "./useQuoteMode";
 import useTimeMode from "./useTimeMode";
 import useTestControls from "./useTestControls";
 import useInputRef from "./useInputRef";
 import useTestState from "../useTestState";
 import useTypingStats from "../useTypingStats";
+import { loadTestConfig, saveTestConfig } from "../../utils/localStorage";
 
 export default function useTypingTest() {
+  // Load saved configuration
+  const savedConfig = loadTestConfig();
+
   const [quote, setQuote] = useState(null);
   const [input, setInput] = useState("");
-  const [selectedGroup, setSelectedGroup] = useState(null);
-  const [selectedMode, setSelectedMode] = useState("quotes");
-  const [selectedDuration, setSelectedDuration] = useState(60);
-  const [selectedLanguage, setSelectedLanguage] = useState("english");
+  const [selectedGroup, setSelectedGroup] = useState(savedConfig.group);
+  const [selectedMode, setSelectedMode] = useState(savedConfig.mode);
+  const [selectedDuration, setSelectedDuration] = useState(
+    savedConfig.duration,
+  );
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    savedConfig.language,
+  );
   const [words, setWords] = useState("");
   const [deletedCount, setDeletedCount] = useState(0);
   const [actualQuoteGroup, setActualQuoteGroup] = useState(null);
@@ -36,6 +44,15 @@ export default function useTypingTest() {
   } = useTestState(selectedMode, selectedDuration, words);
 
   const stats = useTypingStats(input, words, timeElapsed);
+
+  useEffect(() => {
+    saveTestConfig({
+      mode: selectedMode,
+      group: selectedGroup,
+      duration: selectedDuration,
+      language: selectedLanguage,
+    });
+  }, [selectedMode, selectedGroup, selectedDuration, selectedLanguage]);
 
   useQuoteMode(
     selectedMode,
@@ -77,29 +94,24 @@ export default function useTypingTest() {
 
   const handleInputChange = (e) => {
     const value = e.target.value;
-
     if (isTestComplete) return;
-
     if (value.length > 0 && !isTestActive) {
       startTest();
     } else if (value.length > 0 && isTestActive) {
       hideConfig();
     }
-
     originalHandleInputChange(e, words, input);
   };
 
   const handleWordComplete = () => {
     incrementWordsTyped();
     originalHandleWordComplete();
-
     if (selectedMode === "quotes") {
       const inputWords = input
         .trim()
         .split(" ")
         .filter((w) => w.length > 0);
       const targetWords = words.trim().split(" ");
-
       if (inputWords.length === targetWords.length) {
         setTimeout(() => completeTest(), 10);
       }
