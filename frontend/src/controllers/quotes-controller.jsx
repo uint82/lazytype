@@ -13,9 +13,10 @@ export function getRandomQuote(groupIndex = null, language = "english") {
     selectedGroupIndex = Math.floor(Math.random() * data.groups.length);
   }
 
+  const groups = data?.groups ?? [];
   const [min, max] =
-    selectedGroupIndex !== null
-      ? data.groups[selectedGroupIndex]
+    selectedGroupIndex !== null && groups[selectedGroupIndex]
+      ? groups[selectedGroupIndex]
       : [0, Infinity];
 
   const filtered = data.quotes.filter(
@@ -26,13 +27,6 @@ export function getRandomQuote(groupIndex = null, language = "english") {
 
   const randomIndex = Math.floor(Math.random() * filtered.length);
   const quote = filtered[randomIndex];
-
-  console.log("data check:", {
-    language,
-    dataType: typeof data,
-    groups: data?.groups,
-    quotes: data?.quotes?.length,
-  });
 
   let actualGroup = groupIndex;
 
