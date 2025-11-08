@@ -27,6 +27,13 @@ export function getRandomQuote(groupIndex = null, language = "english") {
   const randomIndex = Math.floor(Math.random() * filtered.length);
   const quote = filtered[randomIndex];
 
+  console.log("data check:", {
+    language,
+    dataType: typeof data,
+    groups: data?.groups,
+    quotes: data?.quotes?.length,
+  });
+
   let actualGroup = groupIndex;
 
   // if "all" was selected (groupIndex null), return which group was actually used
