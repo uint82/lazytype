@@ -10,7 +10,7 @@ import { loadTestConfig, saveTestConfig } from "../../utils/localStorage";
 export default function useTypingTest() {
   const savedConfig = loadTestConfig();
 
-  const [quote, setQuote] = useState(null);
+  const [quote, setQuote] = useState([]);
   const [input, setInput] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(savedConfig.group);
   const [selectedMode, setSelectedMode] = useState(savedConfig.mode);
@@ -22,7 +22,7 @@ export default function useTypingTest() {
   );
   const [words, setWords] = useState("");
   const [deletedCount, setDeletedCount] = useState(0);
-  const [actualQuoteGroup, setActualQuoteGroup] = useState(null);
+  const [actualQuoteGroup, setActualQuoteGroup] = useState([]);
   const [testId, setTestId] = useState(0);
 
   const inputRef = useInputRef();
