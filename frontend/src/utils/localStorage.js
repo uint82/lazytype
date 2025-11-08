@@ -7,7 +7,7 @@ const STORAGE_KEYS = {
 
 const DEFAULTS = {
   MODE: "quotes",
-  GROUP: [],
+  GROUP: null,
   DURATION: 60,
   LANGUAGE: "english",
 };
