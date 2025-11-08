@@ -238,9 +238,9 @@ const TestResults = ({
     <div className="test-result-container flex flex-col items-center justify-center py-4 w-full mx-auto">
       {stats.wpmHistory && stats.wpmHistory.length > 1 && (
         <div className="w-full mb-4">
-          <div className="flex gap-0">
+          <div className="flex flex-col md:flex-row gap-4 lg:gap-0 w-full">
             {/* left stats */}
-            <div className="flex flex-col justify-center gap-8">
+            <div className="flex flex-row justify-center gap-8 w-full sm:w-auto mb-4 lg:mb-0 md:flex-col">
               <div className="text-left">
                 <div className="text-sm text-gray-500 mb-1">WPM</div>
                 <TooltipHover text={`${stats.wpmExact?.toFixed(2)} wpm`}>
