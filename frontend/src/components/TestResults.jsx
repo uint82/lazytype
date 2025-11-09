@@ -442,7 +442,7 @@ const TestResults = ({
             </div>
           </div>
           {/* bottom stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 md:gap-8 lg:gap-12 mt-10">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 md:gap-8 lg:gap-12 mt-2">
             <div className="text-left">
               <div className="text-sm text-gray-500 mb-1">Raw WPM</div>
               <TooltipHover text={`${stats.rawWpmExact?.toFixed(2)} wpm`}>
@@ -493,7 +493,7 @@ const TestResults = ({
         </div>
       )}
 
-      <div className="flex gap-4 mt-2">
+      <div className="flex gap-4 mt-8">
         <button
           onClick={handleNextTest}
           className="flex items-center gap-2 px-8 py-3 bg-[#282828] hover:bg-[#3c3836] text-[#b8bb26] rounded-lg transition-all border border-[#3c3836] hover:border-[#b8bb26] font-medium"

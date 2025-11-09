@@ -5,6 +5,7 @@ export default function useTypingStats(
   words,
   timeElapsed,
   mode = "time",
+  isFinal = false,
 ) {
   const [stats, setStats] = useState({
     correctChars: 0,
@@ -28,7 +29,6 @@ export default function useTypingStats(
   const lastTotalErrorsRef = useRef(0);
   const totalTypedCharsRef = useRef(0);
   const lastTypedCharCountRef = useRef(0);
-  const missedCharsRef = useRef(0);
   const processedWordIndexRef = useRef(-1);
   const processedWordErrorRef = useRef(new Set());
 
@@ -55,7 +55,6 @@ export default function useTypingStats(
       lastTotalErrorsRef.current = 0;
       totalTypedCharsRef.current = 0;
       lastTypedCharCountRef.current = 0;
-      missedCharsRef.current = 0;
       processedWordIndexRef.current = -1;
       processedWordErrorRef.current.clear();
       return;
@@ -76,11 +75,6 @@ export default function useTypingStats(
           const typedWord = prevWords[justFinishedWordIndex] || "";
           const targetWord = targetWords[justFinishedWordIndex] || "";
 
-          if (typedWord.length < targetWord.length) {
-            const missed = targetWord.length - typedWord.length;
-            missedCharsRef.current += missed;
-          }
-
           if (
             typedWord !== targetWord &&
             !processedWordErrorRef.current.has(justFinishedWordIndex)
@@ -97,21 +91,53 @@ export default function useTypingStats(
     let correctChars = 0;
     let incorrectChars = 0;
     let extraChars = 0;
-    let currentMissedChars = 0;
     let spaces = 0;
+    let missedChars = 0;
 
     for (let i = 0; i < inputWords.length; i++) {
       const typedWord = inputWords[i];
       const targetWord = targetWords[i] || "";
 
-      const minLen = Math.min(typedWord.length, targetWord.length);
-      for (let j = 0; j < minLen; j++) {
-        if (typedWord[j] === targetWord[j]) correctChars++;
-        else incorrectChars++;
-      }
+      if (typedWord === targetWord) {
+        correctChars += targetWord.length;
+      } else if (typedWord.length >= targetWord.length) {
+        for (let j = 0; j < typedWord.length; j++) {
+          if (j < targetWord.length) {
+            if (typedWord[j] === targetWord[j]) {
+              correctChars++;
+            } else {
+              incorrectChars++;
+            }
+          } else {
+            extraChars++;
+          }
+        }
+      } else {
+        let correct = 0;
+        let incorrect = 0;
+        let missed = 0;
 
-      if (typedWord.length > targetWord.length) {
-        extraChars += typedWord.length - targetWord.length;
+        for (let j = 0; j < targetWord.length; j++) {
+          if (j < typedWord.length) {
+            if (typedWord[j] === targetWord[j]) {
+              correct++;
+            } else {
+              incorrect++;
+            }
+          } else {
+            missed++;
+          }
+        }
+
+        correctChars += correct;
+        incorrectChars += incorrect;
+
+        const isLastWord = i === inputWords.length - 1;
+        const shouldCountMissed = !isLastWord || (isFinal && mode === "time");
+
+        if (shouldCountMissed) {
+          missedChars += missed;
+        }
       }
 
       if (i < inputWords.length - 1) {
@@ -154,7 +180,6 @@ export default function useTypingStats(
       }
     }
 
-    const totalMissedChars = missedCharsRef.current + currentMissedChars;
     const currentErrors = incorrectChars + extraChars;
 
     let correctWords = 0;
@@ -181,7 +206,6 @@ export default function useTypingStats(
 
       const prevWordCount = prevWords.length;
       const currWordCount = currWords.length;
-      const newChars = input.slice(prevInput.length);
 
       const currentWordIndex = currWordCount - 1;
       const typedWord = currWords[currentWordIndex] || "";
@@ -199,10 +223,6 @@ export default function useTypingStats(
             totalErrorsRef.current += prevWord.length - targetPrevWord.length;
           }
 
-          if (prevWord.length < targetPrevWord.length) {
-            missedCharsRef.current += targetPrevWord.length - prevWord.length;
-          }
-
           if (
             prevWord !== targetPrevWord &&
             !processedWordErrorRef.current.has(finishedWordIndex)
@@ -214,7 +234,9 @@ export default function useTypingStats(
       } else {
         for (let j = prevInput.length; j < input.length; j++) {
           const idxInWord =
-            typedWord.length - newChars.length + (j - prevInput.length);
+            typedWord.length -
+            (input.length - prevInput.length) +
+            (j - prevInput.length);
           const char = input[j];
           const targetChar = targetWord[idxInWord];
 
@@ -246,7 +268,6 @@ export default function useTypingStats(
           (60 / (currentSecond || 0.0001))) /
         5;
 
-      // note: spaces only counts spaces between words, not trailing space
       const allCharsInInput =
         correctChars + incorrectChars + extraChars + spaces;
       const cumulativeRawWpm =
@@ -286,7 +307,7 @@ export default function useTypingStats(
         correctChars: correctWordChars + correctSpaces,
         incorrectChars,
         extraChars,
-        missedChars: totalMissedChars,
+        missedChars,
         correctWords,
         incorrectWords,
         accuracy,
@@ -302,7 +323,15 @@ export default function useTypingStats(
     });
 
     previousInputRef.current = input;
-  }, [input, words, timeElapsed, mode, stats.wpmHistory.length, stats.wpm]);
+  }, [
+    input,
+    words,
+    timeElapsed,
+    mode,
+    isFinal,
+    stats.wpmHistory.length,
+    stats.wpm,
+  ]);
 
   return stats;
 }
