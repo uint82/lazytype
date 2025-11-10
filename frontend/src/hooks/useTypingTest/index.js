@@ -42,7 +42,13 @@ export default function useTypingTest() {
     hideConfig,
   } = useTestState(selectedMode, selectedDuration, words);
 
-  const stats = useTypingStats(input, words, timeElapsed);
+  const stats = useTypingStats(
+    input,
+    words,
+    timeElapsed,
+    selectedMode,
+    isTestComplete,
+  );
 
   useEffect(() => {
     saveTestConfig({

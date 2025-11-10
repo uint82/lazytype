@@ -133,7 +133,8 @@ export default function useTypingStats(
         incorrectChars += incorrect;
 
         const isLastWord = i === inputWords.length - 1;
-        const shouldCountMissed = !isLastWord || (isFinal && mode === "time");
+        const lastWordFinished = input.endsWith(" ");
+        const shouldCountMissed = !isLastWord || (isFinal && lastWordFinished);
 
         if (shouldCountMissed) {
           missedChars += missed;
@@ -298,6 +299,56 @@ export default function useTypingStats(
         }));
         recordedSecondsRef.current.add(currentSecond);
         lastHistoryTimeRef.current = currentSecond;
+      }
+    }
+    // final snapshot for quote mode case like 8.23s, 23.32s
+    if (isFinal) {
+      const finalTime = timeElapsedInSeconds;
+
+      if (!recordedSecondsRef.current.has(finalTime)) {
+        const cumulativeNetWpm =
+          ((correctWordChars + correctSpaces) * (60 / (finalTime || 0.0001))) /
+          5;
+
+        const allCharsInInput =
+          correctChars + incorrectChars + extraChars + spaces;
+        const cumulativeRawWpm =
+          (allCharsInInput / 5) * (60 / (finalTime || 0.0001));
+
+        const newErrorsSinceLast =
+          totalErrorsRef.current - lastTotalErrorsRef.current;
+        const newCharsSinceLast =
+          totalTypedCharsRef.current - lastTypedCharCountRef.current;
+        const sliceDuration =
+          finalTime - (lastHistoryTimeRef.current || 0) || 0.0001;
+
+        const burstExact = (newCharsSinceLast / 5) * (60 / sliceDuration);
+
+        const dataPoint = {
+          time: finalTime,
+          wpm: Math.round(cumulativeNetWpm),
+          rawWpm: Math.round(cumulativeRawWpm),
+          burst: Math.round(burstExact),
+          wpmExact: cumulativeNetWpm,
+          rawWpmExact: cumulativeRawWpm,
+          burstExact,
+          words: inputWords.length,
+          errorCount: newErrorsSinceLast > 0 ? newErrorsSinceLast : 0,
+        };
+
+        setStats((prev) => ({
+          ...prev,
+          wpmHistory: [...prev.wpmHistory, dataPoint],
+          wpm: dataPoint.wpm,
+          wpmExact: dataPoint.wpmExact,
+          rawWpm: dataPoint.rawWpm,
+          rawWpmExact: dataPoint.rawWpmExact,
+        }));
+
+        recordedSecondsRef.current.add(finalTime);
+        lastHistoryTimeRef.current = finalTime;
+        lastTotalErrorsRef.current = totalErrorsRef.current;
+        lastTypedCharCountRef.current = totalTypedCharsRef.current;
       }
     }
 
