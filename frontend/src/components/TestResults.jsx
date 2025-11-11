@@ -241,7 +241,7 @@ const TestResults = ({
           <div className="flex flex-col md:flex-row gap-4 lg:gap-0 w-full">
             {/* left stats */}
             <div className="flex flex-row justify-center gap-8 w-full sm:w-auto mb-4 lg:mb-0 md:flex-col">
-              <div className="text-left">
+              <div className="md:text-left text-center">
                 <div className="text-sm text-gray-500 mb-1">WPM</div>
                 <TooltipHover text={`${stats.wpmExact?.toFixed(2)} wpm`}>
                   <div className="text-5xl font-bold text-[#b8bb26]">
@@ -249,7 +249,7 @@ const TestResults = ({
                   </div>
                 </TooltipHover>
               </div>
-              <div className="text-left">
+              <div className="md:text-left text-center">
                 <div className="text-sm text-gray-500 mb-1">Accuracy</div>
                 <TooltipHover
                   text={
@@ -269,7 +269,7 @@ const TestResults = ({
                   </div>
                 </TooltipHover>
               </div>
-              <div className="text-left">
+              <div className="md:text-left text-center">
                 <div className="text-sm text-gray-500 mb-1">Test Type</div>
                 <div className="text-lg font-medium text-gray-400">
                   {formatTestType()}
@@ -442,8 +442,8 @@ const TestResults = ({
             </div>
           </div>
           {/* bottom stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 md:gap-8 lg:gap-12 mt-2">
-            <div className="text-left">
+          <div className="grid justify-center grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 md:gap-8 lg:gap-12 mt-2">
+            <div className="md:text-left text-center">
               <div className="text-sm text-gray-500 mb-1">Raw WPM</div>
               <TooltipHover text={`${stats.rawWpmExact?.toFixed(2)} wpm`}>
                 <div className="text-2xl sm:text-3xl font-bold text-[#fabd2f]">
@@ -451,7 +451,7 @@ const TestResults = ({
                 </div>
               </TooltipHover>
             </div>
-            <div className="text-left">
+            <div className="md:text-left text-center">
               <div className="text-sm text-gray-500 mb-1">Time</div>
               <TooltipHover text={`${(timeElapsed / 1000).toFixed(2)}s`}>
                 <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
@@ -459,31 +459,31 @@ const TestResults = ({
                 </div>
               </TooltipHover>
             </div>
-            <div className="text-left">
+            <div className="md:text-left text-center">
               <div className="text-sm text-gray-500 mb-1">Correct Words</div>
               <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                 {stats.correctWords}
               </div>
             </div>
-            <div className="text-left">
+            <div className="md:text-left text-center">
               <div className="text-sm text-gray-500 mb-1">Correct Chars</div>
               <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                 {stats.correctChars}
               </div>
             </div>
-            <div className="text-left">
+            <div className="md:text-left text-center">
               <div className="text-sm text-gray-500 mb-1">Incorrect Chars</div>
               <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                 {stats.incorrectChars}
               </div>
             </div>
-            <div className="text-left">
+            <div className="md:text-left text-center">
               <div className="text-sm text-gray-500 mb-1">Extra Chars</div>
               <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                 {stats.extraChars}
               </div>
             </div>
-            <div className="text-left">
+            <div className="md:text-left text-center">
               <div className="text-sm text-gray-500 mb-1">Missed Chars</div>
               <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                 {stats.missedChars}
