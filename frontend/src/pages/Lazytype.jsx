@@ -4,6 +4,7 @@ import TestConfig from "../components/TestConfig";
 import TestStatus from "../components/TestStatus";
 import TestResults from "../components/TestResults";
 import Caret from "../components/Carret";
+import FocusOverlay from "../components/FocusOverlay";
 import useTypingTest from "../hooks/useTypingTest";
 import LanguageSelector from "../components/LanguageSelector";
 import { saveTestConfig } from "../utils/localStorage";
@@ -42,6 +43,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayWords, setDisplayWords] = useState(words);
   const [caretPosition, setCaretPosition] = useState({ x: 0, y: 0 });
+  const [isFocused, setIsFocused] = useState(false);
+  const blurTimeoutRef = useRef(null);
   const prevConfigRef = useRef({
     selectedMode,
     selectedDuration,
@@ -59,6 +62,32 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       }, 150);
     }, 150);
   };
+
+  const handleBlur = () => {
+    if (blurTimeoutRef.current) {
+      clearTimeout(blurTimeoutRef.current);
+    }
+
+    blurTimeoutRef.current = setTimeout(() => {
+      setIsFocused(false);
+    }, 1000);
+  };
+
+  const handleFocus = () => {
+    if (blurTimeoutRef.current) {
+      clearTimeout(blurTimeoutRef.current);
+      blurTimeoutRef.current = null;
+    }
+    setIsFocused(true);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (onShowConfigChange) onShowConfigChange(showConfig);
@@ -182,10 +211,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
               </>
             )}
 
-            <div
-              className="typing-test-container relative mx-auto text-gray-600 w-full"
-              onClick={() => !isTestComplete && inputRef.current?.focus()}
-            >
+            <div className="typing-test-container relative mx-auto text-gray-600 w-full">
               {isTestComplete ? (
                 <TestResults
                   stats={stats}
@@ -203,7 +229,15 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
               ) : (
                 <>
                   {quote ? (
-                    <>
+                    <div className="relative">
+                      <FocusOverlay
+                        isFocused={isFocused}
+                        onClick={() => {
+                          inputRef.current?.focus();
+                          handleFocus();
+                        }}
+                      />
+
                       <Caret
                         key={`caret-${testId}-&{selectedMode}-${selectedLanguage}`}
                         x={caretPosition.x}
@@ -230,6 +264,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                         onChange={handleInputChange}
                         className="opacity-0 absolute"
                         autoFocus
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
                         onKeyDown={(e) => {
                           if (e.key === " ") {
                             const words = input.split(" ");
@@ -273,7 +309,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                           }
                         }}
                       />
-                    </>
+                    </div>
                   ) : (
                     <p className="text-[#ebdbb2]">Loading test...</p>
                   )}
