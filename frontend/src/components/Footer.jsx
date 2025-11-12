@@ -5,7 +5,7 @@ const Footer = ({ isTyping }) => {
 
   return (
     <footer
-      className={`relative py-4 mt-34 transition-opacity duration-300 ${isTyping ? "opacity-0 pointer-events-none" : "opacity-100"
+      className={`relative py-6 mt-34 transition-opacity duration-300 ${isTyping ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
     >
       <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 text-[#d5c4a1] text-xs sm:text-sm">

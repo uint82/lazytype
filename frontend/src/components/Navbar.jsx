@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Navbar = ({ isTyping }) => {
   return (
-    <nav className="w-full z-20 top-0 left-0">
+    <nav className="w-full z-20 top-0 left-0 py-2">
       <div className="navbar-container py-3 flex items-center justify-between">
         <Link
           to="/"
