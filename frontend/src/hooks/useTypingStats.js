@@ -134,7 +134,7 @@ export default function useTypingStats(
 
         const isLastWord = i === inputWords.length - 1;
         const lastWordFinished = input.endsWith(" ");
-        const shouldCountMissed = !isLastWord || (isFinal && lastWordFinished);
+        const shouldCountMissed = !isLastWord || (isFinal && !lastWordFinished);
 
         if (shouldCountMissed) {
           missedChars += missed;
