@@ -1,6 +1,5 @@
 import { useRef, useEffect } from "react";
 import WordDisplay from "./WordDisplay";
-
 import useTypingDisplay from "../hooks/useWordGenerator/useTypingDisplay";
 import useWordProgress from "../hooks/useWordGenerator/useWordProgress";
 import useWordCompletion from "../hooks/useWordGenerator/useWordCompletion";
@@ -14,13 +13,20 @@ const WordGenerator = ({
 }) => {
   const containerRef = useRef(null);
 
+  const progressWithoutDelete = useWordProgress(input, 0);
+
   const {
     visibleWords,
     caretPosition,
     deletedCount,
     updateLineDelete,
     measureCaret,
-  } = useTypingDisplay(text, containerRef);
+  } = useTypingDisplay(
+    text,
+    containerRef,
+    progressWithoutDelete.currentWordIndex,
+    progressWithoutDelete.currentWordInput,
+  );
 
   const { currentWordIndex, currentWordInput, adjustedInputWords } =
     useWordProgress(input, deletedCount);
