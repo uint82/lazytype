@@ -86,7 +86,7 @@
   .footer-container,
   .typing-test-container,
   .test-result-container {
-    max-width: 725px;
+    max-width: 640px;
   }
 }
 
