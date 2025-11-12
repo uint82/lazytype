@@ -46,6 +46,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const [caretPosition, setCaretPosition] = useState({ x: 0, y: 0 });
   const [isFocused, setIsFocused] = useState(false);
   const blurTimeoutRef = useRef(null);
+  const typingTestContainerRef = useRef(null);
   const prevConfigRef = useRef({
     selectedMode,
     selectedDuration,
@@ -54,13 +55,35 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   });
   const prevWordsRef = useRef(words);
 
+  const handleNewTestWithScroll = () => {
+    handleNewTest();
+    setTimeout(() => {
+      if (typingTestContainerRef.current) {
+        typingTestContainerRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 100);
+  };
+
   const handleRepeatTestWithTransition = () => {
     setIsTransitioning(true);
     setTimeout(() => {
       handleRepeatTest();
+
+      setTimeout(() => {
+        if (typingTestContainerRef.current) {
+          typingTestContainerRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        }
+      }, 100);
+
       setTimeout(() => {
         setIsTransitioning(false);
-      }, 150);
+      }, 250);
     }, 150);
   };
 
@@ -89,6 +112,33 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const scrollToTypingTest = () => {
+      if (typingTestContainerRef.current && !isTestComplete) {
+        typingTestContainerRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    };
+
+    const handleResize = () => {
+      setTimeout(scrollToTypingTest, 500);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    setTimeout(scrollToTypingTest, 100);
+
+    if (!showConfig && !isTestComplete) {
+      scrollToTypingTest();
+    }
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [showConfig, isTestComplete]);
 
   useEffect(() => {
     if (onShowConfigChange) onShowConfigChange(showConfig);
@@ -176,7 +226,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                 setSelectedDuration={setSelectedDuration}
                 selectedLanguage={selectedLanguage}
                 setSelectedLanguage={setSelectedLanguage}
-                onNewTest={handleNewTest}
+                onNewTest={handleNewTestWithScroll}
               />
             </div>
           </div>
@@ -213,7 +263,10 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
               </>
             )}
 
-            <div className="typing-test-container relative mx-auto text-gray-600 w-full">
+            <div
+              className="typing-test-container relative mx-auto text-gray-600 w-full"
+              ref={typingTestContainerRef}
+            >
               {isTestComplete ? (
                 <TestResults
                   stats={stats}
@@ -224,7 +277,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                   selectedLanguage={selectedLanguage}
                   actualQuoteGroup={actualQuoteGroup}
                   quote={quote}
-                  onNextTest={handleNewTest}
+                  onNextTest={handleNewTestWithScroll}
                   onRepeatTest={handleRepeatTestWithTransition}
                   onTransitionStart={() => setIsTransitioning(true)}
                 />
@@ -322,7 +375,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
             {!isTestComplete && (
               <div className="flex justify-center mt-4">
                 <button
-                  onClick={handleNewTest}
+                  onClick={handleNewTestWithScroll}
                   className="px-4 py-2 rounded text-2xl text-gray-600 cursor-pointer hover:text-white transition"
                 >
                   ⟳

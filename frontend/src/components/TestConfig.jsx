@@ -34,6 +34,9 @@ const TestConfig = ({
   const handleSelectGroup = (groupIndex) => {
     setSelectedMode("quotes");
     setSelectedGroup(groupIndex);
+    if (onNewTest) {
+      onNewTest();
+    }
   };
 
   const handleSelectTime = (duration) => {
@@ -51,7 +54,12 @@ const TestConfig = ({
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex gap-2">
               <button
-                onClick={() => setSelectedMode("time")}
+                onClick={() => {
+                  setSelectedMode("time");
+                  if (onNewTest) {
+                    onNewTest();
+                  }
+                }}
                 className={`px-4 py-2 rounded font-medium transition-all ${selectedMode === "time"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945]"
@@ -60,7 +68,12 @@ const TestConfig = ({
                 Time
               </button>
               <button
-                onClick={() => setSelectedMode("quotes")}
+                onClick={() => {
+                  setSelectedMode("quotes");
+                  if (onNewTest) {
+                    onNewTest();
+                  }
+                }}
                 className={`px-4 py-2 rounded font-medium transition-all ${selectedMode === "quotes"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945]"

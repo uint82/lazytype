@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TooltipHover from "./TooltipHover";
 import {
   LineChart,
@@ -29,6 +29,34 @@ const TestResults = ({
     burst: true,
     errors: true,
   });
+
+  useEffect(() => {
+    const scrollToResults = () => {
+      const resultsContainer = document.querySelector(".test-result-container");
+      if (resultsContainer) {
+        resultsContainer.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    };
+
+    const initialTimer = setTimeout(scrollToResults, 150);
+
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(scrollToResults, 300);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      clearTimeout(initialTimer);
+      clearTimeout(resizeTimeout);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handleNextTest = () => {
     if (onTransitionStart) onTransitionStart();
