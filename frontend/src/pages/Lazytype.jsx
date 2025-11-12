@@ -7,6 +7,7 @@ import Caret from "../components/Carret";
 import FocusOverlay from "../components/FocusOverlay";
 import useTypingTest from "../hooks/useTypingTest";
 import LanguageSelector from "../components/LanguageSelector";
+import CapsLockIndicator from "../components/CapsLockIndicator";
 import { saveTestConfig } from "../utils/localStorage";
 
 const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
@@ -191,7 +192,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
             {!isTestComplete && (
               <>
                 {showConfig ? (
-                  <div className="flex justify-center mb-2">
+                  <div className="flex justify-center mb-2 relative">
+                    <CapsLockIndicator />
                     <LanguageSelector
                       selectedLanguage={selectedLanguage}
                       setSelectedLanguage={setSelectedLanguage}
