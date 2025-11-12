@@ -250,7 +250,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                     />
                   </div>
                 ) : (
-                  <div className="flex typing-test-container mb-2">
+                  <div className="flex px-2 content-grid">
                     <TestStatus
                       selectedMode={selectedMode}
                       selectedDuration={selectedDuration}
@@ -264,7 +264,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
             )}
 
             <div
-              className="typing-test-container relative mx-auto text-gray-600 w-full"
+              className="content-grid relative mx-auto text-gray-600 w-full"
               ref={typingTestContainerRef}
             >
               {isTestComplete ? (

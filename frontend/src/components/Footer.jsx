@@ -5,10 +5,10 @@ const Footer = ({ isTyping }) => {
 
   return (
     <footer
-      className={`relative py-6 mt-34 transition-opacity duration-300 ${isTyping ? "opacity-0 pointer-events-none" : "opacity-100"
+      className={`content-grid relative py-6 mt-34 transition-opacity duration-300 ${isTyping ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
     >
-      <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 text-[#d5c4a1] text-xs sm:text-sm">
+      <div className="full-width absolute -top-10 left-1/2 transform -translate-x-1/2 text-[#d5c4a1] text-xs sm:text-sm">
         <span>
           <span className="bg-[#3c3836] text-[#ebdbb2] px-2 py-0.5 shadow-sm mx-0.5">
             Tab
@@ -21,7 +21,7 @@ const Footer = ({ isTyping }) => {
         </span>
       </div>
 
-      <div className="footer-container flex flex-col sm:flex-row items-center justify-between text-[#ebdbb2] text-sm">
+      <div className="flex flex-col sm:flex-row items-center justify-between text-[#ebdbb2] text-sm">
         <div className="flex space-x-6 mb-3 sm:mb-0">
           <Link to="/contact" className="hover:text-[#fe8019] transition">
             Contact
@@ -33,7 +33,7 @@ const Footer = ({ isTyping }) => {
             Terms
           </Link>
         </div>
-        <p className="text-[#a89984]">{currentYear} © Hilmi Abroor</p>
+        <p className="text-[#a89984]">{currentYear} v1.2112</p>
       </div>
     </footer>
   );
