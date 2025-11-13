@@ -33,7 +33,17 @@ const Footer = ({ isTyping }) => {
             Terms
           </Link>
         </div>
-        <p className="text-[#a89984]">{currentYear} v1.2112</p>
+        <p className="text-[#a89984]">
+          {currentYear} inspired by{" "}
+          <a
+            href="https://monkeytype.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[#fe8019] transition underline"
+          >
+            monkeytype
+          </a>
+        </p>
       </div>
     </footer>
   );
