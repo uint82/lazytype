@@ -133,8 +133,7 @@ export default function useTypingStats(
         incorrectChars += incorrect;
 
         const isLastWord = i === inputWords.length - 1;
-        const lastWordFinished = input.endsWith(" ");
-        const shouldCountMissed = !isLastWord || (isFinal && !lastWordFinished);
+        const shouldCountMissed = !isLastWord;
 
         if (shouldCountMissed) {
           missedChars += missed;
