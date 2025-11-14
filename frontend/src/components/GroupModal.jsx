@@ -6,8 +6,12 @@ const GroupModal = ({
   selectedGroup,
   selectedMode,
   selectedDuration,
+  selectedPunctuation,
+  selectedNumbers,
   onSelectGroup,
   onSelectTime,
+  onTogglePunctuation,
+  onToggleNumbers,
   onClose,
 }) => {
   const [activeTab, setActiveTab] = useState(selectedMode || "quotes");
@@ -65,22 +69,47 @@ const GroupModal = ({
           </div>
 
           <div className="flex flex-col gap-2 mt-3">
-            {activeTab === "time"
-              ? wordDurations.map((duration) => (
+            {activeTab === "time" ? (
+              <>
+                {wordDurations.map((duration) => (
+                  <button
+                    key={duration}
+                    onClick={() => handleSelectTime(duration)}
+                    className={`w-full px-4 py-2 rounded text-sm transition-all ${(selectedMode === "time" &&
+                        selectedDuration === duration) ||
+                        (selectedMode !== "time" && duration === 60)
+                        ? "bg-[#D8AB19] text-[#282828]"
+                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                      }`}
+                  >
+                    {duration}s
+                  </button>
+                ))}
+
+                <div className="border-t border-[#3c3836] my-2"></div>
+
                 <button
-                  key={duration}
-                  onClick={() => handleSelectTime(duration)}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all ${(selectedMode === "time" &&
-                      selectedDuration === duration) ||
-                      (selectedMode !== "time" && duration === 60)
-                      ? "bg-[#D8AB19] text-[#282828]"
+                  onClick={onTogglePunctuation}
+                  className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedPunctuation
+                      ? "bg-[#83A598] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
                     }`}
                 >
-                  {duration}s
+                  punctuation
                 </button>
-              ))
-              : groups.map((group) => (
+
+                <button
+                  onClick={onToggleNumbers}
+                  className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedNumbers
+                      ? "bg-[#83A598] text-[#282828]"
+                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                    }`}
+                >
+                  numbers
+                </button>
+              </>
+            ) : (
+              groups.map((group) => (
                 <button
                   key={group.index ?? "all"}
                   onClick={() => handleSelectGroup(group.index)}
@@ -93,7 +122,8 @@ const GroupModal = ({
                 >
                   {group.label}
                 </button>
-              ))}
+              ))
+            )}
           </div>
         </div>
       </div>

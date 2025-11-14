@@ -9,10 +9,15 @@ export default function useTimeMode(
   setInput,
   inputRef,
   selectedLanguage = "english",
+  selectedPunctuation = false,
+  selectedNumbers = false,
 ) {
   useEffect(() => {
     if (selectedMode === "time") {
-      const randomWords = getRandomWords(50, selectedLanguage);
+      const randomWords = getRandomWords(75, selectedLanguage, {
+        punctuation: selectedPunctuation,
+        numbers: selectedNumbers,
+      });
       setQuote({ text: randomWords });
       setWords(randomWords);
       setInput("");
@@ -22,6 +27,8 @@ export default function useTimeMode(
     selectedMode,
     selectedDuration,
     selectedLanguage,
+    selectedPunctuation,
+    selectedNumbers,
     setQuote,
     setWords,
     setInput,
@@ -30,7 +37,10 @@ export default function useTimeMode(
 
   const handleWordComplete = () => {
     if (selectedMode === "time") {
-      const additionalWords = getRandomWords(1, selectedLanguage);
+      const additionalWords = getRandomWords(1, selectedLanguage, {
+        punctuation: selectedPunctuation,
+        numbers: selectedNumbers,
+      });
       setWords((prevWords) => prevWords + " " + additionalWords);
     }
   };

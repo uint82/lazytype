@@ -17,6 +17,8 @@ const TestResults = ({
   selectedDuration,
   selectedGroup,
   selectedLanguage,
+  selectedPunctuation,
+  selectedNumbers,
   actualQuoteGroup,
   quote,
   onNextTest,
@@ -96,10 +98,18 @@ const TestResults = ({
       } else {
         groupName = "all";
       }
+
       return `quote ${groupName} ${selectedLanguage}`;
     } else if (selectedMode === "time") {
-      return `time ${selectedDuration} ${selectedLanguage}`;
+      let extras = [];
+      if (selectedPunctuation) extras.push("punctuation");
+      if (selectedNumbers) extras.push("numbers");
+
+      return `time ${selectedDuration} ${selectedLanguage}${extras.length ? "\n" + extras.join("\n") : ""
+        }`;
     }
+
+    // fallback for other modes
     return `${selectedMode} ${selectedLanguage}`;
   };
 
@@ -299,7 +309,10 @@ const TestResults = ({
               </div>
               <div className="md:text-left text-center">
                 <div className="text-sm text-gray-500 mb-1">Test Type</div>
-                <div className="text-lg font-medium text-gray-400">
+                <div
+                  className="text-lg font-medium text-gray-400"
+                  style={{ whiteSpace: "pre-line" }}
+                >
                   {formatTestType()}
                 </div>
               </div>

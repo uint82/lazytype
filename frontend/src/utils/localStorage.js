@@ -3,6 +3,8 @@ const STORAGE_KEYS = {
   GROUP: "lazytype_group",
   DURATION: "lazytype_duration",
   LANGUAGE: "lazytype_language",
+  PUNCTUATION: "lazytype_punctuation",
+  NUMBERS: "lazytype_numbers",
 };
 
 const DEFAULTS = {
@@ -10,6 +12,8 @@ const DEFAULTS = {
   GROUP: null,
   DURATION: 60,
   LANGUAGE: "english",
+  PUNCTUATION: false,
+  NUMBERS: false,
 };
 
 export const saveToStorage = (key, value) => {
@@ -35,6 +39,8 @@ export const saveTestConfig = (config) => {
   saveToStorage(STORAGE_KEYS.GROUP, config.group);
   saveToStorage(STORAGE_KEYS.DURATION, config.duration);
   saveToStorage(STORAGE_KEYS.LANGUAGE, config.language);
+  saveToStorage(STORAGE_KEYS.PUNCTUATION, config.punctuation);
+  saveToStorage(STORAGE_KEYS.NUMBERS, config.numbers);
 };
 
 export const loadTestConfig = () => {
@@ -43,6 +49,8 @@ export const loadTestConfig = () => {
     group: getFromStorage(STORAGE_KEYS.GROUP, DEFAULTS.GROUP),
     duration: getFromStorage(STORAGE_KEYS.DURATION, DEFAULTS.DURATION),
     language: getFromStorage(STORAGE_KEYS.LANGUAGE, DEFAULTS.LANGUAGE),
+    punctuation: getFromStorage(STORAGE_KEYS.PUNCTUATION, DEFAULTS.PUNCTUATION),
+    numbers: getFromStorage(STORAGE_KEYS.NUMBERS, DEFAULTS.NUMBERS),
   };
 };
 
@@ -52,6 +60,8 @@ export const clearTestConfig = () => {
     localStorage.removeItem(STORAGE_KEYS.GROUP);
     localStorage.removeItem(STORAGE_KEYS.DURATION);
     localStorage.removeItem(STORAGE_KEYS.LANGUAGE);
+    localStorage.removeItem(STORAGE_KEYS.PUNCTUATION);
+    localStorage.removeItem(STORAGE_KEYS.NUMBERS);
   } catch (error) {
     console.error("Error clearing localStorage:", error);
   }

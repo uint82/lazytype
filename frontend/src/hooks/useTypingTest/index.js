@@ -5,6 +5,7 @@ import useTestControls from "./useTestControls";
 import useInputRef from "./useInputRef";
 import useTestState from "../useTestState";
 import useTypingStats from "../useTypingStats";
+import { resetWordGenerator } from "../../controllers/words-controller";
 import { loadTestConfig, saveTestConfig } from "../../utils/localStorage";
 
 export default function useTypingTest() {
@@ -20,6 +21,10 @@ export default function useTypingTest() {
   const [selectedLanguage, setSelectedLanguage] = useState(
     savedConfig.language,
   );
+  const [selectedPunctuation, setSelectedPunctuation] = useState(
+    savedConfig.punctuation,
+  );
+  const [selectedNumbers, setSelectedNumbers] = useState(savedConfig.numbers);
   const [words, setWords] = useState("");
   const [deletedCount, setDeletedCount] = useState(0);
   const [actualQuoteGroup, setActualQuoteGroup] = useState([]);
@@ -56,8 +61,17 @@ export default function useTypingTest() {
       group: selectedGroup,
       duration: selectedDuration,
       language: selectedLanguage,
+      punctuation: selectedPunctuation,
+      numbers: selectedNumbers,
     });
-  }, [selectedMode, selectedGroup, selectedDuration, selectedLanguage]);
+  }, [
+    selectedMode,
+    selectedGroup,
+    selectedDuration,
+    selectedLanguage,
+    selectedPunctuation,
+    selectedNumbers,
+  ]);
 
   useQuoteMode(
     selectedMode,
@@ -78,6 +92,8 @@ export default function useTypingTest() {
     setInput,
     inputRef,
     selectedLanguage,
+    selectedPunctuation,
+    selectedNumbers,
   );
 
   const {
@@ -95,6 +111,8 @@ export default function useTypingTest() {
     selectedLanguage,
     setActualQuoteGroup,
     resetTest,
+    selectedPunctuation,
+    selectedNumbers,
   );
 
   const handleInputChange = (e) => {
@@ -126,6 +144,7 @@ export default function useTypingTest() {
   const handleNewTest = () => {
     resetTest();
     setDeletedCount(0);
+    resetWordGenerator(selectedLanguage);
     originalHandleNewTest();
     setTestId((prev) => prev + 1);
   };
@@ -143,6 +162,10 @@ export default function useTypingTest() {
     setSelectedDuration,
     selectedLanguage,
     setSelectedLanguage,
+    selectedPunctuation,
+    setSelectedPunctuation,
+    selectedNumbers,
+    setSelectedNumbers,
     handleInputChange,
     handleWordComplete,
     handleNewTest,

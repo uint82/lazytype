@@ -25,6 +25,10 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     selectedLanguage,
     setSelectedLanguage,
     actualQuoteGroup,
+    setSelectedPunctuation,
+    selectedPunctuation,
+    setSelectedNumbers,
+    selectedNumbers,
     handleInputChange,
     handleWordComplete,
     handleNewTest,
@@ -154,15 +158,26 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       group: selectedGroup,
       duration: selectedDuration,
       language: selectedLanguage,
+      punctuation: selectedPunctuation,
+      numbers: selectedNumbers,
     });
-  }, [selectedMode, selectedGroup, selectedDuration, selectedLanguage]);
+  }, [
+    selectedMode,
+    selectedGroup,
+    selectedDuration,
+    selectedLanguage,
+    selectedPunctuation,
+    selectedNumbers,
+  ]);
 
   useEffect(() => {
     const configChanged =
       prevConfigRef.current.selectedMode !== selectedMode ||
       prevConfigRef.current.selectedDuration !== selectedDuration ||
       prevConfigRef.current.selectedGroup !== selectedGroup ||
-      prevConfigRef.current.selectedLanguage !== selectedLanguage;
+      prevConfigRef.current.selectedLanguage !== selectedLanguage ||
+      prevConfigRef.current.selectedPunctuation !== selectedPunctuation ||
+      prevConfigRef.current.selectedNumbers !== selectedNumbers;
 
     if (words !== displayWords && words) {
       const isAddition =
@@ -174,6 +189,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
           selectedDuration,
           selectedGroup,
           selectedLanguage,
+          selectedPunctuation,
+          selectedNumbers,
         };
         prevWordsRef.current = words;
         setIsTransitioning(true);
@@ -196,6 +213,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     selectedDuration,
     selectedGroup,
     selectedLanguage,
+    selectedPunctuation,
+    selectedNumbers,
   ]);
 
   const isTyping = !showConfig;
@@ -226,6 +245,10 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                 setSelectedDuration={setSelectedDuration}
                 selectedLanguage={selectedLanguage}
                 setSelectedLanguage={setSelectedLanguage}
+                selectedPunctuation={selectedPunctuation}
+                setSelectedPunctuation={setSelectedPunctuation}
+                selectedNumbers={selectedNumbers}
+                setSelectedNumbers={setSelectedNumbers}
                 onNewTest={handleNewTestWithScroll}
               />
             </div>
@@ -275,6 +298,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                   selectedDuration={selectedDuration}
                   selectedGroup={selectedGroup}
                   selectedLanguage={selectedLanguage}
+                  selectedPunctuation={selectedPunctuation}
+                  selectedNumbers={selectedNumbers}
                   actualQuoteGroup={actualQuoteGroup}
                   quote={quote}
                   onNextTest={handleNewTestWithScroll}

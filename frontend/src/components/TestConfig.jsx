@@ -10,6 +10,10 @@ const TestConfig = ({
   selectedDuration,
   setSelectedDuration,
   selectedLanguage,
+  selectedPunctuation,
+  setSelectedPunctuation,
+  selectedNumbers,
+  setSelectedNumbers,
   onNewTest,
 }) => {
   const [groups, setGroups] = useState([]);
@@ -47,11 +51,25 @@ const TestConfig = ({
     }
   };
 
+  const handleTogglePunctuation = () => {
+    setSelectedPunctuation(!selectedPunctuation);
+    if (onNewTest) {
+      onNewTest();
+    }
+  };
+
+  const handleToggleNumbers = () => {
+    setSelectedNumbers(!selectedNumbers);
+    if (onNewTest) {
+      onNewTest();
+    }
+  };
+
   return (
     <div className="flex flex-col items-center gap-2 mb-4">
       <div className="flex flex-wrap justify-center items-center gap-3 text-[#ebdbb2]">
         {!isCompactView ? (
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center gap-2">
             <div className="flex gap-2">
               <button
                 onClick={() => {
@@ -86,20 +104,45 @@ const TestConfig = ({
             <span className="text-[#a89984]">|</span>
 
             {selectedMode === "time" ? (
-              <div className="flex flex-wrap gap-2 items-center">
-                {testDurations.map((duration) => (
+              <>
+                <div className="flex flex-wrap gap-2 items-center">
+                  {testDurations.map((duration) => (
+                    <button
+                      key={duration}
+                      onClick={() => handleSelectTime(duration)}
+                      className={`px-3 py-1 rounded transition-all text-sm ${selectedMode === "time" && selectedDuration === duration
+                          ? "bg-[#83A598] text-[#282828]"
+                          : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
+                        }`}
+                    >
+                      {duration}s
+                    </button>
+                  ))}
+                </div>
+
+                <span className="text-[#a89984]">|</span>
+
+                <div className="flex flex-wrap gap-2 items-center">
                   <button
-                    key={duration}
-                    onClick={() => handleSelectTime(duration)}
-                    className={`px-3 py-1 rounded transition-all text-sm ${selectedMode === "time" && selectedDuration === duration
+                    onClick={handleTogglePunctuation}
+                    className={`px-3 py-1 rounded transition-all text-sm ${selectedPunctuation
                         ? "bg-[#83A598] text-[#282828]"
                         : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
                       }`}
                   >
-                    {duration}s
+                    punctuation
                   </button>
-                ))}
-              </div>
+                  <button
+                    onClick={handleToggleNumbers}
+                    className={`px-3 py-1 rounded transition-all text-sm ${selectedNumbers
+                        ? "bg-[#83A598] text-[#282828]"
+                        : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
+                      }`}
+                  >
+                    numbers
+                  </button>
+                </div>
+              </>
             ) : (
               <div className="flex flex-wrap gap-2 items-center">
                 {groups.map((group) => (
@@ -132,8 +175,12 @@ const TestConfig = ({
                 selectedGroup={selectedGroup}
                 selectedMode={selectedMode}
                 selectedDuration={selectedDuration}
+                selectedPunctuation={selectedPunctuation}
+                selectedNumbers={selectedNumbers}
                 onSelectGroup={handleSelectGroup}
                 onSelectTime={handleSelectTime}
+                onTogglePunctuation={handleTogglePunctuation}
+                onToggleNumbers={handleToggleNumbers}
                 onClose={() => setIsModalOpen(false)}
               />
             )}
