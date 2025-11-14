@@ -14,6 +14,7 @@ export default function useTestControls(
   resetTest,
   selectedPunctuation = false,
   selectedNumbers = false,
+  selectedWordCount = 25,
 ) {
   const handleInputChange = (e, words, prevInput = "") => {
     const newValue = e.target.value;
@@ -71,6 +72,15 @@ export default function useTestControls(
       setQuote(quote);
       setWords(quote.text);
       setActualQuoteGroup(actualGroup);
+    } else if (selectedMode === "words") {
+      const q = {
+        text: getRandomWords(selectedWordCount, selectedLanguage, {
+          punctuation: selectedPunctuation,
+          numbers: selectedNumbers,
+        }),
+      };
+      setQuote(q);
+      setWords(q.text);
     } else {
       const q = {
         text: getRandomWords(75, selectedLanguage, {

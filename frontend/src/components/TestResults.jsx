@@ -15,6 +15,7 @@ const TestResults = ({
   timeElapsed,
   selectedMode,
   selectedDuration,
+  selectedWordCount,
   selectedGroup,
   selectedLanguage,
   selectedPunctuation,
@@ -107,6 +108,13 @@ const TestResults = ({
 
       return `time ${selectedDuration} ${selectedLanguage}${extras.length ? "\n" + extras.join("\n") : ""
         }`;
+    } else if (selectedMode === "words") {
+      let extras = [];
+      if (selectedPunctuation) extras.push("punctuation");
+      if (selectedNumbers) extras.push("numbers");
+
+      return `words ${selectedWordCount} ${selectedLanguage}${extras.length ? "\n" + extras.join("\n") : ""
+        }`;
     }
 
     // fallback for other modes
@@ -122,6 +130,7 @@ const TestResults = ({
     : 1;
 
   const isQuoteMode = selectedMode === "quote" || selectedMode === "quotes";
+  const isWordsMode = selectedMode === "words" || selectedMode === "words";
 
   const getXAxisKey = () => "time";
 
@@ -136,7 +145,7 @@ const TestResults = ({
     })
     : [];
 
-  if (isQuoteMode && transformedData.length > 0) {
+  if (isQuoteMode && isWordsMode && transformedData.length > 0) {
     const lastPoint = transformedData[transformedData.length - 1];
     const exactFinalSeconds = parseFloat((timeElapsed / 1000).toFixed(2));
     if (Math.abs(lastPoint.time - exactFinalSeconds) > 0.01) {
@@ -152,7 +161,7 @@ const TestResults = ({
   }
 
   const generateXAxisTicks = () => {
-    if (!isQuoteMode) {
+    if (!isQuoteMode && !isWordsMode) {
       const duration = timeElapsedInSeconds;
       if (duration <= 30) {
         return Array.from({ length: duration }, (_, i) => i + 1);
@@ -333,7 +342,7 @@ const TestResults = ({
                     type="number"
                     domain={[
                       1,
-                      isQuoteMode
+                      isQuoteMode || isWordsMode
                         ? parseFloat((timeElapsed / 1000).toFixed(2))
                         : timeElapsedInSeconds,
                     ]}

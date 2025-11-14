@@ -22,6 +22,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     setSelectedMode,
     selectedDuration,
     setSelectedDuration,
+    selectedWordCount,
+    setSelectedWordCount,
     selectedLanguage,
     setSelectedLanguage,
     actualQuoteGroup,
@@ -54,6 +56,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const prevConfigRef = useRef({
     selectedMode,
     selectedDuration,
+    selectedWordCount,
     selectedGroup,
     selectedLanguage,
   });
@@ -157,6 +160,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       mode: selectedMode,
       group: selectedGroup,
       duration: selectedDuration,
+      word_count: selectedWordCount,
       language: selectedLanguage,
       punctuation: selectedPunctuation,
       numbers: selectedNumbers,
@@ -165,6 +169,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     selectedMode,
     selectedGroup,
     selectedDuration,
+    selectedWordCount,
     selectedLanguage,
     selectedPunctuation,
     selectedNumbers,
@@ -174,6 +179,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     const configChanged =
       prevConfigRef.current.selectedMode !== selectedMode ||
       prevConfigRef.current.selectedDuration !== selectedDuration ||
+      prevConfigRef.current.selectedWordCount !== selectedWordCount ||
       prevConfigRef.current.selectedGroup !== selectedGroup ||
       prevConfigRef.current.selectedLanguage !== selectedLanguage ||
       prevConfigRef.current.selectedPunctuation !== selectedPunctuation ||
@@ -187,6 +193,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
         prevConfigRef.current = {
           selectedMode,
           selectedDuration,
+          selectedWordCount,
           selectedGroup,
           selectedLanguage,
           selectedPunctuation,
@@ -211,6 +218,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     displayWords,
     selectedMode,
     selectedDuration,
+    selectedWordCount,
     selectedGroup,
     selectedLanguage,
     selectedPunctuation,
@@ -243,6 +251,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                 setSelectedMode={setSelectedMode}
                 selectedDuration={selectedDuration}
                 setSelectedDuration={setSelectedDuration}
+                selectedWordCount={selectedWordCount}
+                setSelectedWordCount={setSelectedWordCount}
                 selectedLanguage={selectedLanguage}
                 setSelectedLanguage={setSelectedLanguage}
                 selectedPunctuation={selectedPunctuation}
@@ -296,6 +306,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                   timeElapsed={timeElapsed}
                   selectedMode={selectedMode}
                   selectedDuration={selectedDuration}
+                  selectedWordCount={selectedWordCount}
                   selectedGroup={selectedGroup}
                   selectedLanguage={selectedLanguage}
                   selectedPunctuation={selectedPunctuation}

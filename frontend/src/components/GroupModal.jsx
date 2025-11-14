@@ -6,16 +6,19 @@ const GroupModal = ({
   selectedGroup,
   selectedMode,
   selectedDuration,
+  selectedWordCount,
   selectedPunctuation,
   selectedNumbers,
   onSelectGroup,
   onSelectTime,
+  onSelectWords,
   onTogglePunctuation,
   onToggleNumbers,
   onClose,
 }) => {
   const [activeTab, setActiveTab] = useState(selectedMode || "quotes");
-  const wordDurations = [15, 30, 60, 120];
+  const timeDurations = [15, 30, 60, 120];
+  const wordCounts = [10, 25, 50, 100];
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) onClose();
@@ -27,6 +30,10 @@ const GroupModal = ({
 
   const handleSelectTime = (duration) => {
     onSelectTime(duration || 60);
+  };
+
+  const handleSelectWords = (count) => {
+    onSelectWords(count || 25);
   };
 
   const modalContent = (
@@ -54,6 +61,21 @@ const GroupModal = ({
 
             <button
               onClick={() => {
+                setActiveTab("words");
+                handleSelectWords(
+                  selectedMode === "words" ? selectedWordCount : 25,
+                );
+              }}
+              className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "words"
+                  ? "bg-[#D8AB19] text-[#282828]"
+                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                }`}
+            >
+              Words
+            </button>
+
+            <button
+              onClick={() => {
                 setActiveTab("quotes");
                 handleSelectGroup(
                   selectedMode === "quotes" ? selectedGroup : null,
@@ -71,7 +93,7 @@ const GroupModal = ({
           <div className="flex flex-col gap-2 mt-3">
             {activeTab === "time" ? (
               <>
-                {wordDurations.map((duration) => (
+                {timeDurations.map((duration) => (
                   <button
                     key={duration}
                     onClick={() => handleSelectTime(duration)}
@@ -88,6 +110,44 @@ const GroupModal = ({
 
                 <div className="border-t border-[#3c3836] my-2"></div>
 
+                <button
+                  onClick={onTogglePunctuation}
+                  className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedPunctuation
+                      ? "bg-[#83A598] text-[#282828]"
+                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                    }`}
+                >
+                  punctuation
+                </button>
+
+                <button
+                  onClick={onToggleNumbers}
+                  className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedNumbers
+                      ? "bg-[#83A598] text-[#282828]"
+                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                    }`}
+                >
+                  numbers
+                </button>
+              </>
+            ) : activeTab === "words" ? (
+              <>
+                {wordCounts.map((count) => (
+                  <button
+                    key={count}
+                    onClick={() => handleSelectWords(count)}
+                    className={`w-full px-4 py-2 rounded text-sm transition-all ${(selectedMode === "words" &&
+                        selectedWordCount === count) ||
+                        (selectedMode !== "words" && count === 25)
+                        ? "bg-[#D8AB19] text-[#282828]"
+                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                      }`}
+                  >
+                    {count}
+                  </button>
+                ))}
+
+                <div className="border-t border-[#3c3836] my-2"></div>
                 <button
                   onClick={onTogglePunctuation}
                   className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedPunctuation

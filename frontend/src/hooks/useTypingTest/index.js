@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import useQuoteMode from "./useQuoteMode";
 import useTimeMode from "./useTimeMode";
+import useWordsMode from "./useWordsMode";
 import useTestControls from "./useTestControls";
 import useInputRef from "./useInputRef";
 import useTestState from "../useTestState";
@@ -17,6 +18,9 @@ export default function useTypingTest() {
   const [selectedMode, setSelectedMode] = useState(savedConfig.mode);
   const [selectedDuration, setSelectedDuration] = useState(
     savedConfig.duration,
+  );
+  const [selectedWordCount, setSelectedWordCount] = useState(
+    savedConfig.word_count || 25,
   );
   const [selectedLanguage, setSelectedLanguage] = useState(
     savedConfig.language,
@@ -60,6 +64,7 @@ export default function useTypingTest() {
       mode: selectedMode,
       group: selectedGroup,
       duration: selectedDuration,
+      wordCount: selectedWordCount,
       language: selectedLanguage,
       punctuation: selectedPunctuation,
       numbers: selectedNumbers,
@@ -68,6 +73,7 @@ export default function useTypingTest() {
     selectedMode,
     selectedGroup,
     selectedDuration,
+    selectedWordCount,
     selectedLanguage,
     selectedPunctuation,
     selectedNumbers,
@@ -82,6 +88,18 @@ export default function useTypingTest() {
     inputRef,
     selectedLanguage,
     setActualQuoteGroup,
+  );
+
+  useWordsMode(
+    selectedMode,
+    selectedWordCount,
+    setQuote,
+    setWords,
+    setInput,
+    inputRef,
+    selectedLanguage,
+    selectedPunctuation,
+    selectedNumbers,
   );
 
   const { handleWordComplete: originalHandleWordComplete } = useTimeMode(
@@ -113,6 +131,7 @@ export default function useTypingTest() {
     resetTest,
     selectedPunctuation,
     selectedNumbers,
+    selectedWordCount,
   );
 
   const handleInputChange = (e) => {
@@ -129,7 +148,7 @@ export default function useTypingTest() {
   const handleWordComplete = () => {
     incrementWordsTyped();
     originalHandleWordComplete();
-    if (selectedMode === "quotes") {
+    if (selectedMode === "quotes" || selectedMode === "words") {
       const inputWords = input
         .trim()
         .split(" ")
@@ -160,6 +179,8 @@ export default function useTypingTest() {
     setSelectedMode,
     selectedDuration,
     setSelectedDuration,
+    selectedWordCount,
+    setSelectedWordCount,
     selectedLanguage,
     setSelectedLanguage,
     selectedPunctuation,
