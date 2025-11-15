@@ -4,6 +4,7 @@ import { Analytics } from "@vercel/analytics/react";
 import Navbar from "./components/Navbar";
 import Lazytype from "./pages/Lazytype";
 import Footer from "./components/Footer";
+import WorkingOnIt from "./pages/WorkingOnIt";
 
 const App = () => {
   const [showConfig, setShowConfig] = useState(true);
@@ -25,8 +26,8 @@ const App = () => {
                 />
               }
             />
-            <Route path="/leaderboard" element={<p>Leaderboard Page</p>} />
-            <Route path="/profile" element={<p>Profile Page</p>} />
+            <Route path="/leaderboard" element={<WorkingOnIt />} />
+            <Route path="/profile" element={<WorkingOnIt />} />
           </Routes>
         </div>
       </main>
