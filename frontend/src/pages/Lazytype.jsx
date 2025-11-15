@@ -352,8 +352,12 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                         ref={inputRef}
                         type="text"
                         value={input}
+                        autoCapitalize="off"
+                        autoCorrect="off"
+                        autoComplete="off"
+                        spellCheck={false}
                         onChange={handleInputChange}
-                        className="opacity-0 absolute"
+                        className="opacity-0 absolute pointer-events-none"
                         autoFocus
                         onFocus={handleFocus}
                         onBlur={handleBlur}
