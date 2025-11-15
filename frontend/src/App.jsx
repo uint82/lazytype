@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import Navbar from "./components/Navbar";
 import Lazytype from "./pages/Lazytype";
 import Footer from "./components/Footer";
@@ -31,6 +32,7 @@ const App = () => {
       </main>
 
       <Footer isTyping={!showConfig && !isTestComplete} />
+      <Analytics />
     </div>
   );
 };
