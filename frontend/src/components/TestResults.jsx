@@ -34,32 +34,14 @@ const TestResults = ({
   });
 
   useEffect(() => {
-    const scrollToResults = () => {
-      const resultsContainer = document.querySelector(".test-result-container");
-      if (resultsContainer) {
-        resultsContainer.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    };
+    if (!stats?.wpmHistory || stats.wpmHistory.length < 2) return;
 
-    const initialTimer = setTimeout(scrollToResults, 150);
-
-    let resizeTimeout;
-    const handleResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(scrollToResults, 300);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      clearTimeout(initialTimer);
-      clearTimeout(resizeTimeout);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+    const el = document.querySelector(".test-result-container");
+    el?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [stats?.wpmHistory]);
 
   const handleNextTest = () => {
     if (onTransitionStart) onTransitionStart();
