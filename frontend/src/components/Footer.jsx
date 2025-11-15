@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Footer = ({ isTyping }) => {
+const Footer = ({ isTyping, onOpenContact, onOpenSupport }) => {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -23,16 +23,29 @@ const Footer = ({ isTyping }) => {
 
       <div className="flex flex-col sm:flex-row items-center justify-between text-[#ebdbb2] text-sm">
         <div className="flex space-x-6 mb-3 sm:mb-0">
-          <Link to="/contact" className="hover:text-[#fe8019] transition">
+          <button
+            onClick={onOpenContact}
+            className="hover:text-[#fe8019] transition"
+          >
             Contact
-          </Link>
-          <Link to="/support" className="hover:text-[#fe8019] transition">
+          </button>
+
+          <button
+            onClick={onOpenSupport}
+            className="hover:text-[#fe8019] transition"
+          >
             Support
-          </Link>
+          </button>
+
           <Link to="/terms" className="hover:text-[#fe8019] transition">
             Terms
           </Link>
+
+          <Link to="/privacy" className="hover:text-[#fe8019] transition">
+            Privacy
+          </Link>
         </div>
+
         <p className="text-[#a89984]">
           {currentYear} inspired by{" "}
           <a

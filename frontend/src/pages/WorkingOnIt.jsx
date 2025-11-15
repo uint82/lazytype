@@ -37,11 +37,10 @@ export default function WorkingOnIt() {
         <div className="bg-neutral-800 rounded-full h-3 overflow-hidden mb-6 border-2 border-neutral-700">
           <div
             className="bg-yellow-600 h-full rounded-full animate-pulse"
-            style={{ width: "50%" }}
+            style={{ width: "65%" }}
           ></div>
         </div>
 
-        {/* Footer Text */}
         <p className="text-neutral-400 text-sm">
           Check back soon for something awesome! 🚀
         </p>
