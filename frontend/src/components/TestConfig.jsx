@@ -113,9 +113,9 @@ const TestConfig = ({
                 onClick={() => {
                   setSelectedMode("time");
                 }}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer transition-all ${selectedMode === "time"
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "time"
                     ? "bg-[#D8A657] text-[#282828]"
-                    : "bg-[#3c3836] hover:bg-[#504945]"
+                    : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
                   }`}
               >
                 Time
@@ -124,9 +124,9 @@ const TestConfig = ({
                 onClick={() => {
                   setSelectedMode("words");
                 }}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer transition-all ${selectedMode === "words"
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "words"
                     ? "bg-[#D8A657] text-[#282828]"
-                    : "bg-[#3c3836] hover:bg-[#504945]"
+                    : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
                   }`}
               >
                 Words
@@ -135,9 +135,9 @@ const TestConfig = ({
                 onClick={() => {
                   setSelectedMode("quotes");
                 }}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer transition-all ${selectedMode === "quotes"
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "quotes"
                     ? "bg-[#D8A657] text-[#282828]"
-                    : "bg-[#3c3836] hover:bg-[#504945]"
+                    : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
                   }`}
               >
                 Quotes
@@ -152,9 +152,9 @@ const TestConfig = ({
                   <button
                     key={duration}
                     onClick={() => handleSelectTime(duration)}
-                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium cursor-pointer ${selectedMode === "time" && selectedDuration === duration
+                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "time" && selectedDuration === duration
                         ? "bg-[#83A598] text-[#282828]"
-                        : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
+                        : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2] cursor-pointer"
                       }`}
                   >
                     {duration}s
@@ -167,9 +167,9 @@ const TestConfig = ({
                   <button
                     key={count}
                     onClick={() => handleSelectWords(count)}
-                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium cursor-pointer ${selectedMode === "words" && selectedWordCount === count
+                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "words" && selectedWordCount === count
                         ? "bg-[#83A598] text-[#282828]"
-                        : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
+                        : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2] cursor-pointer"
                       }`}
                   >
                     {count}
@@ -183,11 +183,11 @@ const TestConfig = ({
                     <button
                       key={group.index ?? "all"}
                       onClick={() => handleSelectGroup(group.index)}
-                      className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium cursor-pointer ${selectedMode === "quotes" &&
+                      className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "quotes" &&
                           selectedGroup === group.index &&
                           !selectedQuoteId
                           ? "bg-[#83A598] text-[#282828]"
-                          : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
+                          : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2] cursor-pointer"
                         }`}
                     >
                       {group.label}
