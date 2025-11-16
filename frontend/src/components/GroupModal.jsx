@@ -36,18 +36,15 @@ const GroupModal = ({
   };
 
   const handleButtonClick = (callback) => {
-    console.log("Button clicked, inputRef:", inputRef);
-
     callback();
 
-    setTimeout(() => {
-      if (inputRef?.current) {
-        console.log("Blurring input");
-        inputRef.current.blur();
-      } else {
-        console.log("No inputRef available");
-      }
-    }, 0);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (inputRef?.current) {
+          inputRef.current.blur();
+        }
+      });
+    });
   };
 
   const handleOverlayClick = (e) => {
