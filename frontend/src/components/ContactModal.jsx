@@ -19,7 +19,7 @@ const ContactModal = ({ isOpen, onClose }) => {
           </div>
           <button
             onClick={onClose}
-            className="text-[#a89984] hover:text-[#ebdbb2] transition-colors"
+            className="text-[#a89984] hover:text-[#ebdbb2] cursor-pointer transition-colors"
           >
             <X className="w-6 h-6" />
           </button>

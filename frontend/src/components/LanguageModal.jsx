@@ -15,7 +15,7 @@ const LanguageModal = ({
       className="fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]"
       onClick={handleOverlayClick}
     >
-      <div className="bg-[#282828] p-5 rounded-lg shadow-lg w-[90%] max-w-[320px] text-center">
+      <div className="bg-[#282828] p-5 rounded-lg border-2 border-[#504945] shadow-lg w-[90%] max-w-[320px] text-center">
         <h2 className="text-lg font-medium text-[#ebdbb2] mb-4">
           Select Language
         </h2>
@@ -27,7 +27,7 @@ const LanguageModal = ({
               onClick={() => onSelectLanguage(language.id)}
               className={`w-full px-4 py-2 rounded transition-all ${selectedLanguage === language.id
                   ? "bg-[#D8AB19] text-[#282828]"
-                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                 }`}
             >
               {language.name}

@@ -271,7 +271,7 @@ const LegalPages = () => {
           <div className="flex items-center space-x-3 text-[#ebdbb2] flex-wrap gap-2">
             <button
               onClick={() => navigate("/terms")}
-              className={`px-3 sm:px-4 py-2 rounded transition-colors text-sm sm:text-base ${currentPage === "terms"
+              className={`px-3 sm:px-4 py-2 rounded transition-colors cursor-pointer text-sm sm:text-base ${currentPage === "terms"
                   ? "text-[#b8bb26]"
                   : "text-[#a89984] hover:text-[#ebdbb2]"
                 }`}
@@ -281,7 +281,7 @@ const LegalPages = () => {
             </button>
             <button
               onClick={() => navigate("/privacy")}
-              className={`px-3 sm:px-4 py-2 rounded transition-colors text-sm sm:text-base ${currentPage === "privacy"
+              className={`px-3 sm:px-4 py-2 rounded transition-colors cursor-pointer text-sm sm:text-base ${currentPage === "privacy"
                   ? "text-[#b8bb26]"
                   : "text-[#a89984] hover:text-[#ebdbb2]"
                 }`}

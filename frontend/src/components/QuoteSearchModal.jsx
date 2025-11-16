@@ -140,6 +140,8 @@ const QuoteSearchModal = ({
     >
       <div
         className={`bg-[#282828] rounded-lg w-full max-w-3xl
+          border-2
+          border-[#504945]
           max-h-[79vh]
           overflow-y-auto
           flex flex-col
@@ -156,6 +158,10 @@ const QuoteSearchModal = ({
           sm:my-auto
           my-4
         `}
+        style={{
+          fontFamily:
+            "'Roboto Mono', monospace, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center p-3 sm:p-4 border-b border-[#3c3836] shrink-0">
@@ -164,7 +170,7 @@ const QuoteSearchModal = ({
           </h2>
           <button
             onClick={handleClose}
-            className="text-[#a89984] hover:text-[#ebdbb2] transition-colors"
+            className="text-[#a89984] hover:text-[#ebdbb2] transition-colors cursor-pointer"
           >
             <X size={24} />
           </button>
@@ -186,7 +192,7 @@ const QuoteSearchModal = ({
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89984] hover:text-[#ebdbb2] transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89984] hover:text-[#ebdbb2] transition-colors cursor-pointer"
                 aria-label="Clear search"
               >
                 <X size={18} />
@@ -202,7 +208,7 @@ const QuoteSearchModal = ({
                   onClick={() => setSelectedLength(key)}
                   className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all ${selectedLength === key
                       ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
+                      : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2] cursor-pointer"
                     }`}
                 >
                   {label}
@@ -239,7 +245,7 @@ const QuoteSearchModal = ({
                 <button
                   key={quote.id}
                   onClick={() => handleQuoteClick(quote)}
-                  className="w-full text-left p-3 bg-[#3c3836] hover:bg-[#504945] rounded-md transition-all mb-2"
+                  className="w-full text-left p-3 bg-[#3c3836] hover:bg-[#504945] cursor-pointer rounded-md transition-all mb-2"
                 >
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-[10px] sm:text-xs font-medium text-[#D8A657]">
@@ -278,8 +284,8 @@ const QuoteSearchModal = ({
                 onClick={goToPrevPage}
                 disabled={currentPage === 1}
                 className={`p-2 rounded-md transition-all ${currentPage === 1
-                    ? "bg-[#3c3836] text-[#665c54] cursor-not-allowed"
-                    : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                    ? "bg-[#3c3836] text-[#665c54]"
+                    : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                   }`}
               >
                 <ChevronLeft size={18} />
@@ -300,7 +306,7 @@ const QuoteSearchModal = ({
                       onClick={() => goToPage(page)}
                       className={`px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all ${page === currentPage
                           ? "bg-[#83A598] text-[#282828]"
-                          : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                          : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                         }`}
                     >
                       {page}
@@ -313,8 +319,8 @@ const QuoteSearchModal = ({
                 onClick={goToNextPage}
                 disabled={currentPage === totalPages}
                 className={`p-2 rounded-md transition-all ${currentPage === totalPages
-                    ? "bg-[#3c3836] text-[#665c54] cursor-not-allowed"
-                    : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                    ? "bg-[#3c3836] text-[#665c54]"
+                    : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                   }`}
               >
                 <ChevronRight size={18} />

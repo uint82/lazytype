@@ -87,7 +87,7 @@ const TestConfig = ({
                 <div className="flex flex-wrap gap-1 items-center">
                   <button
                     onClick={handleTogglePunctuation}
-                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedPunctuation
+                    className={`px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs font-medium ${selectedPunctuation
                         ? "bg-[#83A598] text-[#282828]"
                         : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
                       }`}
@@ -96,7 +96,7 @@ const TestConfig = ({
                   </button>
                   <button
                     onClick={handleToggleNumbers}
-                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedNumbers
+                    className={`px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs font-medium ${selectedNumbers
                         ? "bg-[#83A598] text-[#282828]"
                         : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
                       }`}
@@ -113,7 +113,7 @@ const TestConfig = ({
                 onClick={() => {
                   setSelectedMode("time");
                 }}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "time"
+                className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer transition-all ${selectedMode === "time"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945]"
                   }`}
@@ -124,7 +124,7 @@ const TestConfig = ({
                 onClick={() => {
                   setSelectedMode("words");
                 }}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "words"
+                className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer transition-all ${selectedMode === "words"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945]"
                   }`}
@@ -135,7 +135,7 @@ const TestConfig = ({
                 onClick={() => {
                   setSelectedMode("quotes");
                 }}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "quotes"
+                className={`px-3 py-1.5 rounded-md text-sm font-medium cursor-pointer transition-all ${selectedMode === "quotes"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945]"
                   }`}
@@ -152,7 +152,7 @@ const TestConfig = ({
                   <button
                     key={duration}
                     onClick={() => handleSelectTime(duration)}
-                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "time" && selectedDuration === duration
+                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium cursor-pointer ${selectedMode === "time" && selectedDuration === duration
                         ? "bg-[#83A598] text-[#282828]"
                         : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
                       }`}
@@ -167,7 +167,7 @@ const TestConfig = ({
                   <button
                     key={count}
                     onClick={() => handleSelectWords(count)}
-                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "words" && selectedWordCount === count
+                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium cursor-pointer ${selectedMode === "words" && selectedWordCount === count
                         ? "bg-[#83A598] text-[#282828]"
                         : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
                       }`}
@@ -183,7 +183,7 @@ const TestConfig = ({
                     <button
                       key={group.index ?? "all"}
                       onClick={() => handleSelectGroup(group.index)}
-                      className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "quotes" &&
+                      className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium cursor-pointer ${selectedMode === "quotes" &&
                           selectedGroup === group.index &&
                           !selectedQuoteId
                           ? "bg-[#83A598] text-[#282828]"
@@ -196,7 +196,7 @@ const TestConfig = ({
                 </div>
                 <button
                   onClick={() => setIsSearchModalOpen(true)}
-                  className={`p-1.5 rounded-md transition-all ${selectedQuoteId
+                  className={`p-1.5 rounded-md transition-all cursor-pointer ${selectedQuoteId
                       ? "bg-[#83A598] text-[#282828]"
                       : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
                     }`}
@@ -211,7 +211,7 @@ const TestConfig = ({
           <>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="px-3 py-1.5 rounded-md text-sm bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] transition-all font-medium"
+              className="px-3 py-1.5 rounded-md text-sm bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] transition-all cursor-pointer font-medium"
             >
               Test Configuration ▼
             </button>

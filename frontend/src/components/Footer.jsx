@@ -25,14 +25,14 @@ const Footer = ({ isTyping, onOpenContact, onOpenSupport }) => {
         <div className="flex space-x-6 mb-3 sm:mb-0">
           <button
             onClick={onOpenContact}
-            className="hover:text-[#fe8019] transition"
+            className="hover:text-[#fe8019] cursor-pointer transition"
           >
             Contact
           </button>
 
           <button
             onClick={onOpenSupport}
-            className="hover:text-[#fe8019] transition"
+            className="hover:text-[#fe8019] cursor-pointer transition"
           >
             Support
           </button>
