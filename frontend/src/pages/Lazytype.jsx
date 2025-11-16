@@ -130,7 +130,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
 
     blurTimeoutRef.current = setTimeout(() => {
       setIsFocused(false);
-    }, 1000);
+    }, 500);
   };
 
   const handleFocus = () => {
@@ -383,8 +383,10 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                       <FocusOverlay
                         isFocused={isFocused}
                         onClick={() => {
-                          inputRef.current?.focus();
-                          handleFocus();
+                          if (!isFocused) {
+                            inputRef.current?.focus();
+                            handleFocus();
+                          }
                         }}
                       />
 
@@ -394,19 +396,35 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                         y={caretPosition.y}
                         isTyping={isTyping}
                       />
-                      <WordGenerator
-                        key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(
-                          0,
-                          20,
-                        )}`}
-                        text={displayWords}
-                        input={input}
-                        onWordComplete={handleWordComplete}
-                        isInfinityMode={isInfinityMode}
-                        onDeletedCountChange={setDeletedCount}
-                        onCaretPositionChange={setCaretPosition}
-                        showConfig={showConfig}
-                      />
+
+                      <div
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                        }}
+                        onTouchStart={(e) => {
+                          e.preventDefault();
+                        }}
+                        onClick={() => {
+                          if (!isFocused) {
+                            inputRef.current?.focus();
+                            handleFocus();
+                          }
+                        }}
+                      >
+                        <WordGenerator
+                          key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(
+                            0,
+                            20,
+                          )}`}
+                          text={displayWords}
+                          input={input}
+                          onWordComplete={handleWordComplete}
+                          isInfinityMode={isInfinityMode}
+                          onDeletedCountChange={setDeletedCount}
+                          onCaretPositionChange={setCaretPosition}
+                          showConfig={showConfig}
+                        />
+                      </div>
                       <input
                         ref={inputRef}
                         type="text"
