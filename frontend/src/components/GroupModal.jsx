@@ -32,7 +32,7 @@ const GroupModal = ({
 
   const handleClose = () => {
     setIsVisible(false);
-    setTimeout(onClose, 150);
+    setTimeout(onClose, 0);
   };
 
   const handleButtonClick = (callback) => {
