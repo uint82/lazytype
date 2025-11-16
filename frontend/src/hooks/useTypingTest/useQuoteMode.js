@@ -17,6 +17,7 @@ export default function useQuoteMode(
 ) {
   const prevQuoteIdRef = useRef(selectedQuoteId);
   const prevModeRef = useRef(selectedMode);
+  const prevLanguageRef = useRef(selectedLanguage);
 
   useEffect(() => {
     if (selectedMode !== "quotes") {
@@ -26,6 +27,24 @@ export default function useQuoteMode(
 
     const justSwitchedToQuotes =
       prevModeRef.current !== "quotes" && selectedMode === "quotes";
+    const languageChanged = prevLanguageRef.current !== selectedLanguage;
+
+    if (selectedQuoteId !== null && languageChanged && selectedGroup === null) {
+      const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
+      if (quoteData) {
+        setQuote(quoteData);
+        setWords(quoteData.text);
+        setInput("");
+        setActualQuoteGroup(quoteData.group);
+        inputRef.current?.focus();
+        prevLanguageRef.current = selectedLanguage;
+        prevModeRef.current = selectedMode;
+        prevQuoteIdRef.current = selectedQuoteId;
+      } else {
+        prevLanguageRef.current = selectedLanguage;
+      }
+      return;
+    }
 
     if (selectedQuoteId !== null && justSwitchedToQuotes) {
       const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
@@ -38,6 +57,7 @@ export default function useQuoteMode(
       }
       prevModeRef.current = selectedMode;
       prevQuoteIdRef.current = selectedQuoteId;
+      prevLanguageRef.current = selectedLanguage;
       return;
     }
 
@@ -58,6 +78,7 @@ export default function useQuoteMode(
 
     prevQuoteIdRef.current = selectedQuoteId;
     prevModeRef.current = selectedMode;
+    prevLanguageRef.current = selectedLanguage;
   }, [
     selectedMode,
     selectedGroup,

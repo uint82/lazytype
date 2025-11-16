@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import useQuoteMode from "./useQuoteMode";
 import useTimeMode from "./useTimeMode";
 import useWordsMode from "./useWordsMode";
@@ -62,6 +62,19 @@ export default function useTypingTest() {
     selectedMode,
     isTestComplete,
   );
+
+  useEffect(() => {
+    if (
+      selectedMode === "quotes" &&
+      selectedQuoteId !== null &&
+      selectedGroup === null
+    ) {
+      const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
+      if (!quoteData) {
+        setSelectedQuoteId(null);
+      }
+    }
+  }, [selectedLanguage, selectedMode, selectedQuoteId, selectedGroup]);
 
   useEffect(() => {
     if (savedConfig.selectedQuoteId && savedConfig.mode === "quotes") {
@@ -187,29 +200,32 @@ export default function useTypingTest() {
     setTestId((prev) => prev + 1);
   };
 
-  const loadSpecificQuote = (quoteId) => {
-    if (quoteId === null) {
-      setSelectedQuoteId(null);
-      resetTest();
-      setDeletedCount(0);
-      setTestId((prev) => prev + 1);
-      inputRef.current?.focus();
-      return;
-    }
+  const loadSpecificQuote = useCallback(
+    (quoteId) => {
+      if (quoteId === null) {
+        setSelectedQuoteId(null);
+        resetTest();
+        setDeletedCount(0);
+        setTestId((prev) => prev + 1);
+        inputRef.current?.focus();
+        return;
+      }
 
-    const quoteData = getQuoteById(quoteId, selectedLanguage);
-    if (quoteData) {
-      setQuote(quoteData);
-      setWords(quoteData.text);
-      setSelectedQuoteId(quoteId);
-      setActualQuoteGroup(quoteData.group);
-      setInput("");
-      resetTest();
-      setDeletedCount(0);
-      setTestId((prev) => prev + 1);
-      inputRef.current?.focus();
-    }
-  };
+      const quoteData = getQuoteById(quoteId, selectedLanguage);
+      if (quoteData) {
+        setQuote(quoteData);
+        setWords(quoteData.text);
+        setSelectedQuoteId(quoteId);
+        setActualQuoteGroup(quoteData.group);
+        setInput("");
+        resetTest();
+        setDeletedCount(0);
+        setTestId((prev) => prev + 1);
+        inputRef.current?.focus();
+      }
+    },
+    [selectedLanguage, inputRef, resetTest],
+  );
 
   const setSelectedGroupWrapper = (group) => {
     if (selectedQuoteId !== null) {
