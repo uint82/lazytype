@@ -1,5 +1,8 @@
-import { useEffect } from "react";
-import { getRandomQuote } from "../../controllers/quotes-controller";
+import { useEffect, useRef } from "react";
+import {
+  getRandomQuote,
+  getQuoteById,
+} from "../../controllers/quotes-controller";
 
 export default function useQuoteMode(
   selectedMode,
@@ -10,9 +13,38 @@ export default function useQuoteMode(
   inputRef,
   selectedLanguage = "english",
   setActualQuoteGroup,
+  selectedQuoteId = null,
 ) {
+  const prevQuoteIdRef = useRef(selectedQuoteId);
+  const prevModeRef = useRef(selectedMode);
+
   useEffect(() => {
-    if (selectedMode === "quotes") {
+    if (selectedMode !== "quotes") {
+      prevModeRef.current = selectedMode;
+      return;
+    }
+
+    const justSwitchedToQuotes =
+      prevModeRef.current !== "quotes" && selectedMode === "quotes";
+
+    if (selectedQuoteId !== null && justSwitchedToQuotes) {
+      const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
+      if (quoteData) {
+        setQuote(quoteData);
+        setWords(quoteData.text);
+        setInput("");
+        setActualQuoteGroup(quoteData.group);
+        inputRef.current?.focus();
+      }
+      prevModeRef.current = selectedMode;
+      prevQuoteIdRef.current = selectedQuoteId;
+      return;
+    }
+
+    const quoteIdCleared =
+      prevQuoteIdRef.current !== null && selectedQuoteId === null;
+
+    if (selectedQuoteId === null || quoteIdCleared) {
       const { quote, actualGroup } = getRandomQuote(
         selectedGroup,
         selectedLanguage,
@@ -23,6 +55,9 @@ export default function useQuoteMode(
       setActualQuoteGroup(actualGroup);
       inputRef.current?.focus();
     }
+
+    prevQuoteIdRef.current = selectedQuoteId;
+    prevModeRef.current = selectedMode;
   }, [
     selectedMode,
     selectedGroup,
@@ -32,5 +67,6 @@ export default function useQuoteMode(
     setInput,
     inputRef,
     setActualQuoteGroup,
+    selectedQuoteId,
   ]);
 }

@@ -6,6 +6,7 @@ const STORAGE_KEYS = {
   LANGUAGE: "lazytype_language",
   PUNCTUATION: "lazytype_punctuation",
   NUMBERS: "lazytype_numbers",
+  SELECTED_QUOTE_ID: "lazytype_selected_quote_id",
 };
 
 const DEFAULTS = {
@@ -16,6 +17,7 @@ const DEFAULTS = {
   LANGUAGE: "english",
   PUNCTUATION: false,
   NUMBERS: false,
+  SELECTED_QUOTE_ID: null,
 };
 
 export const saveToStorage = (key, value) => {
@@ -44,6 +46,12 @@ export const saveTestConfig = (config) => {
   saveToStorage(STORAGE_KEYS.LANGUAGE, config.language);
   saveToStorage(STORAGE_KEYS.PUNCTUATION, config.punctuation);
   saveToStorage(STORAGE_KEYS.NUMBERS, config.numbers);
+
+  if (config.selectedQuoteId) {
+    saveToStorage(STORAGE_KEYS.SELECTED_QUOTE_ID, config.selectedQuoteId);
+  } else {
+    clearSelectedQuote();
+  }
 };
 
 export const loadTestConfig = () => {
@@ -55,6 +63,10 @@ export const loadTestConfig = () => {
     language: getFromStorage(STORAGE_KEYS.LANGUAGE, DEFAULTS.LANGUAGE),
     punctuation: getFromStorage(STORAGE_KEYS.PUNCTUATION, DEFAULTS.PUNCTUATION),
     numbers: getFromStorage(STORAGE_KEYS.NUMBERS, DEFAULTS.NUMBERS),
+    selectedQuoteId: getFromStorage(
+      STORAGE_KEYS.SELECTED_QUOTE_ID,
+      DEFAULTS.SELECTED_QUOTE_ID,
+    ),
   };
 };
 
@@ -67,7 +79,16 @@ export const clearTestConfig = () => {
     localStorage.removeItem(STORAGE_KEYS.LANGUAGE);
     localStorage.removeItem(STORAGE_KEYS.PUNCTUATION);
     localStorage.removeItem(STORAGE_KEYS.NUMBERS);
+    localStorage.removeItem(STORAGE_KEYS.SELECTED_QUOTE_ID);
   } catch (error) {
     console.error("Error clearing localStorage:", error);
+  }
+};
+
+export const clearSelectedQuote = () => {
+  try {
+    localStorage.removeItem(STORAGE_KEYS.SELECTED_QUOTE_ID);
+  } catch (error) {
+    console.error("Error clearing selected quote:", error);
   }
 };

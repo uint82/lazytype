@@ -9,6 +9,7 @@ import useTypingTest from "../hooks/useTypingTest";
 import LanguageSelector from "../components/LanguageSelector";
 import CapsLockIndicator from "../components/CapsLockIndicator";
 import { saveTestConfig } from "../utils/localStorage";
+import { getQuotes } from "../controllers/quotes-controller";
 
 const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const {
@@ -45,12 +46,15 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     showConfigOnMouseMove,
     setDeletedCount,
     stats,
+    selectedQuoteId,
+    loadSpecificQuote,
   } = useTypingTest();
 
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayWords, setDisplayWords] = useState(words);
   const [caretPosition, setCaretPosition] = useState({ x: 0, y: 0 });
   const [isFocused, setIsFocused] = useState(false);
+  const [quotesData, setQuotesData] = useState([]);
   const blurTimeoutRef = useRef(null);
   const typingTestContainerRef = useRef(null);
   const prevConfigRef = useRef({
@@ -59,11 +63,28 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     selectedWordCount,
     selectedGroup,
     selectedLanguage,
+    selectedQuoteId,
   });
   const prevWordsRef = useRef(words);
 
   const handleNewTestWithScroll = () => {
-    handleNewTest();
+    const isInSearchMode =
+      selectedMode === "quotes" &&
+      selectedQuoteId !== null &&
+      selectedGroup === null;
+
+    if (isInSearchMode) {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        loadSpecificQuote(selectedQuoteId);
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 100);
+      }, 150);
+    } else {
+      handleNewTest(true);
+    }
+
     setTimeout(() => {
       if (typingTestContainerRef.current) {
         typingTestContainerRef.current.scrollIntoView({
@@ -77,7 +98,15 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const handleRepeatTestWithTransition = () => {
     setIsTransitioning(true);
     setTimeout(() => {
-      handleRepeatTest();
+      if (
+        selectedMode === "quotes" &&
+        selectedQuoteId &&
+        selectedGroup === null
+      ) {
+        loadSpecificQuote(selectedQuoteId);
+      } else {
+        handleRepeatTest();
+      }
 
       setTimeout(() => {
         if (typingTestContainerRef.current) {
@@ -110,6 +139,28 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       blurTimeoutRef.current = null;
     }
     setIsFocused(true);
+  };
+
+  useEffect(() => {
+    const quotes = getQuotes(selectedLanguage);
+    setQuotesData(quotes);
+  }, [selectedLanguage]);
+
+  const handleSelectSpecificQuote = (quote) => {
+    setSelectedMode("quotes");
+
+    setSelectedGroup(null);
+
+    loadSpecificQuote(quote.id);
+
+    setTimeout(() => {
+      if (typingTestContainerRef.current) {
+        typingTestContainerRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 100);
   };
 
   useEffect(() => {
@@ -164,6 +215,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       language: selectedLanguage,
       punctuation: selectedPunctuation,
       numbers: selectedNumbers,
+      selectedQuoteId: selectedGroup === null ? selectedQuoteId : null,
     });
   }, [
     selectedMode,
@@ -173,6 +225,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     selectedLanguage,
     selectedPunctuation,
     selectedNumbers,
+    selectedQuoteId,
   ]);
 
   useEffect(() => {
@@ -183,7 +236,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       prevConfigRef.current.selectedGroup !== selectedGroup ||
       prevConfigRef.current.selectedLanguage !== selectedLanguage ||
       prevConfigRef.current.selectedPunctuation !== selectedPunctuation ||
-      prevConfigRef.current.selectedNumbers !== selectedNumbers;
+      prevConfigRef.current.selectedNumbers !== selectedNumbers ||
+      prevConfigRef.current.selectedQuoteId !== selectedQuoteId;
 
     if (words !== displayWords && words) {
       const isAddition =
@@ -198,6 +252,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
           selectedLanguage,
           selectedPunctuation,
           selectedNumbers,
+          selectedQuoteId,
         };
         prevWordsRef.current = words;
         setIsTransitioning(true);
@@ -223,6 +278,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     selectedLanguage,
     selectedPunctuation,
     selectedNumbers,
+    selectedQuoteId,
   ]);
 
   const isTyping = !showConfig;
@@ -260,6 +316,9 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                 selectedNumbers={selectedNumbers}
                 setSelectedNumbers={setSelectedNumbers}
                 onNewTest={handleNewTestWithScroll}
+                quotes={quotesData}
+                onSelectSpecificQuote={handleSelectSpecificQuote}
+                selectedQuoteId={selectedQuoteId}
               />
             </div>
           </div>

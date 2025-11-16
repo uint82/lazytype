@@ -8,6 +8,7 @@ import useTestState from "../useTestState";
 import useTypingStats from "../useTypingStats";
 import { resetWordGenerator } from "../../controllers/words-controller";
 import { loadTestConfig, saveTestConfig } from "../../utils/localStorage";
+import { getQuoteById } from "../../controllers/quotes-controller";
 
 export default function useTypingTest() {
   const savedConfig = loadTestConfig();
@@ -33,6 +34,9 @@ export default function useTypingTest() {
   const [deletedCount, setDeletedCount] = useState(0);
   const [actualQuoteGroup, setActualQuoteGroup] = useState([]);
   const [testId, setTestId] = useState(0);
+  const [selectedQuoteId, setSelectedQuoteId] = useState(
+    savedConfig.selectedQuoteId,
+  );
 
   const inputRef = useInputRef();
 
@@ -60,6 +64,13 @@ export default function useTypingTest() {
   );
 
   useEffect(() => {
+    if (savedConfig.selectedQuoteId && savedConfig.mode === "quotes") {
+      loadSpecificQuote(savedConfig.selectedQuoteId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     saveTestConfig({
       mode: selectedMode,
       group: selectedGroup,
@@ -68,6 +79,7 @@ export default function useTypingTest() {
       language: selectedLanguage,
       punctuation: selectedPunctuation,
       numbers: selectedNumbers,
+      selectedQuoteId: selectedGroup === null ? selectedQuoteId : null,
     });
   }, [
     selectedMode,
@@ -77,6 +89,7 @@ export default function useTypingTest() {
     selectedLanguage,
     selectedPunctuation,
     selectedNumbers,
+    selectedQuoteId,
   ]);
 
   useQuoteMode(
@@ -88,6 +101,7 @@ export default function useTypingTest() {
     inputRef,
     selectedLanguage,
     setActualQuoteGroup,
+    selectedQuoteId,
   );
 
   useWordsMode(
@@ -160,12 +174,52 @@ export default function useTypingTest() {
     }
   };
 
-  const handleNewTest = () => {
+  const handleNewTest = (clearQuote = true) => {
     resetTest();
     setDeletedCount(0);
     resetWordGenerator(selectedLanguage);
+
+    if (clearQuote && selectedMode === "quotes") {
+      setSelectedQuoteId(null);
+    }
+
     originalHandleNewTest();
     setTestId((prev) => prev + 1);
+  };
+
+  const loadSpecificQuote = (quoteId) => {
+    if (quoteId === null) {
+      setSelectedQuoteId(null);
+      resetTest();
+      setDeletedCount(0);
+      setTestId((prev) => prev + 1);
+      inputRef.current?.focus();
+      return;
+    }
+
+    const quoteData = getQuoteById(quoteId, selectedLanguage);
+    if (quoteData) {
+      setQuote(quoteData);
+      setWords(quoteData.text);
+      setSelectedQuoteId(quoteId);
+      setActualQuoteGroup(quoteData.group);
+      setInput("");
+      resetTest();
+      setDeletedCount(0);
+      setTestId((prev) => prev + 1);
+      inputRef.current?.focus();
+    }
+  };
+
+  const setSelectedGroupWrapper = (group) => {
+    if (selectedQuoteId !== null) {
+      setSelectedQuoteId(null);
+    }
+    setSelectedGroup(group);
+  };
+
+  const setSelectedModeWrapper = (mode) => {
+    setSelectedMode(mode);
   };
 
   return {
@@ -174,9 +228,9 @@ export default function useTypingTest() {
     words,
     inputRef,
     selectedGroup,
-    setSelectedGroup,
+    setSelectedGroup: setSelectedGroupWrapper,
     selectedMode,
-    setSelectedMode,
+    setSelectedMode: setSelectedModeWrapper,
     selectedDuration,
     setSelectedDuration,
     selectedWordCount,
@@ -204,5 +258,7 @@ export default function useTypingTest() {
     stats,
     actualQuoteGroup,
     handleRepeatTest,
+    selectedQuoteId,
+    loadSpecificQuote,
   };
 }

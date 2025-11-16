@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { Search } from "lucide-react";
 import { getQuoteGroups } from "../controllers/quotes-controller";
 import GroupModal from "./GroupModal";
+import QuoteSearchModal from "./QuoteSearchModal";
 
 const TestConfig = ({
   selectedGroup,
@@ -16,11 +18,19 @@ const TestConfig = ({
   setSelectedPunctuation,
   selectedNumbers,
   setSelectedNumbers,
-  onNewTest,
+  quotes,
+  onSelectSpecificQuote,
+  selectedQuoteId,
 }) => {
   const [groups, setGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isCompactView, setIsCompactView] = useState(false);
+  const [searchModalState, setSearchModalState] = useState({
+    searchTerm: "",
+    selectedLength: "all",
+    currentPage: 1,
+  });
 
   const testDurations = [15, 30, 60, 120];
   const wordCounts = [10, 25, 50, 100];
@@ -41,38 +51,29 @@ const TestConfig = ({
   const handleSelectGroup = (groupIndex) => {
     setSelectedMode("quotes");
     setSelectedGroup(groupIndex);
-    if (onNewTest) {
-      onNewTest();
-    }
   };
 
   const handleSelectTime = (duration) => {
     setSelectedMode("time");
     setSelectedDuration(duration);
-    if (onNewTest) {
-      onNewTest();
-    }
   };
 
   const handleSelectWords = (count) => {
     setSelectedMode("words");
     setSelectedWordCount(count);
-    if (onNewTest) {
-      onNewTest();
-    }
   };
 
   const handleTogglePunctuation = () => {
     setSelectedPunctuation(!selectedPunctuation);
-    if (onNewTest) {
-      onNewTest();
-    }
   };
 
   const handleToggleNumbers = () => {
     setSelectedNumbers(!selectedNumbers);
-    if (onNewTest) {
-      onNewTest();
+  };
+
+  const handleSelectSpecificQuote = (quote) => {
+    if (onSelectSpecificQuote) {
+      onSelectSpecificQuote(quote);
     }
   };
 
@@ -103,7 +104,6 @@ const TestConfig = ({
                     numbers
                   </button>
                 </div>
-
                 <span className="text-[#a89984] mx-0.5 text-xs">|</span>
               </>
             )}
@@ -112,9 +112,6 @@ const TestConfig = ({
               <button
                 onClick={() => {
                   setSelectedMode("time");
-                  if (onNewTest) {
-                    onNewTest();
-                  }
                 }}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "time"
                     ? "bg-[#D8A657] text-[#282828]"
@@ -126,9 +123,6 @@ const TestConfig = ({
               <button
                 onClick={() => {
                   setSelectedMode("words");
-                  if (onNewTest) {
-                    onNewTest();
-                  }
                 }}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "words"
                     ? "bg-[#D8A657] text-[#282828]"
@@ -140,9 +134,6 @@ const TestConfig = ({
               <button
                 onClick={() => {
                   setSelectedMode("quotes");
-                  if (onNewTest) {
-                    onNewTest();
-                  }
                 }}
                 className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "quotes"
                     ? "bg-[#D8A657] text-[#282828]"
@@ -186,20 +177,34 @@ const TestConfig = ({
                 ))}
               </div>
             ) : (
-              <div className="flex flex-wrap gap-1 items-center">
-                {groups.map((group) => (
-                  <button
-                    key={group.index ?? "all"}
-                    onClick={() => handleSelectGroup(group.index)}
-                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "quotes" && selectedGroup === group.index
-                        ? "bg-[#83A598] text-[#282828]"
-                        : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
-                      }`}
-                  >
-                    {group.label}
-                  </button>
-                ))}
-              </div>
+              <>
+                <div className="flex flex-wrap gap-1 items-center">
+                  {groups.map((group) => (
+                    <button
+                      key={group.index ?? "all"}
+                      onClick={() => handleSelectGroup(group.index)}
+                      className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "quotes" &&
+                          selectedGroup === group.index &&
+                          !selectedQuoteId
+                          ? "bg-[#83A598] text-[#282828]"
+                          : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
+                        }`}
+                    >
+                      {group.label}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setIsSearchModalOpen(true)}
+                  className={`p-1.5 rounded-md transition-all ${selectedQuoteId
+                      ? "bg-[#83A598] text-[#282828]"
+                      : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
+                    }`}
+                  title="Search quotes"
+                >
+                  <Search size={16} />
+                </button>
+              </>
             )}
           </div>
         ) : (
@@ -210,7 +215,6 @@ const TestConfig = ({
             >
               Test Configuration ▼
             </button>
-
             {isModalOpen && (
               <GroupModal
                 groups={groups}
@@ -220,17 +224,31 @@ const TestConfig = ({
                 selectedWordCount={selectedWordCount}
                 selectedPunctuation={selectedPunctuation}
                 selectedNumbers={selectedNumbers}
+                selectedQuoteId={selectedQuoteId}
                 onSelectGroup={handleSelectGroup}
                 onSelectTime={handleSelectTime}
                 onSelectWords={handleSelectWords}
                 onTogglePunctuation={handleTogglePunctuation}
                 onToggleNumbers={handleToggleNumbers}
+                onOpenSearchModal={() => setIsSearchModalOpen(true)}
                 onClose={() => setIsModalOpen(false)}
               />
             )}
           </>
         )}
       </div>
+
+      {isSearchModalOpen && (
+        <QuoteSearchModal
+          quotes={quotes}
+          onSelectQuote={handleSelectSpecificQuote}
+          onClose={() => setIsSearchModalOpen(false)}
+          initialSearchTerm={searchModalState.searchTerm}
+          initialSelectedLength={searchModalState.selectedLength}
+          initialCurrentPage={searchModalState.currentPage}
+          onStateChange={setSearchModalState}
+        />
+      )}
     </div>
   );
 };
