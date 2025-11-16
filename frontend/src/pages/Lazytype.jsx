@@ -328,6 +328,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                 quotes={quotesData}
                 onSelectSpecificQuote={handleSelectSpecificQuote}
                 selectedQuoteId={selectedQuoteId}
+                inputRef={inputRef}
               />
             </div>
           </div>

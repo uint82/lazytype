@@ -21,6 +21,7 @@ const TestConfig = ({
   quotes,
   onSelectSpecificQuote,
   selectedQuoteId,
+  inputRef,
 }) => {
   const [groups, setGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -232,6 +233,7 @@ const TestConfig = ({
                 onToggleNumbers={handleToggleNumbers}
                 onOpenSearchModal={() => setIsSearchModalOpen(true)}
                 onClose={() => setIsModalOpen(false)}
+                inputRef={inputRef}
               />
             )}
           </>

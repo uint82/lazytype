@@ -17,6 +17,7 @@ const GroupModal = ({
   onToggleNumbers,
   onClose,
   onOpenSearchModal,
+  inputRef,
 }) => {
   const [activeTab, setActiveTab] = useState(selectedMode || "quotes");
 
@@ -32,6 +33,21 @@ const GroupModal = ({
   const handleClose = () => {
     setIsVisible(false);
     setTimeout(onClose, 150);
+  };
+
+  const handleButtonClick = (callback) => {
+    console.log("Button clicked, inputRef:", inputRef);
+
+    callback();
+
+    setTimeout(() => {
+      if (inputRef?.current) {
+        console.log("Blurring input");
+        inputRef.current.blur();
+      } else {
+        console.log("No inputRef available");
+      }
+    }, 0);
   };
 
   const handleOverlayClick = (e) => {
@@ -52,10 +68,12 @@ const GroupModal = ({
         <div className="flex flex-col gap-3 max-h-[70vh] overflow-y-auto">
           <div className="flex flex-col gap-2">
             <button
-              onClick={() => {
-                setActiveTab("time");
-                onSelectTime(selectedMode === "time" ? selectedDuration : 60);
-              }}
+              onClick={() =>
+                handleButtonClick(() => {
+                  setActiveTab("time");
+                  onSelectTime(selectedMode === "time" ? selectedDuration : 60);
+                })
+              }
               className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "time"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
@@ -65,12 +83,14 @@ const GroupModal = ({
             </button>
 
             <button
-              onClick={() => {
-                setActiveTab("words");
-                onSelectWords(
-                  selectedMode === "words" ? selectedWordCount : 25,
-                );
-              }}
+              onClick={() =>
+                handleButtonClick(() => {
+                  setActiveTab("words");
+                  onSelectWords(
+                    selectedMode === "words" ? selectedWordCount : 25,
+                  );
+                })
+              }
               className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "words"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
@@ -80,10 +100,12 @@ const GroupModal = ({
             </button>
 
             <button
-              onClick={() => {
-                setActiveTab("quotes");
-                onSelectGroup(selectedGroup ?? null);
-              }}
+              onClick={() =>
+                handleButtonClick(() => {
+                  setActiveTab("quotes");
+                  onSelectGroup(selectedGroup ?? null);
+                })
+              }
               className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "quotes"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
@@ -99,7 +121,9 @@ const GroupModal = ({
                 {timeDurations.map((duration) => (
                   <button
                     key={duration}
-                    onClick={() => onSelectTime(duration)}
+                    onClick={() =>
+                      handleButtonClick(() => onSelectTime(duration))
+                    }
                     className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedMode === "time" && selectedDuration === duration
                         ? "bg-[#D8AB19] text-[#282828]"
                         : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
@@ -112,7 +136,7 @@ const GroupModal = ({
                 <div className="border-t border-[#3c3836] my-2"></div>
 
                 <button
-                  onClick={onTogglePunctuation}
+                  onClick={() => handleButtonClick(onTogglePunctuation)}
                   className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedPunctuation
                       ? "bg-[#83A598] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
@@ -122,7 +146,7 @@ const GroupModal = ({
                 </button>
 
                 <button
-                  onClick={onToggleNumbers}
+                  onClick={() => handleButtonClick(onToggleNumbers)}
                   className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedNumbers
                       ? "bg-[#83A598] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
@@ -136,7 +160,9 @@ const GroupModal = ({
                 {wordCounts.map((count) => (
                   <button
                     key={count}
-                    onClick={() => onSelectWords(count)}
+                    onClick={() =>
+                      handleButtonClick(() => onSelectWords(count))
+                    }
                     className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedMode === "words" && selectedWordCount === count
                         ? "bg-[#D8AB19] text-[#282828]"
                         : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
@@ -149,7 +175,7 @@ const GroupModal = ({
                 <div className="border-t border-[#3c3836] my-2"></div>
 
                 <button
-                  onClick={onTogglePunctuation}
+                  onClick={() => handleButtonClick(onTogglePunctuation)}
                   className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedPunctuation
                       ? "bg-[#83A598] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
@@ -159,7 +185,7 @@ const GroupModal = ({
                 </button>
 
                 <button
-                  onClick={onToggleNumbers}
+                  onClick={() => handleButtonClick(onToggleNumbers)}
                   className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedNumbers
                       ? "bg-[#83A598] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
@@ -173,7 +199,9 @@ const GroupModal = ({
                 {groups.map((group) => (
                   <button
                     key={group.index ?? "all"}
-                    onClick={() => onSelectGroup(group.index)}
+                    onClick={() =>
+                      handleButtonClick(() => onSelectGroup(group.index))
+                    }
                     className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedMode === "quotes" &&
                         selectedGroup === group.index &&
                         !selectedQuoteId
