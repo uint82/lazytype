@@ -139,6 +139,15 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       blurTimeoutRef.current = null;
     }
     setIsFocused(true);
+
+    setTimeout(() => {
+      if (typingTestContainerRef.current) {
+        typingTestContainerRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    }, 100);
   };
 
   useEffect(() => {

@@ -58,7 +58,7 @@ const GroupModal = ({
               }}
               className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "time"
                   ? "bg-[#D8AB19] text-[#282828]"
-                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                 }`}
             >
               Time
@@ -73,7 +73,7 @@ const GroupModal = ({
               }}
               className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "words"
                   ? "bg-[#D8AB19] text-[#282828]"
-                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                 }`}
             >
               Words
@@ -86,7 +86,7 @@ const GroupModal = ({
               }}
               className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "quotes"
                   ? "bg-[#D8AB19] text-[#282828]"
-                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                 }`}
             >
               Quotes
@@ -102,7 +102,7 @@ const GroupModal = ({
                     onClick={() => onSelectTime(duration)}
                     className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedMode === "time" && selectedDuration === duration
                         ? "bg-[#D8AB19] text-[#282828]"
-                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                       }`}
                   >
                     {duration}s
@@ -113,7 +113,7 @@ const GroupModal = ({
 
                 <button
                   onClick={onTogglePunctuation}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedPunctuation
+                  className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedPunctuation
                       ? "bg-[#83A598] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
                     }`}
@@ -123,7 +123,7 @@ const GroupModal = ({
 
                 <button
                   onClick={onToggleNumbers}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedNumbers
+                  className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedNumbers
                       ? "bg-[#83A598] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
                     }`}
@@ -139,7 +139,7 @@ const GroupModal = ({
                     onClick={() => onSelectWords(count)}
                     className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedMode === "words" && selectedWordCount === count
                         ? "bg-[#D8AB19] text-[#282828]"
-                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                       }`}
                   >
                     {count}
@@ -150,7 +150,7 @@ const GroupModal = ({
 
                 <button
                   onClick={onTogglePunctuation}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedPunctuation
+                  className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedPunctuation
                       ? "bg-[#83A598] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
                     }`}
@@ -160,7 +160,7 @@ const GroupModal = ({
 
                 <button
                   onClick={onToggleNumbers}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedNumbers
+                  className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedNumbers
                       ? "bg-[#83A598] text-[#282828]"
                       : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
                     }`}
@@ -178,7 +178,7 @@ const GroupModal = ({
                         selectedGroup === group.index &&
                         !selectedQuoteId
                         ? "bg-[#D8AB19] text-[#282828]"
-                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                       }`}
                   >
                     {group.label}
@@ -190,7 +190,7 @@ const GroupModal = ({
                     handleClose();
                     onOpenSearchModal();
                   }}
-                  className={`mt-2 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md transition-all ${selectedQuoteId
+                  className={`mt-2 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md transition-all cursor-pointer ${selectedQuoteId
                       ? "bg-[#D8AB19] text-[#282828]"
                       : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
                     }`}
