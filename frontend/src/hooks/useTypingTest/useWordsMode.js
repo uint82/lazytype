@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { getRandomWords } from "../../controllers/words-controller";
 
 export default function useWordsMode(
@@ -11,25 +11,17 @@ export default function useWordsMode(
   selectedLanguage = "english",
   selectedPunctuation = false,
   selectedNumbers = false,
-  shouldAutoFocus = true,
 ) {
-  const shouldAutoFocusRef = useRef(shouldAutoFocus);
-  shouldAutoFocusRef.current = shouldAutoFocus;
-
   useEffect(() => {
     if (selectedMode === "words") {
       const randomWords = getRandomWords(selectedWordCount, selectedLanguage, {
         punctuation: selectedPunctuation,
         numbers: selectedNumbers,
       });
-
       setQuote({ text: randomWords });
       setWords(randomWords);
       setInput("");
-
-      if (shouldAutoFocusRef.current) {
-        inputRef.current?.focus();
-      }
+      inputRef.current?.focus();
     }
   }, [
     selectedMode,

@@ -14,13 +14,10 @@ export default function useQuoteMode(
   selectedLanguage = "english",
   setActualQuoteGroup,
   selectedQuoteId = null,
-  shouldAutoFocus = true,
 ) {
   const prevQuoteIdRef = useRef(selectedQuoteId);
   const prevModeRef = useRef(selectedMode);
   const prevLanguageRef = useRef(selectedLanguage);
-
-  const focusRequestedRef = useRef(false);
 
   useEffect(() => {
     if (selectedMode !== "quotes") {
@@ -32,42 +29,41 @@ export default function useQuoteMode(
       prevModeRef.current !== "quotes" && selectedMode === "quotes";
     const languageChanged = prevLanguageRef.current !== selectedLanguage;
 
-    if (selectedQuoteId !== null) {
+    if (selectedQuoteId !== null && languageChanged && selectedGroup === null) {
       const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
-
-      if (languageChanged && selectedGroup === null) {
-        if (quoteData) {
-          setQuote(quoteData);
-          setWords(quoteData.text);
-          setInput("");
-          setActualQuoteGroup(quoteData.group);
-        }
-        focusRequestedRef.current = true;
-
+      if (quoteData) {
+        setQuote(quoteData);
+        setWords(quoteData.text);
+        setInput("");
+        setActualQuoteGroup(quoteData.group);
+        inputRef.current?.focus();
+        prevLanguageRef.current = selectedLanguage;
         prevModeRef.current = selectedMode;
         prevQuoteIdRef.current = selectedQuoteId;
+      } else {
         prevLanguageRef.current = selectedLanguage;
-        return;
       }
+      return;
+    }
 
-      if (justSwitchedToQuotes) {
-        if (quoteData) {
-          setQuote(quoteData);
-          setWords(quoteData.text);
-          setInput("");
-          setActualQuoteGroup(quoteData.group);
-        }
-        focusRequestedRef.current = true;
-
-        prevModeRef.current = selectedMode;
-        prevQuoteIdRef.current = selectedQuoteId;
-        prevLanguageRef.current = selectedLanguage;
-        return;
+    if (selectedQuoteId !== null && justSwitchedToQuotes) {
+      const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
+      if (quoteData) {
+        setQuote(quoteData);
+        setWords(quoteData.text);
+        setInput("");
+        setActualQuoteGroup(quoteData.group);
+        inputRef.current?.focus();
       }
+      prevModeRef.current = selectedMode;
+      prevQuoteIdRef.current = selectedQuoteId;
+      prevLanguageRef.current = selectedLanguage;
+      return;
     }
 
     const quoteIdCleared =
       prevQuoteIdRef.current !== null && selectedQuoteId === null;
+
     if (selectedQuoteId === null || quoteIdCleared) {
       const { quote, actualGroup } = getRandomQuote(
         selectedGroup,
@@ -77,7 +73,7 @@ export default function useQuoteMode(
       setWords(quote.text);
       setInput("");
       setActualQuoteGroup(actualGroup);
-      focusRequestedRef.current = true;
+      inputRef.current?.focus();
     }
 
     prevQuoteIdRef.current = selectedQuoteId;
@@ -87,30 +83,11 @@ export default function useQuoteMode(
     selectedMode,
     selectedGroup,
     selectedLanguage,
-    selectedQuoteId,
     setQuote,
     setWords,
     setInput,
     inputRef,
     setActualQuoteGroup,
-  ]);
-
-  useEffect(() => {
-    if (!focusRequestedRef.current) return;
-
-    if (shouldAutoFocus) {
-      requestAnimationFrame(() => {
-        inputRef.current?.focus();
-      });
-    }
-
-    focusRequestedRef.current = false;
-  }, [
-    shouldAutoFocus,
-    selectedMode,
     selectedQuoteId,
-    selectedLanguage,
-    selectedGroup,
-    inputRef,
   ]);
 }

@@ -48,7 +48,6 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     stats,
     selectedQuoteId,
     loadSpecificQuote,
-    disableAutoFocus,
   } = useTypingTest();
 
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -329,8 +328,6 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                 quotes={quotesData}
                 onSelectSpecificQuote={handleSelectSpecificQuote}
                 selectedQuoteId={selectedQuoteId}
-                inputRef={inputRef}
-                disableAutoFocus={disableAutoFocus}
               />
             </div>
           </div>
@@ -403,7 +400,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                       />
 
                       <Caret
-                        key={`caret-${testId}-${selectedMode}-${selectedLanguage}`}
+                        key={`caret-${testId}-&{selectedMode}-${selectedLanguage}`}
                         x={caretPosition.x}
                         y={caretPosition.y}
                         isTyping={isTyping}
@@ -447,6 +444,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                         spellCheck={false}
                         onChange={handleInputChange}
                         className="opacity-0 absolute pointer-events-none"
+                        autoFocus
                         onFocus={handleFocus}
                         onBlur={handleBlur}
                         onKeyDown={(e) => {
