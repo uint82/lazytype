@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import TooltipHover from "./TooltipHover";
 import {
   LineChart,
@@ -32,16 +32,6 @@ const TestResults = ({
     burst: true,
     errors: true,
   });
-
-  useEffect(() => {
-    if (!stats?.wpmHistory || stats.wpmHistory.length < 2) return;
-
-    const el = document.querySelector(".test-result-container");
-    el?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }, [stats?.wpmHistory]);
 
   const handleNextTest = () => {
     if (onTransitionStart) onTransitionStart();

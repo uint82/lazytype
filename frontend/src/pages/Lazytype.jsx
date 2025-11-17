@@ -60,6 +60,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const [caretPosition, setCaretPosition] = useState({ x: 0, y: 0 });
   const [isFocused, setIsFocused] = useState(false);
   const [quotesData, setQuotesData] = useState([]);
+  const [hasScrolledToResults, setHasScrolledToResults] = useState(false);
 
   const restartCooldownRef = useRef(false);
   const blurTimeoutRef = useRef(null);
@@ -110,10 +111,10 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     if (typingTestContainerRef.current) {
       typingTestContainerRef.current.scrollIntoView({
         behavior: "smooth",
-        block: "center",
+        block: isTestComplete ? "start" : "center",
       });
     }
-  }, []);
+  }, [isTestComplete]);
 
   const clearBlurTimeout = useCallback(() => {
     if (blurTimeoutRef.current) {
@@ -137,6 +138,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   );
 
   const handleNewTestWithScroll = useCallback(() => {
+    setHasScrolledToResults(false);
     if (isInSearchMode) {
       performTransition(() => loadSpecificQuote(selectedQuoteId));
     } else {
@@ -165,6 +167,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   }, [handleNewTestWithScroll]);
 
   const handleRepeatTestWithTransition = useCallback(() => {
+    setHasScrolledToResults(false);
     performTransition(() => {
       if (
         selectedMode === "quotes" &&
@@ -195,8 +198,11 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const handleFocus = useCallback(() => {
     clearBlurTimeout();
     setIsFocused(true);
-    scrollToTypingTest();
-  }, [clearBlurTimeout, scrollToTypingTest]);
+
+    if (!isTestComplete) {
+      scrollToTypingTest();
+    }
+  }, [clearBlurTimeout, scrollToTypingTest, isTestComplete]);
 
   const handleSelectSpecificQuote = useCallback(
     (quote) => {
@@ -213,8 +219,11 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       inputRef.current?.focus();
       handleFocus();
     }
-    scrollToTypingTest();
-  }, [isFocused, inputRef, handleFocus, scrollToTypingTest]);
+
+    if (!isTestComplete) {
+      scrollToTypingTest();
+    }
+  }, [isFocused, inputRef, handleFocus, scrollToTypingTest, isTestComplete]);
 
   const handleKeyDown = useCallback(
     (e) => {
@@ -278,12 +287,31 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   }, [clearBlurTimeout]);
 
   useEffect(() => {
+    if (isTestComplete && !hasScrolledToResults) {
+      setTimeout(() => {
+        if (typingTestContainerRef.current) {
+          typingTestContainerRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+        setHasScrolledToResults(true);
+      }, SCROLL_DELAY);
+    }
+  }, [isTestComplete, hasScrolledToResults]);
+
+  useEffect(() => {
     const handleResize = () => {
-      setTimeout(scrollToTypingTest, 500);
+      if (!isTestComplete) {
+        setTimeout(scrollToTypingTest, 500);
+      }
     };
 
     window.addEventListener("resize", handleResize);
-    setTimeout(scrollToTypingTest, SCROLL_DELAY);
+
+    if (!isTestComplete) {
+      setTimeout(scrollToTypingTest, SCROLL_DELAY);
+    }
 
     if (!showConfig && !isTestComplete) {
       scrollToTypingTest();
