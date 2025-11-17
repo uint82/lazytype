@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import WordGenerator from "../components/WordGenerator";
 import TestConfig from "../components/TestConfig";
 import TestStatus from "../components/TestStatus";
@@ -11,7 +11,12 @@ import CapsLockIndicator from "../components/CapsLockIndicator";
 import { saveTestConfig } from "../utils/localStorage";
 import { getQuotes } from "../controllers/quotes-controller";
 
+const TRANSITION_DURATION = 100;
+const SCROLL_DELAY = 100;
+const BLUR_DELAY = 300;
+
 const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
+  const typingTestHook = useTypingTest();
   const {
     quote,
     words,
@@ -48,13 +53,15 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     stats,
     selectedQuoteId,
     loadSpecificQuote,
-  } = useTypingTest();
+  } = typingTestHook;
 
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [displayWords, setDisplayWords] = useState(words);
   const [caretPosition, setCaretPosition] = useState({ x: 0, y: 0 });
   const [isFocused, setIsFocused] = useState(false);
   const [quotesData, setQuotesData] = useState([]);
+
+  const restartCooldownRef = useRef(false);
   const blurTimeoutRef = useRef(null);
   const typingTestContainerRef = useRef(null);
   const prevConfigRef = useRef({
@@ -67,37 +74,98 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   });
   const prevWordsRef = useRef(words);
 
-  const handleNewTestWithScroll = () => {
-    const isInSearchMode =
+  const isTyping = !showConfig;
+  const isInSearchMode = useMemo(
+    () =>
       selectedMode === "quotes" &&
       selectedQuoteId !== null &&
-      selectedGroup === null;
+      selectedGroup === null,
+    [selectedMode, selectedQuoteId, selectedGroup],
+  );
 
-    if (isInSearchMode) {
+  const currentConfig = useMemo(
+    () => ({
+      selectedMode,
+      selectedDuration,
+      selectedWordCount,
+      selectedGroup,
+      selectedLanguage,
+      selectedPunctuation,
+      selectedNumbers,
+      selectedQuoteId,
+    }),
+    [
+      selectedMode,
+      selectedDuration,
+      selectedWordCount,
+      selectedGroup,
+      selectedLanguage,
+      selectedPunctuation,
+      selectedNumbers,
+      selectedQuoteId,
+    ],
+  );
+
+  const scrollToTypingTest = useCallback(() => {
+    if (typingTestContainerRef.current) {
+      typingTestContainerRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, []);
+
+  const clearBlurTimeout = useCallback(() => {
+    if (blurTimeoutRef.current) {
+      clearTimeout(blurTimeoutRef.current);
+      blurTimeoutRef.current = null;
+    }
+  }, []);
+
+  const performTransition = useCallback(
+    (action, scrollAfter = true) => {
       setIsTransitioning(true);
       setTimeout(() => {
-        loadSpecificQuote(selectedQuoteId);
-        setTimeout(() => {
-          setIsTransitioning(false);
-        }, 100);
-      }, 150);
+        action();
+        if (scrollAfter) {
+          setTimeout(scrollToTypingTest, SCROLL_DELAY);
+        }
+        setTimeout(() => setIsTransitioning(false), TRANSITION_DURATION);
+      }, TRANSITION_DURATION);
+    },
+    [scrollToTypingTest],
+  );
+
+  const handleNewTestWithScroll = useCallback(() => {
+    if (isInSearchMode) {
+      performTransition(() => loadSpecificQuote(selectedQuoteId));
     } else {
       handleNewTest(true);
+      setTimeout(scrollToTypingTest, SCROLL_DELAY);
     }
+  }, [
+    isInSearchMode,
+    selectedQuoteId,
+    loadSpecificQuote,
+    handleNewTest,
+    scrollToTypingTest,
+    performTransition,
+  ]);
+
+  const handleRestartClick = useCallback(() => {
+    if (restartCooldownRef.current) return;
+
+    restartCooldownRef.current = true;
 
     setTimeout(() => {
-      if (typingTestContainerRef.current) {
-        typingTestContainerRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
-    }, 100);
-  };
+      restartCooldownRef.current = false;
+    }, TRANSITION_DURATION * 3);
 
-  const handleRepeatTestWithTransition = () => {
-    setIsTransitioning(true);
-    setTimeout(() => {
+    handleNewTestWithScroll();
+  }, [handleNewTestWithScroll]);
+
+  const handleRepeatTestWithTransition = useCallback(() => {
+    performTransition(() => {
       if (
         selectedMode === "quotes" &&
         selectedQuoteId &&
@@ -107,112 +175,128 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       } else {
         handleRepeatTest();
       }
+    });
+  }, [
+    selectedMode,
+    selectedQuoteId,
+    selectedGroup,
+    loadSpecificQuote,
+    handleRepeatTest,
+    performTransition,
+  ]);
 
-      setTimeout(() => {
-        if (typingTestContainerRef.current) {
-          typingTestContainerRef.current.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-        }
-      }, 100);
-
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, 250);
-    }, 150);
-  };
-
-  const handleBlur = () => {
-    if (blurTimeoutRef.current) {
-      clearTimeout(blurTimeoutRef.current);
-    }
-
+  const handleBlur = useCallback(() => {
+    clearBlurTimeout();
     blurTimeoutRef.current = setTimeout(() => {
       setIsFocused(false);
-    }, 500);
-  };
+    }, BLUR_DELAY);
+  }, [clearBlurTimeout]);
 
-  const handleFocus = () => {
-    if (blurTimeoutRef.current) {
-      clearTimeout(blurTimeoutRef.current);
-      blurTimeoutRef.current = null;
-    }
+  const handleFocus = useCallback(() => {
+    clearBlurTimeout();
     setIsFocused(true);
+    setTimeout(scrollToTypingTest, SCROLL_DELAY);
+  }, [clearBlurTimeout, scrollToTypingTest]);
 
-    setTimeout(() => {
-      if (typingTestContainerRef.current) {
-        typingTestContainerRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
+  const handleSelectSpecificQuote = useCallback(
+    (quote) => {
+      setSelectedMode("quotes");
+      setSelectedGroup(null);
+      loadSpecificQuote(quote.id);
+      setTimeout(scrollToTypingTest, SCROLL_DELAY);
+    },
+    [setSelectedMode, setSelectedGroup, loadSpecificQuote, scrollToTypingTest],
+  );
+
+  const handleInputClick = useCallback(() => {
+    if (!isFocused) {
+      inputRef.current?.focus();
+      handleFocus();
+    }
+  }, [isFocused, inputRef, handleFocus]);
+
+  const handleKeyDown = useCallback(
+    (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "c") {
+        e.preventDefault();
+        return;
       }
-    }, 100);
-  };
+
+      if ((e.ctrlKey || e.metaKey) && e.key === "v") {
+        e.preventDefault();
+        return;
+      }
+
+      if (e.key === " ") {
+        const words = input.split(" ");
+        const currentWord = words[words.length - 1];
+        if (currentWord.length === 0) {
+          e.preventDefault();
+          return;
+        }
+      }
+
+      if (e.key === "Backspace") {
+        const quoteWords = displayWords.trim().split(" ");
+        const inputWords = input.trim().split(" ");
+        const hasTrailingSpace = input.endsWith(" ");
+        const currentWordIndex = hasTrailingSpace
+          ? inputWords.length
+          : inputWords.length - 1;
+        const prevWordIndex = currentWordIndex - 1;
+
+        if (prevWordIndex >= 0) {
+          const prevInputWord = inputWords[prevWordIndex];
+          const correctPrevWord = quoteWords[prevWordIndex];
+          const isPrevWordPerfect =
+            prevInputWord &&
+            correctPrevWord &&
+            prevInputWord.length === correctPrevWord.length &&
+            prevInputWord.split("").every((c, i) => c === correctPrevWord[i]);
+          const caretAtWordBoundary =
+            hasTrailingSpace ||
+            input.slice(-1) === " " ||
+            inputWords.length > quoteWords.length;
+
+          if (isPrevWordPerfect && caretAtWordBoundary) {
+            e.preventDefault();
+          }
+        }
+      }
+    },
+    [input, displayWords],
+  );
 
   useEffect(() => {
     const quotes = getQuotes(selectedLanguage);
     setQuotesData(quotes);
   }, [selectedLanguage]);
 
-  const handleSelectSpecificQuote = (quote) => {
-    setSelectedMode("quotes");
-
-    setSelectedGroup(null);
-
-    loadSpecificQuote(quote.id);
-
-    setTimeout(() => {
-      if (typingTestContainerRef.current) {
-        typingTestContainerRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
-    }, 100);
-  };
+  useEffect(() => {
+    return clearBlurTimeout;
+  }, [clearBlurTimeout]);
 
   useEffect(() => {
-    return () => {
-      if (blurTimeoutRef.current) {
-        clearTimeout(blurTimeoutRef.current);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    const scrollToTypingTest = () => {
-      if (typingTestContainerRef.current && !isTestComplete) {
-        typingTestContainerRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-        });
-      }
-    };
-
     const handleResize = () => {
       setTimeout(scrollToTypingTest, 500);
     };
 
     window.addEventListener("resize", handleResize);
-
-    setTimeout(scrollToTypingTest, 100);
+    setTimeout(scrollToTypingTest, SCROLL_DELAY);
 
     if (!showConfig && !isTestComplete) {
       scrollToTypingTest();
     }
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [showConfig, isTestComplete]);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [showConfig, isTestComplete, scrollToTypingTest]);
 
   useEffect(() => {
-    if (onShowConfigChange) onShowConfigChange(showConfig);
+    onShowConfigChange?.(showConfig);
   }, [showConfig, onShowConfigChange]);
 
   useEffect(() => {
-    if (onTestCompleteChange) onTestCompleteChange(isTestComplete);
+    onTestCompleteChange?.(isTestComplete);
   }, [isTestComplete, onTestCompleteChange]);
 
   useEffect(() => {
@@ -228,69 +312,35 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     });
   }, [
     selectedMode,
+    currentConfig,
     selectedGroup,
+    selectedQuoteId,
     selectedDuration,
-    selectedWordCount,
     selectedLanguage,
+    selectedWordCount,
     selectedPunctuation,
     selectedNumbers,
-    selectedQuoteId,
   ]);
 
   useEffect(() => {
-    const configChanged =
-      prevConfigRef.current.selectedMode !== selectedMode ||
-      prevConfigRef.current.selectedDuration !== selectedDuration ||
-      prevConfigRef.current.selectedWordCount !== selectedWordCount ||
-      prevConfigRef.current.selectedGroup !== selectedGroup ||
-      prevConfigRef.current.selectedLanguage !== selectedLanguage ||
-      prevConfigRef.current.selectedPunctuation !== selectedPunctuation ||
-      prevConfigRef.current.selectedNumbers !== selectedNumbers ||
-      prevConfigRef.current.selectedQuoteId !== selectedQuoteId;
+    const configChanged = Object.keys(currentConfig).some(
+      (key) => prevConfigRef.current[key] !== currentConfig[key],
+    );
 
     if (words !== displayWords && words) {
       const isAddition =
         prevWordsRef.current && words.startsWith(prevWordsRef.current);
 
       if (configChanged || !isAddition) {
-        prevConfigRef.current = {
-          selectedMode,
-          selectedDuration,
-          selectedWordCount,
-          selectedGroup,
-          selectedLanguage,
-          selectedPunctuation,
-          selectedNumbers,
-          selectedQuoteId,
-        };
+        prevConfigRef.current = currentConfig;
         prevWordsRef.current = words;
-        setIsTransitioning(true);
-
-        setTimeout(() => {
-          setDisplayWords(words);
-          setTimeout(() => {
-            setIsTransitioning(false);
-          }, 100);
-        }, 100);
+        performTransition(() => setDisplayWords(words), false);
       } else {
         setDisplayWords(words);
         prevWordsRef.current = words;
       }
     }
-  }, [
-    words,
-    displayWords,
-    selectedMode,
-    selectedDuration,
-    selectedWordCount,
-    selectedGroup,
-    selectedLanguage,
-    selectedPunctuation,
-    selectedNumbers,
-    selectedQuoteId,
-  ]);
-
-  const isTyping = !showConfig;
+  }, [words, displayWords, currentConfig, performTransition]);
 
   return (
     <div
@@ -337,7 +387,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       <div className="flex-grow flex items-center justify-center">
         <div className="w-full">
           <div
-            className={`transition-opacity duration-100 ${isTransitioning ? "opacity-0" : "opacity-100"
+            className={`transition-opacity ${isTransitioning ? "opacity-0" : "opacity-100"
               }`}
           >
             {!isTestComplete && (
@@ -391,40 +441,23 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                     <div className="relative">
                       <FocusOverlay
                         isFocused={isFocused}
-                        onClick={() => {
-                          if (!isFocused) {
-                            inputRef.current?.focus();
-                            handleFocus();
-                          }
-                        }}
+                        onClick={handleInputClick}
                       />
 
                       <Caret
-                        key={`caret-${testId}-&{selectedMode}-${selectedLanguage}`}
+                        key={`caret-${testId}-${selectedMode}-${selectedLanguage}`}
                         x={caretPosition.x}
                         y={caretPosition.y}
                         isTyping={isTyping}
                       />
 
                       <div
-                        onMouseDown={(e) => {
-                          e.preventDefault();
-                        }}
-                        onTouchStart={(e) => {
-                          e.preventDefault();
-                        }}
-                        onClick={() => {
-                          if (!isFocused) {
-                            inputRef.current?.focus();
-                            handleFocus();
-                          }
-                        }}
+                        onMouseDown={(e) => e.preventDefault()}
+                        onTouchStart={(e) => e.preventDefault()}
+                        onClick={handleInputClick}
                       >
                         <WordGenerator
-                          key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(
-                            0,
-                            20,
-                          )}`}
+                          key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(0, 20)}`}
                           text={displayWords}
                           input={input}
                           onWordComplete={handleWordComplete}
@@ -434,6 +467,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                           showConfig={showConfig}
                         />
                       </div>
+
                       <input
                         ref={inputRef}
                         type="text"
@@ -447,48 +481,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                         autoFocus
                         onFocus={handleFocus}
                         onBlur={handleBlur}
-                        onKeyDown={(e) => {
-                          if (e.key === " ") {
-                            const words = input.split(" ");
-                            const currentWord = words[words.length - 1];
-                            if (currentWord.length === 0) {
-                              e.preventDefault();
-                              return;
-                            }
-                          }
-
-                          if (e.key === "Backspace") {
-                            const quoteWords = displayWords.trim().split(" ");
-                            const inputWords = input.trim().split(" ");
-                            const hasTrailingSpace = input.endsWith(" ");
-                            const currentWordIndex = hasTrailingSpace
-                              ? inputWords.length
-                              : inputWords.length - 1;
-                            const prevWordIndex = hasTrailingSpace
-                              ? currentWordIndex - 1
-                              : currentWordIndex - 1;
-                            if (prevWordIndex >= 0) {
-                              const prevInputWord = inputWords[prevWordIndex];
-                              const correctPrevWord = quoteWords[prevWordIndex];
-                              const isPrevWordPerfect =
-                                prevInputWord &&
-                                correctPrevWord &&
-                                prevInputWord.length ===
-                                correctPrevWord.length &&
-                                prevInputWord
-                                  .split("")
-                                  .every((c, i) => c === correctPrevWord[i]);
-                              const caretAtWordBoundary =
-                                hasTrailingSpace ||
-                                input.slice(-1) === " " ||
-                                inputWords.length > quoteWords.length;
-                              if (isPrevWordPerfect && caretAtWordBoundary) {
-                                e.preventDefault();
-                                return;
-                              }
-                            }
-                          }
-                        }}
+                        onKeyDown={handleKeyDown}
                       />
                     </div>
                   ) : (
@@ -501,7 +494,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
             {!isTestComplete && (
               <div className="flex justify-center mt-4">
                 <button
-                  onClick={handleNewTestWithScroll}
+                  onClick={handleRestartClick}
                   className="px-4 py-2 rounded text-2xl text-gray-600 cursor-pointer hover:text-white transition"
                 >
                   ⟳
