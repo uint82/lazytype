@@ -15,6 +15,7 @@ export default function useTestControls(
   selectedPunctuation = false,
   selectedNumbers = false,
   selectedWordCount = 25,
+  shouldAutoFocus = true,
 ) {
   const handleInputChange = (e, words, prevInput = "") => {
     const newValue = e.target.value;
@@ -93,13 +94,13 @@ export default function useTestControls(
     }
 
     setInput("");
-    inputRef.current?.focus();
+    if (shouldAutoFocus) inputRef.current?.focus();
   };
 
   const handleRepeatTest = () => {
     resetTest();
     setInput("");
-    inputRef.current?.focus();
+    if (shouldAutoFocus) inputRef.current?.focus();
   };
 
   return { handleInputChange, handleNewTest, handleRepeatTest };

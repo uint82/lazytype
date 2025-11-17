@@ -37,6 +37,9 @@ export default function useTypingTest() {
   const [selectedQuoteId, setSelectedQuoteId] = useState(
     savedConfig.selectedQuoteId,
   );
+  const [shouldAutoFocus, setShouldAutoFocus] = useState(
+    window.innerWidth >= 720,
+  );
 
   const inputRef = useInputRef();
 
@@ -77,6 +80,15 @@ export default function useTypingTest() {
   }, [selectedLanguage, selectedMode, selectedQuoteId, selectedGroup]);
 
   useEffect(() => {
+    const handleResize = () => {
+      setShouldAutoFocus(window.innerWidth >= 720);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
     if (savedConfig.selectedQuoteId && savedConfig.mode === "quotes") {
       loadSpecificQuote(savedConfig.selectedQuoteId);
     }
@@ -115,6 +127,7 @@ export default function useTypingTest() {
     selectedLanguage,
     setActualQuoteGroup,
     selectedQuoteId,
+    shouldAutoFocus,
   );
 
   useWordsMode(
@@ -127,6 +140,7 @@ export default function useTypingTest() {
     selectedLanguage,
     selectedPunctuation,
     selectedNumbers,
+    shouldAutoFocus,
   );
 
   const { handleWordComplete: originalHandleWordComplete } = useTimeMode(
@@ -139,6 +153,7 @@ export default function useTypingTest() {
     selectedLanguage,
     selectedPunctuation,
     selectedNumbers,
+    shouldAutoFocus,
   );
 
   const {
@@ -159,6 +174,7 @@ export default function useTypingTest() {
     selectedPunctuation,
     selectedNumbers,
     selectedWordCount,
+    shouldAutoFocus,
   );
 
   const handleInputChange = (e) => {
@@ -207,7 +223,7 @@ export default function useTypingTest() {
         resetTest();
         setDeletedCount(0);
         setTestId((prev) => prev + 1);
-        inputRef.current?.focus();
+        if (shouldAutoFocus) inputRef.current?.focus();
         return;
       }
 
@@ -221,10 +237,10 @@ export default function useTypingTest() {
         resetTest();
         setDeletedCount(0);
         setTestId((prev) => prev + 1);
-        inputRef.current?.focus();
+        if (shouldAutoFocus) inputRef.current?.focus();
       }
     },
-    [selectedLanguage, inputRef, resetTest],
+    [selectedLanguage, inputRef, resetTest, shouldAutoFocus],
   );
 
   const setSelectedGroupWrapper = (group) => {
@@ -238,6 +254,26 @@ export default function useTypingTest() {
     setSelectedMode(mode);
   };
 
+  const setSelectedDurationWrapper = (duration) => {
+    setSelectedDuration(duration);
+  };
+
+  const setSelectedWordCountWrapper = (count) => {
+    setSelectedWordCount(count);
+  };
+
+  const setSelectedPunctuationWrapper = (value) => {
+    setSelectedPunctuation(value);
+  };
+
+  const setSelectedNumbersWrapper = (value) => {
+    setSelectedNumbers(value);
+  };
+
+  const disableAutoFocus = () => {
+    setShouldAutoFocus(false);
+  };
+
   return {
     quote,
     input,
@@ -248,15 +284,15 @@ export default function useTypingTest() {
     selectedMode,
     setSelectedMode: setSelectedModeWrapper,
     selectedDuration,
-    setSelectedDuration,
+    setSelectedDuration: setSelectedDurationWrapper,
     selectedWordCount,
-    setSelectedWordCount,
+    setSelectedWordCount: setSelectedWordCountWrapper,
     selectedLanguage,
     setSelectedLanguage,
     selectedPunctuation,
-    setSelectedPunctuation,
+    setSelectedPunctuation: setSelectedPunctuationWrapper,
     selectedNumbers,
-    setSelectedNumbers,
+    setSelectedNumbers: setSelectedNumbersWrapper,
     handleInputChange,
     handleWordComplete,
     handleNewTest,
@@ -276,5 +312,7 @@ export default function useTypingTest() {
     handleRepeatTest,
     selectedQuoteId,
     loadSpecificQuote,
+    shouldAutoFocus,
+    disableAutoFocus,
   };
 }
