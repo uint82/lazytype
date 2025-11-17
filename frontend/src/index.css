@@ -1,7 +1,9 @@
 @import "tailwindcss";
 @import "./styles/content-grid.css";
+@import "./font.css";
 
 @keyframes blink {
+
   0%,
   100% {
     opacity: 1;

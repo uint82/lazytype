@@ -78,7 +78,7 @@ const TestConfig = ({
   };
 
   return (
-    <div className="flex flex-col items-center gap-2 mb-3">
+    <div className="flex flex-col items-center gap-2">
       <div className="flex flex-wrap justify-center items-center gap-2 text-[#ebdbb2]">
         {!isCompactView ? (
           <div className="flex flex-wrap items-center gap-1.5">
@@ -113,7 +113,7 @@ const TestConfig = ({
                 onClick={() => {
                   setSelectedMode("time");
                 }}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "time"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "time"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
                   }`}
@@ -124,7 +124,7 @@ const TestConfig = ({
                 onClick={() => {
                   setSelectedMode("words");
                 }}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "words"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "words"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
                   }`}
@@ -135,7 +135,7 @@ const TestConfig = ({
                 onClick={() => {
                   setSelectedMode("quotes");
                 }}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all ${selectedMode === "quotes"
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "quotes"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
                   }`}

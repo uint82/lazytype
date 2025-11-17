@@ -15,10 +15,10 @@ const LanguageSelector = ({ selectedLanguage, setSelectedLanguage }) => {
   );
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="flex justify-center items-center mt-5">
       <button
         onClick={() => setIsModalOpen(true)}
-        className="px-3 py-1 rounded text-[#635851] hover:text-[#D3869B] cursor-pointer transition-all flex items-center gap-4"
+        className="px-3 py-1 rounded text-[#635851] hover:text-[#D3869B] cursor-pointer transition-all flex items-center gap-3"
         style={{ fontFamily: "'Roboto Mono', monospace" }}
       >
         <Languages size={20} />

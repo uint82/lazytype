@@ -19,10 +19,10 @@ const TestStatus = ({
     return Math.max(0, remaining);
   };
   return (
-    <div className="text-[#C68C22] text-2xl font-medium m-[0.25em_0.3em] mt-0.5">
+    <div className="text-[#C68C22] text-[32px] font-medium m-[0em_0.25em] mt-3">
       {selectedMode === "quotes" || selectedMode === "words" ? (
         <div>
-          {wordsTyped} / {totalWords}
+          {wordsTyped}/{totalWords}
         </div>
       ) : (
         <div>{formatTime(getTimeRemaining())}</div>

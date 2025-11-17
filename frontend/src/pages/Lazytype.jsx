@@ -195,7 +195,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const handleFocus = useCallback(() => {
     clearBlurTimeout();
     setIsFocused(true);
-    setTimeout(scrollToTypingTest, SCROLL_DELAY);
+    scrollToTypingTest();
   }, [clearBlurTimeout, scrollToTypingTest]);
 
   const handleSelectSpecificQuote = useCallback(
@@ -213,7 +213,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       inputRef.current?.focus();
       handleFocus();
     }
-  }, [isFocused, inputRef, handleFocus]);
+    scrollToTypingTest();
+  }, [isFocused, inputRef, handleFocus, scrollToTypingTest]);
 
   const handleKeyDown = useCallback(
     (e) => {
@@ -346,12 +347,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     <div
       className="flex flex-col w-full h-full"
       onMouseMove={showConfigOnMouseMove}
+      style={{ fontFamily: "'Roboto Mono', monospace" }}
     >
-      <link
-        href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&display=swap"
-        rel="stylesheet"
-      />
-
       {!isTestComplete && (
         <div className="w-full">
           <div className="flex items-center justify-center">
@@ -495,7 +492,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handleRestartClick}
-                  className="px-4 py-2 rounded text-2xl text-gray-600 cursor-pointer hover:text-white transition"
+                  className="px-4 py-2 rounded text-3xl text-gray-600 cursor-pointer hover:text-white transition"
                 >
                   ⟳
                 </button>
