@@ -300,26 +300,25 @@ export default function useTypingStats(
         lastHistoryTimeRef.current = currentSecond;
       }
     }
-    // final snapshot for quote mode case like 8.23s, 23.32s
+
+    // final snapshot for quote and words mode case when it's >= +0.50s
     if (isFinal) {
       const finalTime = timeElapsedInSeconds;
+      const sliceDuration = finalTime - (lastHistoryTimeRef.current || 0);
 
-      if (!recordedSecondsRef.current.has(finalTime)) {
-        const cumulativeNetWpm =
-          ((correctWordChars + correctSpaces) * (60 / (finalTime || 0.0001))) /
-          5;
+      const cumulativeNetWpm =
+        ((correctWordChars + correctSpaces) * (60 / (finalTime || 0.0001))) / 5;
 
-        const allCharsInInput =
-          correctChars + incorrectChars + extraChars + spaces;
-        const cumulativeRawWpm =
-          (allCharsInInput / 5) * (60 / (finalTime || 0.0001));
+      const allCharsInInput =
+        correctChars + incorrectChars + extraChars + spaces;
+      const cumulativeRawWpm =
+        (allCharsInInput / 5) * (60 / (finalTime || 0.0001));
 
+      if (!recordedSecondsRef.current.has(finalTime) && sliceDuration >= 0.5) {
         const newErrorsSinceLast =
           totalErrorsRef.current - lastTotalErrorsRef.current;
         const newCharsSinceLast =
           totalTypedCharsRef.current - lastTypedCharCountRef.current;
-        const sliceDuration =
-          finalTime - (lastHistoryTimeRef.current || 0) || 0.0001;
 
         const burstExact = (newCharsSinceLast / 5) * (60 / sliceDuration);
 
@@ -348,6 +347,16 @@ export default function useTypingStats(
         lastHistoryTimeRef.current = finalTime;
         lastTotalErrorsRef.current = totalErrorsRef.current;
         lastTypedCharCountRef.current = totalTypedCharsRef.current;
+      } else if (!recordedSecondsRef.current.has(finalTime)) {
+        setStats((prev) => ({
+          ...prev,
+          wpm: Math.round(cumulativeNetWpm),
+          wpmExact: cumulativeNetWpm,
+          rawWpm: Math.round(cumulativeRawWpm),
+          rawWpmExact: cumulativeRawWpm,
+        }));
+
+        recordedSecondsRef.current.add(finalTime);
       }
     }
 

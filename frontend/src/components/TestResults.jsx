@@ -179,12 +179,33 @@ const TestResults = ({
     }
     const ticks = [];
     const exactFinalSeconds = parseFloat((timeElapsed / 1000).toFixed(2));
-    for (let i = 1; i <= Math.floor(exactFinalSeconds); i++) ticks.push(i);
-    if (!ticks.includes(exactFinalSeconds)) ticks.push(exactFinalSeconds);
+    const lastFullSecond = Math.floor(exactFinalSeconds);
+    const remainder = exactFinalSeconds - lastFullSecond;
+
+    for (let i = 1; i <= lastFullSecond; i++) ticks.push(i);
+
+    if (remainder >= 0.5 && !ticks.includes(exactFinalSeconds)) {
+      ticks.push(exactFinalSeconds);
+    }
+
     return ticks;
   };
 
   const CustomDot = (props) => {
+    const { cx, cy, stroke } = props;
+    return (
+      <circle
+        cx={cx}
+        cy={cy}
+        r={1.5}
+        fill={stroke}
+        stroke={stroke}
+        strokeWidth={2}
+      />
+    );
+  };
+
+  const CustomErrorDot = (props) => {
     const { cx, cy, payload } = props;
     if (payload && payload.errorCount > 0) {
       return (
@@ -299,7 +320,7 @@ const TestResults = ({
               </div>
             </div>
             {/* graph */}
-            <div className="flex-1 bg-[#282828] rounded-lg mt-4 relative group">
+            <div className="flex-1 bg-[#282828] p-1.5 rounded-lg mt-4 relative group">
               {/* legend */}
               <div className="absolute bottom-1 right-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#282828]/95 backdrop-blur-sm rounded-lg pointer-events-none">
                 <div className="flex flex-row gap-3 text-[11px]">
@@ -402,9 +423,19 @@ const TestResults = ({
                     type="number"
                     domain={[
                       1,
-                      isQuoteMode || isWordsMode
-                        ? parseFloat((timeElapsed / 1000).toFixed(2))
-                        : timeElapsedInSeconds,
+                      (() => {
+                        if (!isQuoteMode && !isWordsMode) {
+                          return timeElapsedInSeconds;
+                        }
+                        const exactFinalSeconds = parseFloat(
+                          (timeElapsed / 1000).toFixed(2),
+                        );
+                        const lastFullSecond = Math.floor(exactFinalSeconds);
+                        const remainder = exactFinalSeconds - lastFullSecond;
+                        return remainder >= 0.5
+                          ? exactFinalSeconds
+                          : lastFullSecond;
+                      })(),
                     ]}
                     ticks={generateXAxisTicks()}
                     tickFormatter={(v) =>
@@ -456,7 +487,7 @@ const TestResults = ({
                       type="monotone"
                       dataKey="burst"
                       fill="url(#burstGradient)"
-                      stroke="none"
+                      stroke="#625750"
                       isAnimationActive={false}
                       activeDot={false}
                     />
@@ -469,7 +500,7 @@ const TestResults = ({
                       stroke="#625750"
                       strokeWidth={3}
                       name="Burst"
-                      dot={false}
+                      dot={<CustomDot />}
                       isAnimationActive={false}
                       activeDot={false}
                     />
@@ -483,7 +514,7 @@ const TestResults = ({
                       strokeWidth={2}
                       strokeDasharray="8 8"
                       name="Raw WPM"
-                      dot={false}
+                      dot={<CustomDot />}
                       isAnimationActive={false}
                       activeDot={false}
                     />
@@ -496,7 +527,7 @@ const TestResults = ({
                       stroke="#b8bb26"
                       strokeWidth={2}
                       name="WPM"
-                      dot={false}
+                      dot={<CustomDot />}
                       isAnimationActive={false}
                       activeDot={false}
                     />
@@ -507,7 +538,7 @@ const TestResults = ({
                       type="monotone"
                       dataKey="errorCount"
                       stroke="transparent"
-                      dot={<CustomDot />}
+                      dot={<CustomErrorDot />}
                       isAnimationActive={false}
                       activeDot={false}
                     />
