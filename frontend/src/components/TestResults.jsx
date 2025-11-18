@@ -72,25 +72,21 @@ const TestResults = ({
       } else {
         groupName = "all";
       }
-
-      return `quote ${groupName} ${selectedLanguage}`;
+      return `quote ${groupName}\n${selectedLanguage}`;
     } else if (selectedMode === "time") {
       let extras = [];
       if (selectedPunctuation) extras.push("punctuation");
       if (selectedNumbers) extras.push("numbers");
-
-      return `time ${selectedDuration} ${selectedLanguage}${extras.length ? "\n" + extras.join("\n") : ""
+      return `time ${selectedDuration}\n${selectedLanguage}${extras.length ? "\n" + extras.join("\n") : ""
         }`;
     } else if (selectedMode === "words") {
       let extras = [];
       if (selectedPunctuation) extras.push("punctuation");
       if (selectedNumbers) extras.push("numbers");
-
-      return `words ${selectedWordCount} ${selectedLanguage}${extras.length ? "\n" + extras.join("\n") : ""
+      return `words ${selectedWordCount}\n${selectedLanguage}${extras.length ? "\n" + extras.join("\n") : ""
         }`;
     }
-
-    return `${selectedMode} ${selectedLanguage}`;
+    return `${selectedMode}\n${selectedLanguage}`;
   };
 
   const totalErrors = stats.wpmHistory
@@ -131,6 +127,19 @@ const TestResults = ({
       });
     }
   }
+
+  const Cursor = (props) => {
+    const { points } = props;
+    if (!points || points.length === 0) return null;
+
+    return (
+      <g>
+        {points.map((index) => (
+          <circle key={index} r={4} opacity={0.8} />
+        ))}
+      </g>
+    );
+  };
 
   const generateXAxisTicks = () => {
     if (!isQuoteMode && !isWordsMode) {
@@ -254,12 +263,12 @@ const TestResults = ({
   };
 
   return (
-    <div className="test-result-container flex flex-col items-center justify-center py-4 w-full mx-auto">
+    <div className="content-grid full-width flex flex-col items-center justify-center py-4 w-full mx-auto">
       {stats.wpmHistory && stats.wpmHistory.length > 1 && (
         <div className="w-full">
           <div className="flex flex-col md:flex-row lg:gap-0 w-full">
             {/* left stats */}
-            <div className="flex flex-row justify-center w-full md:gap-0 gap-12 sm:w-auto lg:mb-0 md:flex-col">
+            <div className="flex flex-row justify-center w-full md:w-auto md:gap-0 gap-12 sm:w-auto lg:mb-0 md:flex-col">
               <div className="md:text-left text-center">
                 <div className="text-[2rem] text-gray-500">wpm</div>
                 <TooltipHover text={`${stats.wpmExact?.toFixed(2)} wpm`}>
@@ -290,47 +299,47 @@ const TestResults = ({
               </div>
             </div>
             {/* graph */}
-            <div className="flex-1 bg-[#282828] p-4 rounded-lg relative group">
+            <div className="flex-1 bg-[#282828] rounded-lg mt-4 relative group">
               {/* legend */}
-              <div className="absolute bottom-2 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#282828]/95 backdrop-blur-sm rounded-lg p-2 pointer-events-none">
-                <div className="flex flex-row gap-3 text-xs">
+              <div className="absolute bottom-1 right-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#282828]/95 backdrop-blur-sm rounded-lg pointer-events-none">
+                <div className="flex flex-row gap-3 text-[11px]">
                   <button
                     onClick={() => toggleLine("wpm")}
                     tabIndex={-1}
-                    className={`flex items-center gap-2 transition-all pointer-events-auto px-2 py-1 rounded-md ${!visibleLines.wpm
+                    className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.wpm
                         ? "opacity-40 line-through hover:opacity-60"
                         : "hover:bg-[#b8bb26]/20 hover:scale-105"
                       }`}
                   >
                     <div className="w-5 h-0.5 bg-[#b8bb26]" />
-                    <span className="text-[#b8bb26]">WPM</span>
+                    <span className="text-[#b8bb26]">wpm</span>
                   </button>
                   <button
                     onClick={() => toggleLine("rawWpm")}
                     tabIndex={-1}
-                    className={`flex items-center gap-2 transition-all pointer-events-auto px-2 py-1 rounded-md ${!visibleLines.rawWpm
+                    className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.rawWpm
                         ? "opacity-40 line-through hover:opacity-60"
                         : "hover:bg-[#FF9D00]/20 hover:scale-105"
                       }`}
                   >
                     <div className="w-5 h-[2px] bg-[linear-gradient(90deg,#fabd2f_0%,#fabd2f_40%,transparent_40%,transparent_60%,#fabd2f_60%,#fabd2f_100%)]" />
-                    <span className="text-[#FF9D00]">Raw WPM</span>
+                    <span className="text-[#FF9D00]">raw</span>
                   </button>
                   <button
                     onClick={() => toggleLine("burst")}
                     tabIndex={-1}
-                    className={`flex items-center gap-2 transition-all pointer-events-auto px-2 py-1 rounded-md ${!visibleLines.burst
+                    className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.burst
                         ? "opacity-40 line-through hover:opacity-60"
                         : "hover:bg-[#625750]/30 hover:scale-105"
                       }`}
                   >
                     <div className="w-5 h-0.5 bg-[#625750]" />
-                    <span className="text-[#625750]">Burst</span>
+                    <span className="text-[#625750]">burst</span>
                   </button>
                   <button
                     onClick={() => toggleLine("errors")}
                     tabIndex={-1}
-                    className={`flex items-center gap-2 transition-all pointer-events-auto px-2 py-1 rounded-md ${!visibleLines.errors
+                    className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.errors
                         ? "opacity-40 line-through hover:opacity-60"
                         : "hover:bg-[#fb4934]/20 hover:scale-105"
                       }`}
@@ -360,7 +369,7 @@ const TestResults = ({
               <ResponsiveContainer width="100%" height={200}>
                 <ComposedChart
                   data={transformedData}
-                  margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
+                  margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
                   tabIndex={-1}
                 >
                   <defs>
@@ -374,7 +383,7 @@ const TestResults = ({
                       <stop
                         offset="100%"
                         stopColor="393E46"
-                        stopOpacity={0.2}
+                        stopOpacity={0.1}
                       />
                       <stop
                         offset="100%"
@@ -383,11 +392,13 @@ const TestResults = ({
                       />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#3c3836" />
+                  <CartesianGrid stroke="black" strokeOpacity={0.2} />
                   <XAxis
                     dataKey={getXAxisKey()}
-                    stroke="#928374"
-                    tick={{ fontSize: 14 }}
+                    stroke="black"
+                    strokeWidth={1}
+                    strokeOpacity={0.1}
+                    tick={{ fontSize: 12, fill: "#928374" }}
                     type="number"
                     domain={[
                       1,
@@ -402,31 +413,43 @@ const TestResults = ({
                   />
                   <YAxis
                     yAxisId="left"
-                    stroke="#928374"
-                    tick={{ fontSize: 14 }}
+                    stroke="black"
+                    strokeWidth={1}
+                    strokeOpacity={0.1}
+                    tick={{ fontSize: 12, fill: "#928374" }}
                     label={{
-                      value: "WPM",
+                      value: "Words per Minute",
                       angle: -90,
                       position: "insideLeft",
                       fill: "#928374",
-                      fontSize: 14,
+                      fontSize: 12,
+                      style: { textAnchor: "middle" },
+                      offset: 15,
                     }}
                   />
                   <YAxis
                     yAxisId="right"
                     orientation="right"
-                    stroke="#928374"
-                    tick={totalErrors > 0 ? { fontSize: 14 } : false}
+                    stroke="black"
+                    strokeWidth={1}
+                    strokeOpacity={0.1}
+                    tick={
+                      totalErrors > 0
+                        ? { fontSize: 12, fill: "#928374" }
+                        : false
+                    }
                     domain={[0, maxErrorCount]}
                     label={{
                       value: "Errors",
                       angle: 90,
                       position: "insideRight",
                       fill: "#928374",
-                      fontSize: 14,
+                      fontSize: 12,
+                      style: { textAnchor: "middle" },
+                      offset: 15,
                     }}
                   />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip content={<CustomTooltip />} cursor={<Cursor />} />
                   {visibleLines.burst && (
                     <Area
                       yAxisId="left"
@@ -435,6 +458,7 @@ const TestResults = ({
                       fill="url(#burstGradient)"
                       stroke="none"
                       isAnimationActive={false}
+                      activeDot={false}
                     />
                   )}
                   {visibleLines.burst && (
@@ -447,6 +471,7 @@ const TestResults = ({
                       name="Burst"
                       dot={false}
                       isAnimationActive={false}
+                      activeDot={false}
                     />
                   )}
                   {visibleLines.rawWpm && (
@@ -460,6 +485,7 @@ const TestResults = ({
                       name="Raw WPM"
                       dot={false}
                       isAnimationActive={false}
+                      activeDot={false}
                     />
                   )}
                   {visibleLines.wpm && (
@@ -472,6 +498,7 @@ const TestResults = ({
                       name="WPM"
                       dot={false}
                       isAnimationActive={false}
+                      activeDot={false}
                     />
                   )}
                   {visibleLines.errors && (
@@ -482,6 +509,7 @@ const TestResults = ({
                       stroke="transparent"
                       dot={<CustomDot />}
                       isAnimationActive={false}
+                      activeDot={false}
                     />
                   )}
                 </ComposedChart>
@@ -522,7 +550,7 @@ const TestResults = ({
           `}</style>
           <div className="bottom-stats-grid">
             <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500 mb-1">Test type</div>
+              <div className="text-sm text-gray-500">test type</div>
               <div
                 className="text-md font-bold text-gray-400"
                 style={{ whiteSpace: "pre-line" }}
@@ -531,7 +559,7 @@ const TestResults = ({
               </div>
             </div>
             <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500 mb-1">Raw WPM</div>
+              <div className="text-sm text-gray-500">Raw WPM</div>
               <TooltipHover text={`${stats.rawWpmExact?.toFixed(2)} wpm`}>
                 <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                   {stats.rawWpm}
@@ -539,7 +567,7 @@ const TestResults = ({
               </TooltipHover>
             </div>
             <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500 mb-1">Characters</div>
+              <div className="text-sm text-gray-500">Characters</div>
               <TooltipHover
                 text={
                   <>
@@ -565,13 +593,13 @@ const TestResults = ({
               </TooltipHover>
             </div>
             <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500 mb-1">Correct Words</div>
+              <div className="text-sm text-gray-500">correct words</div>
               <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                 {stats.correctWords}
               </div>
             </div>
             <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500 mb-1">Time</div>
+              <div className="text-sm text-gray-500">time</div>
               <TooltipHover text={`${(timeElapsed / 1000).toFixed(2)}s`}>
                 <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                   {formatTime(timeElapsed)}
@@ -580,7 +608,7 @@ const TestResults = ({
             </div>
             {isQuoteMode && quote?.source && (
               <div className="md:text-left text-center">
-                <div className="text-sm text-gray-500 mb-1">Source</div>
+                <div className="text-sm text-gray-500">Source</div>
                 <div className="text-md font-medium text-[#b8bb26] italic">
                   {quote.source}
                 </div>
@@ -590,7 +618,7 @@ const TestResults = ({
         </div>
       )}
 
-      <div className="flex gap-4 mt-8">
+      <div className="flex gap-4 justify-center mt-8">
         <button
           onClick={handleNextTest}
           className="flex items-center gap-2 px-8 py-3 bg-[#282828] hover:bg-[#3c3836] text-[#b8bb26] rounded-lg transition-all border border-[#3c3836] hover:border-[#b8bb26] font-medium"
