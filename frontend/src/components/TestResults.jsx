@@ -1,8 +1,9 @@
 import { useState } from "react";
 import TooltipHover from "./TooltipHover";
 import {
-  LineChart,
+  ComposedChart,
   Line,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -89,7 +90,6 @@ const TestResults = ({
         }`;
     }
 
-    // fallback for other modes
     return `${selectedMode} ${selectedLanguage}`;
   };
 
@@ -256,20 +256,20 @@ const TestResults = ({
   return (
     <div className="test-result-container flex flex-col items-center justify-center py-4 w-full mx-auto">
       {stats.wpmHistory && stats.wpmHistory.length > 1 && (
-        <div className="w-full mb-4">
-          <div className="flex flex-col md:flex-row gap-4 lg:gap-0 w-full">
+        <div className="w-full">
+          <div className="flex flex-col md:flex-row lg:gap-0 w-full">
             {/* left stats */}
-            <div className="flex flex-row justify-center gap-8 w-full sm:w-auto mb-4 lg:mb-0 md:flex-col">
+            <div className="flex flex-row justify-center w-full md:gap-0 gap-12 sm:w-auto lg:mb-0 md:flex-col">
               <div className="md:text-left text-center">
-                <div className="text-sm text-gray-500 mb-1">WPM</div>
+                <div className="text-[2rem] text-gray-500">wpm</div>
                 <TooltipHover text={`${stats.wpmExact?.toFixed(2)} wpm`}>
-                  <div className="text-5xl font-bold text-[#b8bb26]">
+                  <div className="text-[4rem] -mt-6 -mb-6 font-bold text-[#b8bb26]">
                     {stats.wpm}
                   </div>
                 </TooltipHover>
               </div>
               <div className="md:text-left text-center">
-                <div className="text-sm text-gray-500 mb-1">Accuracy</div>
+                <div className="text-[2rem] text-gray-500">acc</div>
                 <TooltipHover
                   text={
                     <>
@@ -283,34 +283,111 @@ const TestResults = ({
                     </>
                   }
                 >
-                  <div className="text-5xl font-bold text-[#83a598]">
+                  <div className="text-[4rem] -mt-6 font-bold text-[#83a598]">
                     {stats.accuracy}%
                   </div>
                 </TooltipHover>
               </div>
-              <div className="md:text-left text-center">
-                <div className="text-sm text-gray-500 mb-1">Test Type</div>
-                <div
-                  className="text-lg font-medium text-gray-400"
-                  style={{ whiteSpace: "pre-line" }}
-                >
-                  {formatTestType()}
-                </div>
-              </div>
             </div>
             {/* graph */}
-            <div className="flex-1 bg-[#282828] p-4 rounded-lg">
+            <div className="flex-1 bg-[#282828] p-4 rounded-lg relative group">
+              {/* legend */}
+              <div className="absolute bottom-2 right-6 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#282828]/95 backdrop-blur-sm rounded-lg p-2 pointer-events-none">
+                <div className="flex flex-row gap-3 text-xs">
+                  <button
+                    onClick={() => toggleLine("wpm")}
+                    tabIndex={-1}
+                    className={`flex items-center gap-2 transition-all pointer-events-auto px-2 py-1 rounded-md ${!visibleLines.wpm
+                        ? "opacity-40 line-through hover:opacity-60"
+                        : "hover:bg-[#b8bb26]/20 hover:scale-105"
+                      }`}
+                  >
+                    <div className="w-5 h-0.5 bg-[#b8bb26]" />
+                    <span className="text-[#b8bb26]">WPM</span>
+                  </button>
+                  <button
+                    onClick={() => toggleLine("rawWpm")}
+                    tabIndex={-1}
+                    className={`flex items-center gap-2 transition-all pointer-events-auto px-2 py-1 rounded-md ${!visibleLines.rawWpm
+                        ? "opacity-40 line-through hover:opacity-60"
+                        : "hover:bg-[#FF9D00]/20 hover:scale-105"
+                      }`}
+                  >
+                    <div className="w-5 h-[2px] bg-[linear-gradient(90deg,#fabd2f_0%,#fabd2f_40%,transparent_40%,transparent_60%,#fabd2f_60%,#fabd2f_100%)]" />
+                    <span className="text-[#FF9D00]">Raw WPM</span>
+                  </button>
+                  <button
+                    onClick={() => toggleLine("burst")}
+                    tabIndex={-1}
+                    className={`flex items-center gap-2 transition-all pointer-events-auto px-2 py-1 rounded-md ${!visibleLines.burst
+                        ? "opacity-40 line-through hover:opacity-60"
+                        : "hover:bg-[#625750]/30 hover:scale-105"
+                      }`}
+                  >
+                    <div className="w-5 h-0.5 bg-[#625750]" />
+                    <span className="text-[#625750]">Burst</span>
+                  </button>
+                  <button
+                    onClick={() => toggleLine("errors")}
+                    tabIndex={-1}
+                    className={`flex items-center gap-2 transition-all pointer-events-auto px-2 py-1 rounded-md ${!visibleLines.errors
+                        ? "opacity-40 line-through hover:opacity-60"
+                        : "hover:bg-[#fb4934]/20 hover:scale-105"
+                      }`}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 16 16">
+                      <line
+                        x1="3"
+                        y1="3"
+                        x2="13"
+                        y2="13"
+                        stroke="#fb4934"
+                        strokeWidth="2"
+                      />
+                      <line
+                        x1="3"
+                        y1="13"
+                        x2="13"
+                        y2="3"
+                        stroke="#fb4934"
+                        strokeWidth="2"
+                      />
+                    </svg>
+                    <span className="text-[#fb4934]">Errors</span>
+                  </button>
+                </div>
+              </div>
               <ResponsiveContainer width="100%" height={200}>
-                <LineChart
+                <ComposedChart
                   data={transformedData}
                   margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
                   tabIndex={-1}
                 >
+                  <defs>
+                    <linearGradient
+                      id="burstGradient"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="100%"
+                        stopColor="393E46"
+                        stopOpacity={0.2}
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor="#393E46"
+                        stopOpacity={0.1}
+                      />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#3c3836" />
                   <XAxis
                     dataKey={getXAxisKey()}
                     stroke="#928374"
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 14 }}
                     type="number"
                     domain={[
                       1,
@@ -326,30 +403,40 @@ const TestResults = ({
                   <YAxis
                     yAxisId="left"
                     stroke="#928374"
-                    tick={{ fontSize: 12 }}
+                    tick={{ fontSize: 14 }}
                     label={{
                       value: "WPM",
                       angle: -90,
                       position: "insideLeft",
                       fill: "#928374",
-                      fontSize: 12,
+                      fontSize: 14,
                     }}
                   />
                   <YAxis
                     yAxisId="right"
                     orientation="right"
                     stroke="#928374"
-                    tick={totalErrors > 0 ? { fontSize: 12 } : false}
+                    tick={totalErrors > 0 ? { fontSize: 14 } : false}
                     domain={[0, maxErrorCount]}
                     label={{
                       value: "Errors",
                       angle: 90,
                       position: "insideRight",
                       fill: "#928374",
-                      fontSize: 12,
+                      fontSize: 14,
                     }}
                   />
                   <Tooltip content={<CustomTooltip />} />
+                  {visibleLines.burst && (
+                    <Area
+                      yAxisId="left"
+                      type="monotone"
+                      dataKey="burst"
+                      fill="url(#burstGradient)"
+                      stroke="none"
+                      isAnimationActive={false}
+                    />
+                  )}
                   {visibleLines.burst && (
                     <Line
                       yAxisId="left"
@@ -397,87 +484,83 @@ const TestResults = ({
                       isAnimationActive={false}
                     />
                   )}
-                </LineChart>
+                </ComposedChart>
               </ResponsiveContainer>
-              <div className="flex items-center justify-center gap-4 mt-2 text-xs text-gray-500">
-                <button
-                  onClick={() => toggleLine("wpm")}
-                  tabIndex={-1}
-                  className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.wpm ? "opacity-40 line-through" : ""
-                    }`}
-                >
-                  <div className="w-5 h-0.5 bg-[#b8bb26]" />
-                  <span>WPM</span>
-                </button>
-                <button
-                  onClick={() => toggleLine("rawWpm")}
-                  tabIndex={-1}
-                  className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.rawWpm ? "opacity-40 line-through" : ""
-                    }`}
-                >
-                  <div className="w-5 h-[2px] bg-[linear-gradient(90deg,#fabd2f_0%,#fabd2f_40%,transparent_40%,transparent_60%,#fabd2f_60%,#fabd2f_100%)]" />
-                  <span>Raw WPM</span>
-                </button>
-                <button
-                  onClick={() => toggleLine("burst")}
-                  tabIndex={-1}
-                  className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.burst ? "opacity-40 line-through" : ""
-                    }`}
-                >
-                  <div className="w-5 h-0.5 bg-[#625750]" />
-                  <span>Burst</span>
-                </button>
-                <button
-                  onClick={() => toggleLine("errors")}
-                  tabIndex={-1}
-                  className={`flex items-center gap-2 transition-all hover:text-gray-300 ${!visibleLines.errors ? "opacity-40 line-through" : ""
-                    }`}
-                >
-                  <svg width="12" height="12" viewBox="0 0 16 16">
-                    <line
-                      x1="3"
-                      y1="3"
-                      x2="13"
-                      y2="13"
-                      stroke="#fb4934"
-                      strokeWidth="2"
-                    />
-                    <line
-                      x1="3"
-                      y1="13"
-                      x2="13"
-                      y2="3"
-                      stroke="#fb4934"
-                      strokeWidth="2"
-                    />
-                  </svg>
-                  <span>Errors</span>
-                </button>
-              </div>
-              {isQuoteMode && quote?.source && (
-                <div className="mt-3 pt-3 border-t border-[#3c3836] text-center">
-                  <span className="text-sm text-gray-500 italic">
-                    {quote.source}
-                  </span>
-                </div>
-              )}
             </div>
           </div>
+
           {/* bottom stats */}
-          <div className="grid justify-center grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-6 md:gap-8 lg:gap-12 mt-2">
+          <style>{`
+            .bottom-stats-grid {
+              display: grid;
+              grid-template-columns: repeat(2, minmax(140px, 1fr));
+              column-gap: 2rem;
+              gap: 1rem;
+            }
+            @media only screen and (min-width: 768px) {
+              .bottom-stats-grid {
+                display: grid;
+                gap: 0rem;
+                grid-template-columns: repeat(3, minmax(140px, 1fr));
+                grid-auto-flow: row;
+              }
+            }
+            @media only screen and (min-width: 1024px) {
+              .bottom-stats-grid {
+                grid-auto-flow: column;
+                grid-template-columns: none;
+                grid-template-areas: none;
+                align-items: flex-start;
+                column-gap: 2rem;
+                justify-content: space-between;
+                grid-row-start: bottom-stats-grid;
+                grid-row-end: bottom-stats-grid;
+                grid-column-start: bottom-stats-grid;
+                grid-column-end: bottom-stats-grid;
+              }
+            }
+          `}</style>
+          <div className="bottom-stats-grid">
+            <div className="md:text-left text-center">
+              <div className="text-sm text-gray-500 mb-1">Test type</div>
+              <div
+                className="text-md font-bold text-gray-400"
+                style={{ whiteSpace: "pre-line" }}
+              >
+                {formatTestType()}
+              </div>
+            </div>
             <div className="md:text-left text-center">
               <div className="text-sm text-gray-500 mb-1">Raw WPM</div>
               <TooltipHover text={`${stats.rawWpmExact?.toFixed(2)} wpm`}>
-                <div className="text-2xl sm:text-3xl font-bold text-[#fabd2f]">
+                <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
                   {stats.rawWpm}
                 </div>
               </TooltipHover>
             </div>
             <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500 mb-1">Time</div>
-              <TooltipHover text={`${(timeElapsed / 1000).toFixed(2)}s`}>
-                <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
-                  {formatTime(timeElapsed)}
+              <div className="text-sm text-gray-500 mb-1">Characters</div>
+              <TooltipHover
+                text={
+                  <>
+                    <div className="text-[#b8bb26]">
+                      {stats.correctChars} correct
+                    </div>
+                    <div className="text-[#fb4934]">
+                      {stats.incorrectChars} incorrect
+                    </div>
+                    <div className="text-[#fabd2f]">
+                      {stats.extraChars} extra
+                    </div>
+                    <div className="text-[#83a598]">
+                      {stats.missedChars} missed
+                    </div>
+                  </>
+                }
+              >
+                <div className="text-2xl sm:text-3xl font-bold text-[#d3869b] font-mono">
+                  {stats.correctChars}/{stats.incorrectChars}/{stats.extraChars}
+                  /{stats.missedChars}
                 </div>
               </TooltipHover>
             </div>
@@ -488,29 +571,21 @@ const TestResults = ({
               </div>
             </div>
             <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500 mb-1">Correct Chars</div>
-              <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
-                {stats.correctChars}
-              </div>
+              <div className="text-sm text-gray-500 mb-1">Time</div>
+              <TooltipHover text={`${(timeElapsed / 1000).toFixed(2)}s`}>
+                <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
+                  {formatTime(timeElapsed)}
+                </div>
+              </TooltipHover>
             </div>
-            <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500 mb-1">Incorrect Chars</div>
-              <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
-                {stats.incorrectChars}
+            {isQuoteMode && quote?.source && (
+              <div className="md:text-left text-center">
+                <div className="text-sm text-gray-500 mb-1">Source</div>
+                <div className="text-md font-medium text-[#b8bb26] italic">
+                  {quote.source}
+                </div>
               </div>
-            </div>
-            <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500 mb-1">Extra Chars</div>
-              <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
-                {stats.extraChars}
-              </div>
-            </div>
-            <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500 mb-1">Missed Chars</div>
-              <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
-                {stats.missedChars}
-              </div>
-            </div>
+            )}
           </div>
         </div>
       )}
