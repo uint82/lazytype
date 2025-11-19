@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TooltipHover from "./TooltipHover";
+import { ChevronRight, RefreshCcw } from "lucide-react";
 import {
   ComposedChart,
   Line,
@@ -52,6 +53,11 @@ const TestResults = ({
 
   const formatTime = (milliseconds) => {
     const seconds = Math.round(milliseconds / 1000);
+
+    if (seconds < 60) {
+      return `${seconds}s`;
+    }
+
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
@@ -260,8 +266,8 @@ const TestResults = ({
             )}
             {visibleLines.wpm && (
               <div className="flex justify-between">
-                <span className="text-[#b8bb26] font-semibold">WPM</span>
-                <span className="text-[#b8bb26] font-semibold">{data.wpm}</span>
+                <span className="text-[#b8bb26] ">WPM</span>
+                <span className="text-[#b8bb26] ">{data.wpm}</span>
               </div>
             )}
             {visibleLines.rawWpm && (
@@ -284,7 +290,7 @@ const TestResults = ({
   };
 
   return (
-    <div className="content-grid full-width flex flex-col items-center justify-center py-4 w-full mx-auto">
+    <div className="flex flex-col items-center justify-center py-4 w-full mx-auto">
       {stats.wpmHistory && stats.wpmHistory.length > 1 && (
         <div className="w-full">
           <div className="flex flex-col md:flex-row lg:gap-0 w-full">
@@ -293,7 +299,7 @@ const TestResults = ({
               <div className="md:text-left text-center">
                 <div className="text-[2rem] text-gray-500">wpm</div>
                 <TooltipHover text={`${stats.wpmExact?.toFixed(2)} wpm`}>
-                  <div className="text-[4rem] -mt-6 -mb-6 font-bold text-[#b8bb26]">
+                  <div className="text-[4rem] -mt-6 -mb-6 text-[#b8bb26]">
                     {stats.wpm}
                   </div>
                 </TooltipHover>
@@ -313,14 +319,14 @@ const TestResults = ({
                     </>
                   }
                 >
-                  <div className="text-[4rem] -mt-6 font-bold text-[#83a598]">
+                  <div className="text-[4rem] -mt-6 text-[#83a598]">
                     {stats.accuracy}%
                   </div>
                 </TooltipHover>
               </div>
             </div>
             {/* graph */}
-            <div className="flex-1 bg-[#282828] p-1.5 rounded-lg mt-4 relative group">
+            <div className="flex-1 bg-[#282828] rounded-lg mt-4 relative group breakout">
               {/* legend */}
               <div className="absolute bottom-1 right-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#282828]/95 backdrop-blur-sm rounded-lg pointer-events-none">
                 <div className="flex flex-row gap-3 text-[11px]">
@@ -328,41 +334,49 @@ const TestResults = ({
                     onClick={() => toggleLine("wpm")}
                     tabIndex={-1}
                     className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.wpm
-                        ? "opacity-40 line-through hover:opacity-60"
-                        : "hover:bg-[#b8bb26]/20 hover:scale-105"
+                        ? "hoever:bg-[#0C0C0C]/40 line-through hover:text-white"
+                        : "hover:bg-[#0C0C0C]/40 hover:text-white"
                       }`}
                   >
-                    <div className="w-5 h-0.5 bg-[#b8bb26]" />
-                    <span className="text-[#b8bb26]">wpm</span>
+                    <div
+                      className={`w-5 h-0.5 transition-colors ${!visibleLines.wpm ? "bg-gray-500" : "bg-[#b8bb26]"
+                        }`}
+                    />
+                    <span className="text-[12px]">wpm</span>
                   </button>
                   <button
                     onClick={() => toggleLine("rawWpm")}
                     tabIndex={-1}
                     className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.rawWpm
-                        ? "opacity-40 line-through hover:opacity-60"
-                        : "hover:bg-[#FF9D00]/20 hover:scale-105"
+                        ? "hover:bg-[#0C0C0C]/40 line-through hover:text-white"
+                        : "hover:bg-[#0C0C0C]/40 hover:text-white"
                       }`}
                   >
-                    <div className="w-5 h-[2px] bg-[linear-gradient(90deg,#fabd2f_0%,#fabd2f_40%,transparent_40%,transparent_60%,#fabd2f_60%,#fabd2f_100%)]" />
-                    <span className="text-[#FF9D00]">raw</span>
+                    <div
+                      className={`w-5 h-[2px] transition-all ${!visibleLines.rawWpm
+                          ? "bg-[linear-gradient(90deg,#6b7280_0%,#6b7280_40%,transparent_40%,transparent_60%,#6b7280_60%,#6b7280_100%)]"
+                          : "bg-[linear-gradient(90deg,#fabd2f_0%,#fabd2f_40%,transparent_40%,transparent_60%,#fabd2f_60%,#fabd2f_100%)]"
+                        }`}
+                    />
+                    <span>raw</span>
                   </button>
                   <button
                     onClick={() => toggleLine("burst")}
                     tabIndex={-1}
                     className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.burst
-                        ? "opacity-40 line-through hover:opacity-60"
-                        : "hover:bg-[#625750]/30 hover:scale-105"
+                        ? "hover:bg-[#0C0C0C0]/40 line-through hover:text-white"
+                        : "hover:bg-[#0C0C0C]/40 hover:text-white"
                       }`}
                   >
-                    <div className="w-5 h-0.5 bg-[#625750]" />
-                    <span className="text-[#625750]">burst</span>
+                    <div className="w-5 h-[3px] bg-[#625750]" />
+                    <span>burst</span>
                   </button>
                   <button
                     onClick={() => toggleLine("errors")}
                     tabIndex={-1}
                     className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.errors
-                        ? "opacity-40 line-through hover:opacity-60"
-                        : "hover:bg-[#fb4934]/20 hover:scale-105"
+                        ? "hover:bg-[#0C0C0C]/40 line-through hover:text-white"
+                        : "hover:bg-[#0C0C0C]/40 hover:text-white"
                       }`}
                   >
                     <svg width="12" height="12" viewBox="0 0 16 16">
@@ -371,7 +385,7 @@ const TestResults = ({
                         y1="3"
                         x2="13"
                         y2="13"
-                        stroke="#fb4934"
+                        stroke={!visibleLines.errors ? "#6b7280" : "#fb4934"}
                         strokeWidth="2"
                       />
                       <line
@@ -379,11 +393,11 @@ const TestResults = ({
                         y1="13"
                         x2="13"
                         y2="3"
-                        stroke="#fb4934"
+                        stroke={!visibleLines.errors ? "#6b7280" : "#fb4934"}
                         strokeWidth="2"
                       />
                     </svg>
-                    <span className="text-[#fb4934]">Errors</span>
+                    <span>Errors</span>
                   </button>
                 </div>
               </div>
@@ -403,13 +417,13 @@ const TestResults = ({
                     >
                       <stop
                         offset="100%"
-                        stopColor="393E46"
-                        stopOpacity={0.1}
+                        stopColor="#0C0C0C"
+                        stopOpacity={0.2}
                       />
                       <stop
                         offset="100%"
-                        stopColor="#393E46"
-                        stopOpacity={0.1}
+                        stopColor="#0C0C0C"
+                        stopOpacity={0.2}
                       />
                     </linearGradient>
                   </defs>
@@ -514,7 +528,7 @@ const TestResults = ({
                       strokeWidth={2}
                       strokeDasharray="8 8"
                       name="Raw WPM"
-                      dot={<CustomDot />}
+                      dot={false}
                       isAnimationActive={false}
                       activeDot={false}
                     />
@@ -583,22 +597,22 @@ const TestResults = ({
             <div className="md:text-left text-center">
               <div className="text-sm text-gray-500">test type</div>
               <div
-                className="text-md font-bold text-gray-400"
+                className="text-md text-gray-400"
                 style={{ whiteSpace: "pre-line" }}
               >
                 {formatTestType()}
               </div>
             </div>
             <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500">Raw WPM</div>
+              <div className="text-sm text-gray-500">raw</div>
               <TooltipHover text={`${stats.rawWpmExact?.toFixed(2)} wpm`}>
-                <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
+                <div className="text-2xl sm:text-3xl text-[#d3869b]">
                   {stats.rawWpm}
                 </div>
               </TooltipHover>
             </div>
             <div className="md:text-left text-center">
-              <div className="text-sm text-gray-500">Characters</div>
+              <div className="text-sm text-gray-500">characters</div>
               <TooltipHover
                 text={
                   <>
@@ -617,7 +631,7 @@ const TestResults = ({
                   </>
                 }
               >
-                <div className="text-2xl sm:text-3xl font-bold text-[#d3869b] font-mono">
+                <div className="text-2xl sm:text-3xl text-[#d3869b] font-mono">
                   {stats.correctChars}/{stats.incorrectChars}/{stats.extraChars}
                   /{stats.missedChars}
                 </div>
@@ -625,21 +639,21 @@ const TestResults = ({
             </div>
             <div className="md:text-left text-center">
               <div className="text-sm text-gray-500">correct words</div>
-              <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
+              <div className="text-2xl sm:text-3xl text-[#d3869b]">
                 {stats.correctWords}
               </div>
             </div>
             <div className="md:text-left text-center">
               <div className="text-sm text-gray-500">time</div>
               <TooltipHover text={`${(timeElapsed / 1000).toFixed(2)}s`}>
-                <div className="text-2xl sm:text-3xl font-bold text-[#d3869b]">
+                <div className="text-2xl sm:text-3xl text-[#d3869b]">
                   {formatTime(timeElapsed)}
                 </div>
               </TooltipHover>
             </div>
             {isQuoteMode && quote?.source && (
               <div className="md:text-left text-center">
-                <div className="text-sm text-gray-500">Source</div>
+                <div className="text-sm text-gray-500">source</div>
                 <div className="text-md font-medium text-[#b8bb26] italic">
                   {quote.source}
                 </div>
@@ -649,37 +663,20 @@ const TestResults = ({
         </div>
       )}
 
-      <div className="flex gap-4 justify-center mt-8">
+      <div className="flex gap-4 justify-center mt-4">
         <button
           onClick={handleNextTest}
-          className="flex items-center gap-2 px-8 py-3 bg-[#282828] hover:bg-[#3c3836] text-[#b8bb26] rounded-lg transition-all border border-[#3c3836] hover:border-[#b8bb26] font-medium"
+          className="flex items-center gap-2 px-6 py-3 bg-[#282828] rounded-lg hover:text-white cursor-pointer font-bold"
           aria-label="Next Test"
         >
-          <span className="text-base">Next Test</span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M6 3L11 8L6 13V3Z" />
-          </svg>
+          <ChevronRight />
         </button>
         <button
           onClick={onRepeatTest}
-          className="flex items-center gap-2 px-8 py-3 bg-[#282828] hover:bg-[#3c3836] text-[#fabd2f] rounded-lg transition-all border border-[#3c3836] hover:border-[#fabd2f] font-medium"
+          className="flex items-center gap-2 px-6 py-3 bg-[#282828] rounded-lg hover:text-white cursor-pointer font-bold"
           aria-label="Repeat Test"
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path
-              d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C10.3 2 12.3 3.2 13.4 5M13 2V5H10"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="text-base">Repeat Test</span>
+          🗘
         </button>
       </div>
     </div>
