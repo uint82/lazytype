@@ -314,7 +314,10 @@ export default function useTypingStats(
       const cumulativeRawWpm =
         (allCharsInInput / 5) * (60 / (finalTime || 0.0001));
 
-      if (!recordedSecondsRef.current.has(finalTime) && sliceDuration >= 0.5) {
+      if (
+        !recordedSecondsRef.current.has(finalTime) &&
+        sliceDuration >= 0.495
+      ) {
         const newErrorsSinceLast =
           totalErrorsRef.current - lastTotalErrorsRef.current;
         const newCharsSinceLast =
@@ -382,15 +385,7 @@ export default function useTypingStats(
     });
 
     previousInputRef.current = input;
-  }, [
-    input,
-    words,
-    timeElapsed,
-    mode,
-    isFinal,
-    stats.wpmHistory.length,
-    stats.wpm,
-  ]);
+  }, [input, words, timeElapsed, mode, isFinal]);
 
   return stats;
 }
