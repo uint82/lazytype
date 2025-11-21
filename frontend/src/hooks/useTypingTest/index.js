@@ -21,7 +21,7 @@ export default function useTypingTest() {
     savedConfig.duration,
   );
   const [selectedWordCount, setSelectedWordCount] = useState(
-    savedConfig.word_count || 25,
+    savedConfig.word_count ?? 25,
   );
   const [selectedLanguage, setSelectedLanguage] = useState(
     savedConfig.language,
@@ -37,6 +37,8 @@ export default function useTypingTest() {
   const [selectedQuoteId, setSelectedQuoteId] = useState(
     savedConfig.selectedQuoteId,
   );
+  const [fullQuoteText, setFullQuoteText] = useState("");
+  const [displayedWordCount, setDisplayedWordCount] = useState(0);
 
   const inputRef = useInputRef();
 
@@ -115,9 +117,11 @@ export default function useTypingTest() {
     selectedLanguage,
     setActualQuoteGroup,
     selectedQuoteId,
+    setFullQuoteText,
+    setDisplayedWordCount,
   );
 
-  useWordsMode(
+  const { handleWordComplete: wordsHandleWordComplete } = useWordsMode(
     selectedMode,
     selectedWordCount,
     setQuote,
@@ -129,7 +133,7 @@ export default function useTypingTest() {
     selectedNumbers,
   );
 
-  const { handleWordComplete: originalHandleWordComplete } = useTimeMode(
+  const { handleWordComplete: timeHandleWordComplete } = useTimeMode(
     selectedMode,
     selectedDuration,
     setQuote,
@@ -172,16 +176,40 @@ export default function useTypingTest() {
     originalHandleInputChange(e, words, input);
   };
 
+  const addNextWord = useCallback(() => {
+    if (selectedMode !== "quotes" || !fullQuoteText) return;
+
+    const allQuoteWords = fullQuoteText.split(" ");
+
+    if (displayedWordCount >= allQuoteWords.length) return;
+
+    const nextWord = allQuoteWords[displayedWordCount];
+    setWords((prevWords) => prevWords + " " + nextWord);
+    setDisplayedWordCount((prev) => prev + 1);
+  }, [selectedMode, fullQuoteText, displayedWordCount]);
+
   const handleWordComplete = () => {
     incrementWordsTyped();
-    originalHandleWordComplete();
+    wordsHandleWordComplete();
+    timeHandleWordComplete();
+
+    if (selectedMode === "quotes") {
+      addNextWord();
+    }
+
     if (selectedMode === "quotes" || selectedMode === "words") {
       const inputWords = input
         .trim()
         .split(" ")
         .filter((w) => w.length > 0);
       const targetWords = words.trim().split(" ");
-      if (inputWords.length === targetWords.length) {
+
+      const shouldComplete =
+        selectedMode === "quotes"
+          ? inputWords.length === targetWords.length
+          : selectedWordCount !== 0 && inputWords.length === targetWords.length;
+
+      if (shouldComplete) {
         setTimeout(() => completeTest(), 10);
       }
     }
@@ -190,6 +218,8 @@ export default function useTypingTest() {
   const handleNewTest = (clearQuote = true) => {
     resetTest();
     setDeletedCount(0);
+    setFullQuoteText("");
+    setDisplayedWordCount(0);
     resetWordGenerator(selectedLanguage);
 
     if (clearQuote && selectedMode === "quotes") {
@@ -204,6 +234,8 @@ export default function useTypingTest() {
     (quoteId) => {
       if (quoteId === null) {
         setSelectedQuoteId(null);
+        setFullQuoteText("");
+        setDisplayedWordCount(0);
         resetTest();
         setDeletedCount(0);
         setTestId((prev) => prev + 1);
@@ -214,10 +246,22 @@ export default function useTypingTest() {
       const quoteData = getQuoteById(quoteId, selectedLanguage);
       if (quoteData) {
         setQuote(quoteData);
-        setWords(quoteData.text);
         setSelectedQuoteId(quoteId);
         setActualQuoteGroup(quoteData.group);
         setInput("");
+
+        const quoteWords = quoteData.text.split(" ");
+        setFullQuoteText(quoteData.text);
+
+        if (quoteWords.length > 100) {
+          const initialWords = quoteWords.slice(0, 100).join(" ");
+          setWords(initialWords);
+          setDisplayedWordCount(100);
+        } else {
+          setWords(quoteData.text);
+          setDisplayedWordCount(quoteWords.length);
+        }
+
         resetTest();
         setDeletedCount(0);
         setTestId((prev) => prev + 1);
@@ -276,5 +320,7 @@ export default function useTypingTest() {
     handleRepeatTest,
     selectedQuoteId,
     loadSpecificQuote,
+    completeTest,
+    fullQuoteText,
   };
 }

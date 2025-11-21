@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { getRandomWords } from "../../controllers/words-controller";
 
+const INITIAL_WORD_COUNT = 100;
+
 export default function useTimeMode(
   selectedMode,
   selectedDuration,
@@ -14,7 +16,7 @@ export default function useTimeMode(
 ) {
   useEffect(() => {
     if (selectedMode === "time") {
-      const randomWords = getRandomWords(75, selectedLanguage, {
+      const randomWords = getRandomWords(INITIAL_WORD_COUNT, selectedLanguage, {
         punctuation: selectedPunctuation,
         numbers: selectedNumbers,
       });

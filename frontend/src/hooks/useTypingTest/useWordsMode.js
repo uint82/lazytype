@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { getRandomWords } from "../../controllers/words-controller";
 
+const INITIAL_WORD_COUNT = 100;
+
 export default function useWordsMode(
   selectedMode,
   selectedWordCount,
@@ -14,7 +16,12 @@ export default function useWordsMode(
 ) {
   useEffect(() => {
     if (selectedMode === "words") {
-      const randomWords = getRandomWords(selectedWordCount, selectedLanguage, {
+      const initialCount =
+        selectedWordCount === 0
+          ? INITIAL_WORD_COUNT
+          : Math.min(selectedWordCount, INITIAL_WORD_COUNT);
+
+      const randomWords = getRandomWords(initialCount, selectedLanguage, {
         punctuation: selectedPunctuation,
         numbers: selectedNumbers,
       });
@@ -34,4 +41,27 @@ export default function useWordsMode(
     setInput,
     inputRef,
   ]);
+
+  const handleWordComplete = () => {
+    if (selectedMode === "words") {
+      setWords((prevWords) => {
+        const currentWordArray = prevWords.trim().split(" ");
+
+        if (
+          selectedWordCount === 0 ||
+          currentWordArray.length < selectedWordCount
+        ) {
+          const additionalWords = getRandomWords(1, selectedLanguage, {
+            punctuation: selectedPunctuation,
+            numbers: selectedNumbers,
+          });
+          return prevWords + " " + additionalWords;
+        }
+
+        return prevWords;
+      });
+    }
+  };
+
+  return { handleWordComplete };
 }

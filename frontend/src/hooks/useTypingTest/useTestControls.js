@@ -1,6 +1,8 @@
 import { getRandomQuote } from "../../controllers/quotes-controller";
 import { getRandomWords } from "../../controllers/words-controller";
 
+const INITIAL_WORD_COUNT = 100;
+
 export default function useTestControls(
   selectedMode,
   selectedGroup,
@@ -73,8 +75,13 @@ export default function useTestControls(
       setWords(quote.text);
       setActualQuoteGroup(actualGroup);
     } else if (selectedMode === "words") {
+      const initialCount =
+        selectedWordCount === 0
+          ? INITIAL_WORD_COUNT
+          : Math.min(selectedWordCount, INITIAL_WORD_COUNT);
+
       const q = {
-        text: getRandomWords(selectedWordCount, selectedLanguage, {
+        text: getRandomWords(initialCount, selectedLanguage, {
           punctuation: selectedPunctuation,
           numbers: selectedNumbers,
         }),
@@ -83,7 +90,7 @@ export default function useTestControls(
       setWords(q.text);
     } else {
       const q = {
-        text: getRandomWords(75, selectedLanguage, {
+        text: getRandomWords(INITIAL_WORD_COUNT, selectedLanguage, {
           punctuation: selectedPunctuation,
           numbers: selectedNumbers,
         }),
