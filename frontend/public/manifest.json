@@ -5,7 +5,8 @@
   "display": "standalone",
   "background_color": "#282828",
   "theme_color": "#282828",
-  "description": "A simple, minimalistic free typing test website",
+  "lang": "en",
+  "scope": "/",
   "icons": [
     {
       "src": "/vite.svg",
