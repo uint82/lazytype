@@ -10,6 +10,7 @@ import LanguageSelector from "../components/LanguageSelector";
 import CapsLockIndicator from "../components/CapsLockIndicator";
 import { saveTestConfig } from "../utils/localStorage";
 import { getQuotes } from "../controllers/quotes-controller";
+import NotificationSystem from "../components/NotificationSystem";
 
 const TRANSITION_DURATION = 100;
 const SCROLL_DELAY = 100;
@@ -42,6 +43,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     handleNewTest,
     handleRepeatTest,
     isInfinityMode,
+    isTestActive,
     isTestComplete,
     wordsTyped,
     totalWords,
@@ -53,6 +55,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     stats,
     selectedQuoteId,
     loadSpecificQuote,
+    completeTest,
+    fullQuoteText,
   } = typingTestHook;
 
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -61,10 +65,12 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [quotesData, setQuotesData] = useState([]);
   const [hasScrolledToResults, setHasScrolledToResults] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
   const restartCooldownRef = useRef(false);
   const blurTimeoutRef = useRef(null);
   const typingTestContainerRef = useRef(null);
+  const notificationShownRef = useRef(false);
   const prevConfigRef = useRef({
     selectedMode,
     selectedDuration,
@@ -82,6 +88,13 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       selectedQuoteId !== null &&
       selectedGroup === null,
     [selectedMode, selectedQuoteId, selectedGroup],
+  );
+
+  const isInInfinityMode = useMemo(
+    () =>
+      (selectedMode === "time" && selectedDuration === 0) ||
+      (selectedMode === "words" && selectedWordCount === 0),
+    [selectedMode, selectedDuration, selectedWordCount],
   );
 
   const currentConfig = useMemo(
@@ -106,6 +119,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       selectedQuoteId,
     ],
   );
+  const isActivelyTyping = isTestActive && !isTestComplete && input.length > 0;
 
   const scrollToTypingTest = useCallback(() => {
     if (typingTestContainerRef.current) {
@@ -225,8 +239,37 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     }
   }, [isFocused, inputRef, handleFocus, scrollToTypingTest, isTestComplete]);
 
+  const addNotification = useCallback(
+    (message, type = "notice", duration = 10000) => {
+      const id = Date.now();
+      setNotifications((prev) => [...prev, { id, message, type }]);
+
+      if (duration > 0) {
+        setTimeout(() => {
+          setNotifications((prev) => prev.filter((n) => n.id !== id));
+        }, duration);
+      }
+    },
+    [],
+  );
+
+  const removeNotification = useCallback((id) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+  }, []);
+
   const handleKeyDown = useCallback(
     (e) => {
+      if (
+        isInInfinityMode &&
+        isTestActive &&
+        !isTestComplete &&
+        (e.key === "Escape" || (e.key === "Enter" && e.shiftKey))
+      ) {
+        e.preventDefault();
+        completeTest();
+        return;
+      }
+
       if ((e.ctrlKey || e.metaKey) && e.key === "c") {
         e.preventDefault();
         return;
@@ -274,8 +317,19 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
         }
       }
     },
-    [input, displayWords],
+    [
+      input,
+      displayWords,
+      isInInfinityMode,
+      isTestActive,
+      isTestComplete,
+      completeTest,
+    ],
   );
+
+  const totalQuoteWords = fullQuoteText
+    .split(" ")
+    .filter((w) => w.length > 0).length;
 
   useEffect(() => {
     const quotes = getQuotes(selectedLanguage);
@@ -319,6 +373,23 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, [showConfig, isTestComplete, scrollToTypingTest]);
+
+  useEffect(() => {
+    if (isTestComplete) {
+      if (!notificationShownRef.current) {
+        const testWordCount = displayWords
+          .trim()
+          .split(/\s+/)
+          .filter((w) => w.length > 0).length;
+        if (testWordCount < 10) {
+          addNotification("Test invalid - too short!", "notice");
+        }
+        notificationShownRef.current = true;
+      }
+    } else {
+      notificationShownRef.current = false;
+    }
+  }, [isTestComplete, stats, displayWords, addNotification]);
 
   useEffect(() => {
     onShowConfigChange?.(showConfig);
@@ -377,6 +448,11 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       onMouseMove={showConfigOnMouseMove}
       style={{ fontFamily: "'Roboto Mono', monospace" }}
     >
+      <NotificationSystem
+        notifications={notifications}
+        removeNotification={removeNotification}
+        isTyping={isActivelyTyping}
+      />
       {!isTestComplete && (
         <div className="w-full">
           <div className="flex items-center justify-center">
@@ -403,6 +479,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                 quotes={quotesData}
                 onSelectSpecificQuote={handleSelectSpecificQuote}
                 selectedQuoteId={selectedQuoteId}
+                addNotification={addNotification}
               />
             </div>
           </div>
@@ -417,9 +494,11 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
           >
             {!isTestComplete && (
               <>
+                <div className="flex justify-center relative">
+                  <CapsLockIndicator />
+                </div>
                 {showConfig ? (
                   <div className="flex justify-center mb-2 relative">
-                    <CapsLockIndicator />
                     <LanguageSelector
                       selectedLanguage={selectedLanguage}
                       setSelectedLanguage={setSelectedLanguage}
@@ -430,6 +509,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                     <TestStatus
                       selectedMode={selectedMode}
                       selectedDuration={selectedDuration}
+                      selectedWordCount={selectedWordCount}
+                      totalQuoteWords={totalQuoteWords}
                       totalWords={totalWords}
                       wordsTyped={wordsTyped}
                       timeElapsed={timeElapsed}
@@ -459,6 +540,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                   onNextTest={handleNewTestWithScroll}
                   onRepeatTest={handleRepeatTestWithTransition}
                   onTransitionStart={() => setIsTransitioning(true)}
+                  addNotification={addNotification}
+                  displayWords={displayWords}
                 />
               ) : (
                 <>
