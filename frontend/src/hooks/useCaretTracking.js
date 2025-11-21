@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 
 export default function useCaretTracking(containerRef) {
-  const [caretPosition, setCaretPosition] = useState({ x: 0, y: 0 });
+  const [caretPosition, setCaretPosition] = useState({ x: 9.6, y: 3.93 });
 
   const measureCaret = useCallback(
     (activeWord, currentWordInput, hasJumped, lineHeight = 48) => {
