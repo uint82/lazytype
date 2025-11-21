@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
+import { WrenchIcon } from "lucide-react";
 
 const GroupModal = ({
   groups,
@@ -17,6 +18,8 @@ const GroupModal = ({
   onToggleNumbers,
   onClose,
   onOpenSearchModal,
+  onOpenCustomConfig,
+  onSetMode,
 }) => {
   const [activeTab, setActiveTab] = useState(selectedMode || "quotes");
 
@@ -54,42 +57,44 @@ const GroupModal = ({
             <button
               onClick={() => {
                 setActiveTab("time");
-                onSelectTime(selectedMode === "time" ? selectedDuration : 60);
+                onSelectTime(selectedDuration);
               }}
               className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "time"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                 }`}
             >
-              Time
+              time
             </button>
 
             <button
               onClick={() => {
                 setActiveTab("words");
-                onSelectWords(
-                  selectedMode === "words" ? selectedWordCount : 25,
-                );
+                onSelectWords(selectedWordCount);
               }}
               className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "words"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                 }`}
             >
-              Words
+              words
             </button>
 
             <button
               onClick={() => {
                 setActiveTab("quotes");
-                onSelectGroup(selectedGroup ?? null);
+                if (selectedQuoteId) {
+                  onSetMode("quotes");
+                } else {
+                  onSelectGroup(selectedGroup ?? null);
+                }
               }}
               className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "quotes"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                 }`}
             >
-              Quotes
+              quotes
             </button>
           </div>
 
@@ -105,9 +110,23 @@ const GroupModal = ({
                         : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                       }`}
                   >
-                    {duration}s
+                    {duration}
                   </button>
                 ))}
+
+                <button
+                  onClick={() => {
+                    handleClose();
+                    onOpenCustomConfig("time");
+                  }}
+                  className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded text-sm transition-all cursor-pointer ${![15, 30, 60, 120].includes(selectedDuration)
+                      ? "bg-[#83A598] text-[#282828]"
+                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                    }`}
+                >
+                  <WrenchIcon size={16} />
+                  Custom
+                </button>
 
                 <div className="border-t border-[#3c3836] my-2"></div>
 
@@ -145,6 +164,20 @@ const GroupModal = ({
                     {count}
                   </button>
                 ))}
+
+                <button
+                  onClick={() => {
+                    handleClose();
+                    onOpenCustomConfig("words");
+                  }}
+                  className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded text-sm transition-all cursor-pointer ${![10, 25, 50, 100].includes(selectedWordCount)
+                      ? "bg-[#83A598] text-[#282828]"
+                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
+                    }`}
+                >
+                  <WrenchIcon size={16} />
+                  Custom
+                </button>
 
                 <div className="border-t border-[#3c3836] my-2"></div>
 
