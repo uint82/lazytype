@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Search } from "lucide-react";
+import { Search, PencilRuler } from "lucide-react";
 import { getQuoteGroups } from "../controllers/quotes-controller";
 import GroupModal from "./GroupModal";
 import QuoteSearchModal from "./QuoteSearchModal";
+import CustomConfigModal from "./CustomConfigModal";
 
 const TestConfig = ({
   selectedGroup,
@@ -21,10 +22,12 @@ const TestConfig = ({
   quotes,
   onSelectSpecificQuote,
   selectedQuoteId,
+  addNotification,
 }) => {
   const [groups, setGroups] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isCustomConfigOpen, setIsCustomConfigOpen] = useState(false);
   const [isCompactView, setIsCompactView] = useState(false);
   const [searchModalState, setSearchModalState] = useState({
     searchTerm: "",
@@ -77,6 +80,15 @@ const TestConfig = ({
     }
   };
 
+  const handleCustomConfig = (value) => {
+    if (selectedMode === "time") {
+      setSelectedDuration(value);
+    } else if (selectedMode === "words") {
+      setSelectedWordCount(value);
+    }
+    setIsCustomConfigOpen(false);
+  };
+
   return (
     <div className="flex flex-col items-center gap-2">
       <div className="flex flex-wrap justify-center items-center gap-2 text-[#ebdbb2]">
@@ -118,7 +130,7 @@ const TestConfig = ({
                     : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
                   }`}
               >
-                Time
+                time
               </button>
               <button
                 onClick={() => {
@@ -129,7 +141,7 @@ const TestConfig = ({
                     : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
                   }`}
               >
-                Words
+                words
               </button>
               <button
                 onClick={() => {
@@ -140,7 +152,7 @@ const TestConfig = ({
                     : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
                   }`}
               >
-                Quotes
+                quotes
               </button>
             </div>
 
@@ -157,9 +169,19 @@ const TestConfig = ({
                         : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2] cursor-pointer"
                       }`}
                   >
-                    {duration}s
+                    {duration}
                   </button>
                 ))}
+                <button
+                  onClick={() => setIsCustomConfigOpen(true)}
+                  className={`p-1.5 rounded-md transition-all cursor-pointer ${![15, 30, 60, 120].includes(selectedDuration) ||
+                      selectedDuration === 0
+                      ? "bg-[#83A598] text-[#282828]"
+                      : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
+                    }`}
+                >
+                  <PencilRuler size={16} />
+                </button>
               </div>
             ) : selectedMode === "words" ? (
               <div className="flex flex-wrap gap-1 items-center">
@@ -175,6 +197,16 @@ const TestConfig = ({
                     {count}
                   </button>
                 ))}
+                <button
+                  onClick={() => setIsCustomConfigOpen(true)}
+                  className={`p-1.5 rounded-md transition-all cursor-pointer ${![10, 25, 50, 100].includes(selectedWordCount) ||
+                      selectedWordCount === 0
+                      ? "bg-[#83A598] text-[#282828]"
+                      : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
+                    }`}
+                >
+                  <PencilRuler size={16} />
+                </button>
               </div>
             ) : (
               <>
@@ -232,6 +264,12 @@ const TestConfig = ({
                 onToggleNumbers={handleToggleNumbers}
                 onOpenSearchModal={() => setIsSearchModalOpen(true)}
                 onClose={() => setIsModalOpen(false)}
+                onOpenCustomConfig={(mode) => {
+                  setIsModalOpen(false);
+                  setSelectedMode(mode);
+                  setIsCustomConfigOpen(true);
+                }}
+                onSetMode={setSelectedMode}
               />
             )}
           </>
@@ -247,6 +285,18 @@ const TestConfig = ({
           initialSelectedLength={searchModalState.selectedLength}
           initialCurrentPage={searchModalState.currentPage}
           onStateChange={setSearchModalState}
+        />
+      )}
+
+      {isCustomConfigOpen && (
+        <CustomConfigModal
+          mode={selectedMode}
+          currentValue={
+            selectedMode === "time" ? selectedDuration : selectedWordCount
+          }
+          onConfirm={handleCustomConfig}
+          onClose={() => setIsCustomConfigOpen(false)}
+          addNotification={addNotification}
         />
       )}
     </div>
