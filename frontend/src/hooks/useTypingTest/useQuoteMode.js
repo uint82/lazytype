@@ -4,6 +4,8 @@ import {
   getQuoteById,
 } from "../../controllers/quotes-controller";
 
+const INITIAL_WORD_COUNT = 100;
+
 export default function useQuoteMode(
   selectedMode,
   selectedGroup,
@@ -14,6 +16,8 @@ export default function useQuoteMode(
   selectedLanguage = "english",
   setActualQuoteGroup,
   selectedQuoteId = null,
+  setFullQuoteText,
+  setDisplayedWordCount,
 ) {
   const prevQuoteIdRef = useRef(selectedQuoteId);
   const prevModeRef = useRef(selectedMode);
@@ -33,7 +37,20 @@ export default function useQuoteMode(
       const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
       if (quoteData) {
         setQuote(quoteData);
-        setWords(quoteData.text);
+        setFullQuoteText(quoteData.text);
+
+        const quoteWords = quoteData.text.split(" ");
+        if (quoteWords.length > INITIAL_WORD_COUNT) {
+          const initialWords = quoteWords
+            .slice(0, INITIAL_WORD_COUNT)
+            .join(" ");
+          setWords(initialWords);
+          setDisplayedWordCount(INITIAL_WORD_COUNT);
+        } else {
+          setWords(quoteData.text);
+          setDisplayedWordCount(quoteWords.length);
+        }
+
         setInput("");
         setActualQuoteGroup(quoteData.group);
         inputRef.current?.focus();
@@ -50,7 +67,20 @@ export default function useQuoteMode(
       const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
       if (quoteData) {
         setQuote(quoteData);
-        setWords(quoteData.text);
+        setFullQuoteText(quoteData.text);
+
+        const quoteWords = quoteData.text.split(" ");
+        if (quoteWords.length > INITIAL_WORD_COUNT) {
+          const initialWords = quoteWords
+            .slice(0, INITIAL_WORD_COUNT)
+            .join(" ");
+          setWords(initialWords);
+          setDisplayedWordCount(INITIAL_WORD_COUNT);
+        } else {
+          setWords(quoteData.text);
+          setDisplayedWordCount(quoteWords.length);
+        }
+
         setInput("");
         setActualQuoteGroup(quoteData.group);
         inputRef.current?.focus();
@@ -70,7 +100,18 @@ export default function useQuoteMode(
         selectedLanguage,
       );
       setQuote(quote);
-      setWords(quote.text);
+      setFullQuoteText(quote.text);
+
+      const quoteWords = quote.text.split(" ");
+      if (quoteWords.length > INITIAL_WORD_COUNT) {
+        const initialWords = quoteWords.slice(0, INITIAL_WORD_COUNT).join(" ");
+        setWords(initialWords);
+        setDisplayedWordCount(INITIAL_WORD_COUNT);
+      } else {
+        setWords(quote.text);
+        setDisplayedWordCount(quoteWords.length);
+      }
+
       setInput("");
       setActualQuoteGroup(actualGroup);
       inputRef.current?.focus();
@@ -89,5 +130,7 @@ export default function useQuoteMode(
     inputRef,
     setActualQuoteGroup,
     selectedQuoteId,
+    setFullQuoteText,
+    setDisplayedWordCount,
   ]);
 }
