@@ -10,6 +10,7 @@ export default function useTestState(selectedMode, selectedDuration, words) {
 
   const startTimestampRef = useRef(null);
   const rafRef = useRef(null);
+  const targetDurationRef = useRef(null);
 
   useEffect(() => {
     if (words) {
@@ -22,19 +23,32 @@ export default function useTestState(selectedMode, selectedDuration, words) {
   }, [words]);
 
   useEffect(() => {
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
   }, []);
 
   const tick = () => {
     if (!startTimestampRef.current) return;
+
     const now = performance.now();
     const elapsed = now - startTimestampRef.current; // in ms
-    setTimeElapsed(elapsed);
 
-    if (selectedMode === "time" && elapsed >= selectedDuration * 1000) {
+    let displayElapsed = elapsed;
+    if (
+      selectedMode === "time" &&
+      selectedDuration > 0 &&
+      elapsed >= targetDurationRef.current
+    ) {
+      displayElapsed = targetDurationRef.current;
+      setTimeElapsed(displayElapsed);
       completeTest();
       return;
     }
+
+    setTimeElapsed(Math.round(displayElapsed));
 
     rafRef.current = requestAnimationFrame(tick);
   };
@@ -44,6 +58,12 @@ export default function useTestState(selectedMode, selectedDuration, words) {
       setIsTestActive(true);
       setIsTestComplete(false);
       setShowConfig(false);
+      setTimeElapsed(0);
+
+      targetDurationRef.current =
+        selectedMode === "time" && selectedDuration > 0
+          ? selectedDuration * 1000
+          : Infinity;
 
       startTimestampRef.current = performance.now();
       rafRef.current = requestAnimationFrame(tick);
@@ -53,7 +73,10 @@ export default function useTestState(selectedMode, selectedDuration, words) {
   const completeTest = () => {
     setIsTestActive(false);
     setIsTestComplete(true);
-    cancelAnimationFrame(rafRef.current);
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
   };
 
   const resetTest = () => {
@@ -63,7 +86,11 @@ export default function useTestState(selectedMode, selectedDuration, words) {
     setShowConfig(true);
     setTimeElapsed(0);
     startTimestampRef.current = null;
-    cancelAnimationFrame(rafRef.current);
+    targetDurationRef.current = null;
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
   };
 
   const incrementWordsTyped = () => setWordsTyped((prev) => prev + 1);
