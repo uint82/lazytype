@@ -20,6 +20,7 @@ export default function useTypingStats(
     accuracy: 100,
     currentErrors: 0,
     totalErrors: 0,
+    consistency: 100,
   });
 
   const previousInputRef = useRef("");
@@ -153,6 +154,10 @@ export default function useTypingStats(
       const targetWord = targetWords[i] || "";
       const isLast = i === inputWords.length - 1;
       const lastWordFinished = input.endsWith(" ");
+
+      if (typedWord === "" && isLast) {
+        continue;
+      }
 
       if (typedWord === targetWord) {
         correctWordChars += targetWord.length;
@@ -322,9 +327,7 @@ export default function useTypingStats(
           totalErrorsRef.current - lastTotalErrorsRef.current;
         const newCharsSinceLast =
           totalTypedCharsRef.current - lastTypedCharCountRef.current;
-
         const burstExact = (newCharsSinceLast / 5) * (60 / sliceDuration);
-
         const dataPoint = {
           time: finalTime,
           wpm: Math.round(cumulativeNetWpm),
@@ -336,7 +339,6 @@ export default function useTypingStats(
           words: inputWords.length,
           errorCount: newErrorsSinceLast > 0 ? newErrorsSinceLast : 0,
         };
-
         setStats((prev) => ({
           ...prev,
           wpmHistory: [...prev.wpmHistory, dataPoint],
@@ -345,7 +347,6 @@ export default function useTypingStats(
           rawWpm: dataPoint.rawWpm,
           rawWpmExact: dataPoint.rawWpmExact,
         }));
-
         recordedSecondsRef.current.add(finalTime);
         lastHistoryTimeRef.current = finalTime;
         lastTotalErrorsRef.current = totalErrorsRef.current;
@@ -358,12 +359,32 @@ export default function useTypingStats(
           rawWpm: Math.round(cumulativeRawWpm),
           rawWpmExact: cumulativeRawWpm,
         }));
-
         recordedSecondsRef.current.add(finalTime);
       }
     }
 
+    const calculateConsistency = (wpmHistory) => {
+      if (!wpmHistory || wpmHistory.length < 2) return 100;
+
+      const burstWpms = wpmHistory.map(
+        (point) => point.burstExact || point.burst,
+      );
+      const mean =
+        burstWpms.reduce((sum, val) => sum + val, 0) / burstWpms.length;
+
+      if (mean === 0) return 100;
+
+      const variance =
+        burstWpms.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) /
+        burstWpms.length;
+      const stdDev = Math.sqrt(variance);
+      const cv = (stdDev / mean) * 100;
+
+      return Math.max(0, 100 - cv);
+    };
+
     setStats((prev) => {
+      const consistencyValue = calculateConsistency(prev.wpmHistory);
       const next = {
         ...prev,
         correctChars: correctWordChars + correctSpaces,
@@ -379,6 +400,8 @@ export default function useTypingStats(
         totalMistakes,
         currentErrors,
         totalErrors: totalErrorsRef.current,
+        consistency: Math.round(consistencyValue),
+        consistencyExact: consistencyValue,
       };
       if (JSON.stringify(prev) === JSON.stringify(next)) return prev;
       return next;
