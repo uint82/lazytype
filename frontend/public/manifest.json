@@ -1,0 +1,17 @@
+{
+  "name": "Lazytype",
+  "short_name": "Lazytype",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#282828",
+  "theme_color": "#282828",
+  "description": "A simple, minimalistic free typing test website",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
