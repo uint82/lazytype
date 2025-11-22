@@ -17,6 +17,7 @@ export default function useTestControls(
   selectedPunctuation = false,
   selectedNumbers = false,
   selectedWordCount = 25,
+  isModalOpen = false,
 ) {
   const handleInputChange = (e, words, prevInput = "") => {
     const newValue = e.target.value;
@@ -100,13 +101,19 @@ export default function useTestControls(
     }
 
     setInput("");
-    inputRef.current?.focus();
+
+    if (!isModalOpen) {
+      inputRef.current?.focus();
+    }
   };
 
   const handleRepeatTest = () => {
     resetTest();
     setInput("");
-    inputRef.current?.focus();
+
+    if (!isModalOpen) {
+      inputRef.current?.focus();
+    }
   };
 
   return { handleInputChange, handleNewTest, handleRepeatTest };

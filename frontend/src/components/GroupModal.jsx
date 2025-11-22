@@ -20,6 +20,8 @@ const GroupModal = ({
   onOpenSearchModal,
   onOpenCustomConfig,
   onSetMode,
+  onModalOpen,
+  onModalClose,
 }) => {
   const [activeTab, setActiveTab] = useState(selectedMode || "quotes");
 
@@ -27,6 +29,11 @@ const GroupModal = ({
   const wordCounts = [10, 25, 50, 100];
 
   const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    onModalOpen?.();
+    return () => onModalClose?.();
+  }, [onModalOpen, onModalClose]);
 
   useEffect(() => {
     requestAnimationFrame(() => setIsVisible(true));
@@ -59,7 +66,7 @@ const GroupModal = ({
                 setActiveTab("time");
                 onSelectTime(selectedDuration);
               }}
-              className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "time"
+              className={`w-full px-4 py-2 rounded transition-all ${activeTab === "time"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                 }`}
@@ -72,7 +79,7 @@ const GroupModal = ({
                 setActiveTab("words");
                 onSelectWords(selectedWordCount);
               }}
-              className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "words"
+              className={`w-full px-4 py-2 rounded transition-all ${activeTab === "words"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                 }`}
@@ -89,7 +96,7 @@ const GroupModal = ({
                   onSelectGroup(selectedGroup ?? null);
                 }
               }}
-              className={`w-full px-4 py-2 rounded font-medium transition-all ${activeTab === "quotes"
+              className={`w-full px-4 py-2 rounded transition-all ${activeTab === "quotes"
                   ? "bg-[#D8AB19] text-[#282828]"
                   : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
                 }`}

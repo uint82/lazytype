@@ -18,6 +18,7 @@ export default function useQuoteMode(
   selectedQuoteId = null,
   setFullQuoteText,
   setDisplayedWordCount,
+  isModalOpen = false,
 ) {
   const prevQuoteIdRef = useRef(selectedQuoteId);
   const prevModeRef = useRef(selectedMode);
@@ -53,7 +54,10 @@ export default function useQuoteMode(
 
         setInput("");
         setActualQuoteGroup(quoteData.group);
-        inputRef.current?.focus();
+
+        if (!isModalOpen) {
+          inputRef.current?.focus();
+        }
         prevLanguageRef.current = selectedLanguage;
         prevModeRef.current = selectedMode;
         prevQuoteIdRef.current = selectedQuoteId;
@@ -83,7 +87,10 @@ export default function useQuoteMode(
 
         setInput("");
         setActualQuoteGroup(quoteData.group);
-        inputRef.current?.focus();
+
+        if (!isModalOpen) {
+          inputRef.current?.focus();
+        }
       }
       prevModeRef.current = selectedMode;
       prevQuoteIdRef.current = selectedQuoteId;
@@ -114,7 +121,10 @@ export default function useQuoteMode(
 
       setInput("");
       setActualQuoteGroup(actualGroup);
-      inputRef.current?.focus();
+
+      if (!isModalOpen) {
+        inputRef.current?.focus();
+      }
     }
 
     prevQuoteIdRef.current = selectedQuoteId;
@@ -132,5 +142,6 @@ export default function useQuoteMode(
     selectedQuoteId,
     setFullQuoteText,
     setDisplayedWordCount,
+    isModalOpen,
   ]);
 }

@@ -40,7 +40,9 @@ export default function useTypingTest() {
   const [fullQuoteText, setFullQuoteText] = useState("");
   const [displayedWordCount, setDisplayedWordCount] = useState(0);
 
-  const inputRef = useInputRef();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const inputRef = useInputRef(true, !isModalOpen);
 
   const {
     isTestActive,
@@ -119,6 +121,7 @@ export default function useTypingTest() {
     selectedQuoteId,
     setFullQuoteText,
     setDisplayedWordCount,
+    isModalOpen,
   );
 
   const { handleWordComplete: wordsHandleWordComplete } = useWordsMode(
@@ -131,6 +134,7 @@ export default function useTypingTest() {
     selectedLanguage,
     selectedPunctuation,
     selectedNumbers,
+    isModalOpen,
   );
 
   const { handleWordComplete: timeHandleWordComplete } = useTimeMode(
@@ -143,6 +147,7 @@ export default function useTypingTest() {
     selectedLanguage,
     selectedPunctuation,
     selectedNumbers,
+    isModalOpen,
   );
 
   const {
@@ -163,6 +168,7 @@ export default function useTypingTest() {
     selectedPunctuation,
     selectedNumbers,
     selectedWordCount,
+    isModalOpen,
   );
 
   const handleInputChange = (e) => {
@@ -239,7 +245,10 @@ export default function useTypingTest() {
         resetTest();
         setDeletedCount(0);
         setTestId((prev) => prev + 1);
-        inputRef.current?.focus();
+
+        if (!isModalOpen) {
+          inputRef.current?.focus();
+        }
         return;
       }
 
@@ -265,10 +274,13 @@ export default function useTypingTest() {
         resetTest();
         setDeletedCount(0);
         setTestId((prev) => prev + 1);
-        inputRef.current?.focus();
+
+        if (!isModalOpen) {
+          inputRef.current?.focus();
+        }
       }
     },
-    [selectedLanguage, inputRef, resetTest],
+    [selectedLanguage, inputRef, resetTest, isModalOpen],
   );
 
   const setSelectedGroupWrapper = (group) => {
@@ -322,5 +334,6 @@ export default function useTypingTest() {
     loadSpecificQuote,
     completeTest,
     fullQuoteText,
+    setIsModalOpen,
   };
 }

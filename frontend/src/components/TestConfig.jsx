@@ -23,9 +23,10 @@ const TestConfig = ({
   onSelectSpecificQuote,
   selectedQuoteId,
   addNotification,
+  setIsModalOpen,
 }) => {
   const [groups, setGroups] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isCustomConfigOpen, setIsCustomConfigOpen] = useState(false);
   const [isCompactView, setIsCompactView] = useState(false);
@@ -242,12 +243,12 @@ const TestConfig = ({
         ) : (
           <>
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsGroupModalOpen(true)}
               className="px-3 py-1.5 rounded-md text-sm bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] transition-all cursor-pointer font-medium"
             >
               Test Configuration ▼
             </button>
-            {isModalOpen && (
+            {isGroupModalOpen && (
               <GroupModal
                 groups={groups}
                 selectedGroup={selectedGroup}
@@ -263,13 +264,15 @@ const TestConfig = ({
                 onTogglePunctuation={handleTogglePunctuation}
                 onToggleNumbers={handleToggleNumbers}
                 onOpenSearchModal={() => setIsSearchModalOpen(true)}
-                onClose={() => setIsModalOpen(false)}
+                onClose={() => setIsGroupModalOpen(false)}
                 onOpenCustomConfig={(mode) => {
-                  setIsModalOpen(false);
+                  setIsGroupModalOpen(false);
                   setSelectedMode(mode);
                   setIsCustomConfigOpen(true);
                 }}
                 onSetMode={setSelectedMode}
+                onModalOpen={() => setIsModalOpen?.(true)}
+                onModalClose={() => setIsModalOpen?.(false)}
               />
             )}
           </>

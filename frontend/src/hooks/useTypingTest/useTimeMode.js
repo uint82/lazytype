@@ -13,6 +13,7 @@ export default function useTimeMode(
   selectedLanguage = "english",
   selectedPunctuation = false,
   selectedNumbers = false,
+  isModalOpen = false,
 ) {
   useEffect(() => {
     if (selectedMode === "time") {
@@ -23,7 +24,10 @@ export default function useTimeMode(
       setQuote({ text: randomWords });
       setWords(randomWords);
       setInput("");
-      inputRef.current?.focus();
+
+      if (!isModalOpen) {
+        inputRef.current?.focus();
+      }
     }
   }, [
     selectedMode,
@@ -35,6 +39,7 @@ export default function useTimeMode(
     setWords,
     setInput,
     inputRef,
+    isModalOpen,
   ]);
 
   const handleWordComplete = () => {

@@ -13,6 +13,7 @@ export default function useWordsMode(
   selectedLanguage = "english",
   selectedPunctuation = false,
   selectedNumbers = false,
+  isModalOpen = false,
 ) {
   useEffect(() => {
     if (selectedMode === "words") {
@@ -28,7 +29,10 @@ export default function useWordsMode(
       setQuote({ text: randomWords });
       setWords(randomWords);
       setInput("");
-      inputRef.current?.focus();
+
+      if (!isModalOpen) {
+        inputRef.current?.focus();
+      }
     }
   }, [
     selectedMode,
@@ -40,6 +44,7 @@ export default function useWordsMode(
     setWords,
     setInput,
     inputRef,
+    isModalOpen,
   ]);
 
   const handleWordComplete = () => {
