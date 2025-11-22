@@ -23,6 +23,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     words,
     input,
     inputRef,
+    setIsModalOpen,
     selectedGroup,
     setSelectedGroup,
     selectedMode,
@@ -57,6 +58,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     loadSpecificQuote,
     completeTest,
     fullQuoteText,
+    displayedWordCount,
   } = typingTestHook;
 
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -66,6 +68,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const [quotesData, setQuotesData] = useState([]);
   const [hasScrolledToResults, setHasScrolledToResults] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [isAnyModalOpen, setIsAnyModalOpen] = useState(false);
 
   const restartCooldownRef = useRef(false);
   const blurTimeoutRef = useRef(null);
@@ -327,9 +330,21 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     ],
   );
 
-  const totalQuoteWords = fullQuoteText
-    .split(" ")
-    .filter((w) => w.length > 0).length;
+  const totalQuoteWords = useMemo(() => {
+    if (selectedMode !== "quotes") return 0;
+
+    const textToUse = fullQuoteText || quote?.text || "";
+
+    if (!textToUse) return displayedWordCount || 0;
+
+    return textToUse.split(" ").filter((w) => w.length > 0).length;
+  }, [selectedMode, fullQuoteText, quote, displayedWordCount]);
+
+  useEffect(() => {
+    if (setIsModalOpen) {
+      setIsModalOpen(isAnyModalOpen);
+    }
+  }, [isAnyModalOpen, setIsModalOpen]);
 
   useEffect(() => {
     const quotes = getQuotes(selectedLanguage);
@@ -480,6 +495,9 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                 onSelectSpecificQuote={handleSelectSpecificQuote}
                 selectedQuoteId={selectedQuoteId}
                 addNotification={addNotification}
+                onModalOpen={() => setIsAnyModalOpen(true)}
+                onModalClose={() => setIsAnyModalOpen(false)}
+                setIsModalOpen={setIsModalOpen}
               />
             </div>
           </div>
