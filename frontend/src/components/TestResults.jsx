@@ -579,39 +579,8 @@ const TestResults = ({
           </div>
         </div>
 
-        {/* bottom stats */}
-        <style>{`
-            .bottom-stats-grid {
-              display: grid;
-              grid-template-columns: repeat(2, minmax(140px, 1fr));
-              column-gap: 2rem;
-              gap: 1rem;
-            }
-            @media only screen and (min-width: 768px) {
-              .bottom-stats-grid {
-                display: grid;
-                gap: 0rem;
-                grid-template-columns: repeat(3, minmax(140px, 1fr));
-                grid-auto-flow: row;
-              }
-            }
-            @media only screen and (min-width: 1024px) {
-              .bottom-stats-grid {
-                grid-auto-flow: column;
-                grid-template-columns: none;
-                grid-template-areas: none;
-                align-items: flex-start;
-                column-gap: 2rem;
-                justify-content: space-between;
-                grid-row-start: bottom-stats-grid;
-                grid-row-end: bottom-stats-grid;
-                grid-column-start: bottom-stats-grid;
-                grid-column-end: bottom-stats-grid;
-              }
-            }
-          `}</style>
         <div className="bottom-stats-grid">
-          <div className="md:text-left text-center">
+          <div className="text-left">
             <div className="text-sm text-gray-500">test type</div>
             <div
               className="text-md text-gray-400"
@@ -620,7 +589,7 @@ const TestResults = ({
               {formatTestType()}
             </div>
           </div>
-          <div className="md:text-left text-center">
+          <div className="text-left">
             <div className="text-sm text-gray-500">raw</div>
             <TooltipHover text={`${stats.rawWpmExact?.toFixed(2)} wpm`}>
               <div className="text-2xl sm:text-3xl text-[#d3869b]">
@@ -628,7 +597,7 @@ const TestResults = ({
               </div>
             </TooltipHover>
           </div>
-          <div className="md:text-left text-center">
+          <div className="text-left">
             <div className="text-sm text-gray-500">characters</div>
             <TooltipHover
               text={
@@ -652,7 +621,7 @@ const TestResults = ({
               </div>
             </TooltipHover>
           </div>
-          <div className="md:text-left text-center">
+          <div className="text-left">
             <div className="text-sm text-gray-500">consistency</div>
             <TooltipHover text={`${stats.consistencyExact.toFixed(2)}%`}>
               <div className="text-2xl sm:text-3xl text-[#d3869b]">
@@ -660,7 +629,7 @@ const TestResults = ({
               </div>
             </TooltipHover>
           </div>
-          <div className="md:text-left text-center">
+          <div className="text-left">
             <div className="text-sm text-gray-500">time</div>
             <TooltipHover text={`${(timeElapsed / 1000).toFixed(2)}s`}>
               <div className="text-2xl sm:text-3xl text-[#d3869b]">
@@ -669,7 +638,7 @@ const TestResults = ({
             </TooltipHover>
           </div>
           {isQuoteMode && quote?.source && (
-            <div className="md:text-left text-center">
+            <div className="text-left">
               <div className="text-sm text-gray-500">source</div>
               <div className="text-md font-medium text-[#b8bb26] italic">
                 {quote.source}
