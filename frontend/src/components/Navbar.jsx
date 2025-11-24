@@ -26,12 +26,15 @@ const Navbar = ({ isTyping }) => {
         >
           <Link
             to="/leaderboard"
-            className="flex items-center space-x-1 hover:text-[#fe8019] transition"
+            className="flex items-center space-x-1 text-[#665c54] hover:text-white transition"
           >
             <Trophy size={22} />
             <span className="hidden sm:inline">Leaderboard</span>
           </Link>
-          <Link to="/profile" className="hover:text-[#fe8019] transition">
+          <Link
+            to="/profile"
+            className="text-[#665c54] hover:text-white transition"
+          >
             <User size={24} />
           </Link>
         </div>
