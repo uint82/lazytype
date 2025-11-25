@@ -19,6 +19,7 @@ export default function useQuoteMode(
   setFullQuoteText,
   setDisplayedWordCount,
   isModalOpen = false,
+  addNotification = null,
 ) {
   const prevQuoteIdRef = useRef(selectedQuoteId);
   const prevModeRef = useRef(selectedMode);
@@ -67,6 +68,39 @@ export default function useQuoteMode(
           prevModeRef.current = selectedMode;
           prevQuoteIdRef.current = selectedQuoteId;
         } else {
+          if (addNotification) {
+            addNotification(
+              `Quote ${selectedQuoteId} does not exist`,
+              "notice",
+            );
+          }
+
+          const { quote, actualGroup } = getRandomQuote(
+            selectedGroup,
+            selectedLanguage,
+          );
+          setQuote(quote);
+          setFullQuoteText(quote.text);
+
+          const quoteWords = quote.text.split(" ");
+          if (quoteWords.length > INITIAL_WORD_COUNT) {
+            const initialWords = quoteWords
+              .slice(0, INITIAL_WORD_COUNT)
+              .join(" ");
+            setWords(initialWords);
+            setDisplayedWordCount(INITIAL_WORD_COUNT);
+          } else {
+            setWords(quote.text);
+            setDisplayedWordCount(quoteWords.length);
+          }
+
+          setInput("");
+          setActualQuoteGroup(actualGroup);
+
+          if (!isModalOpen) {
+            inputRef.current?.focus();
+          }
+
           prevLanguageRef.current = selectedLanguage;
         }
         return;
@@ -150,6 +184,7 @@ export default function useQuoteMode(
       selectedQuoteId,
       setFullQuoteText,
       setDisplayedWordCount,
+      addNotification,
     ],
   );
 }
