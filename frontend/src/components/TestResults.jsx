@@ -246,7 +246,12 @@ const TestResults = ({
   const hasShownMessageRef = useRef(false);
 
   useEffect(() => {
-    if (stats.wpm === 0 && addNotification && !hasShownMessageRef.current) {
+    if (
+      stats.wpm === 0 &&
+      stats.correctChars === 0 &&
+      addNotification &&
+      !hasShownMessageRef.current
+    ) {
       const testWordCount = displayWords
         .trim()
         .split(/\s+/)
@@ -266,8 +271,13 @@ const TestResults = ({
         hasShownMessageRef.current = true;
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    stats.wpm,
+    stats.correctChars,
+    addNotification,
+    displayWords,
+    timeElapsed,
+  ]);
 
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
