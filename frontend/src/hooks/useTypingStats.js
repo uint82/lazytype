@@ -34,6 +34,185 @@ export default function useTypingStats(
   const processedWordErrorRef = useRef(new Set());
 
   useEffect(() => {
+    if (mode === "zen") {
+      if ((!input || input.length === 0) && timeElapsed === 0) {
+        setStats({
+          correctChars: 0,
+          incorrectChars: 0,
+          extraChars: 0,
+          missedChars: 0,
+          correctWords: 0,
+          incorrectWords: 0,
+          wpmHistory: [],
+          wpm: 0,
+          rawWpm: 0,
+          accuracy: 100,
+          currentErrors: 0,
+          totalErrors: 0,
+          consistency: 100,
+        });
+        previousInputRef.current = "";
+        lastHistoryTimeRef.current = 0;
+        recordedSecondsRef.current.clear();
+        totalErrorsRef.current = 0;
+        lastTotalErrorsRef.current = 0;
+        totalTypedCharsRef.current = 0;
+        lastTypedCharCountRef.current = 0;
+        processedWordIndexRef.current = -1;
+        processedWordErrorRef.current.clear();
+        return;
+      }
+
+      const prevInput = previousInputRef.current;
+
+      const totalChars = input.length;
+      const inputWords = input
+        .trim()
+        .split(" ")
+        .filter((w) => w.length > 0);
+      const wordCount = inputWords.length;
+
+      if (input.length > prevInput.length) {
+        totalTypedCharsRef.current += input.length - prevInput.length;
+      }
+
+      const timeElapsedInSeconds = timeElapsed / 1000;
+
+      const currentSecond = Math.floor(timeElapsedInSeconds);
+      if (currentSecond > lastHistoryTimeRef.current) {
+        const newTypedCharsThisSecond =
+          totalTypedCharsRef.current - lastTypedCharCountRef.current;
+
+        lastTypedCharCountRef.current = totalTypedCharsRef.current;
+
+        const cumulativeWpm =
+          (totalChars / 5) * (60 / (currentSecond || 0.0001));
+
+        const burstWpm = (newTypedCharsThisSecond / 5) * 60;
+
+        const dataPoint = {
+          time: currentSecond,
+          wpm: Math.round(cumulativeWpm),
+          rawWpm: Math.round(cumulativeWpm),
+          burst: Math.round(burstWpm),
+          wpmExact: cumulativeWpm,
+          rawWpmExact: cumulativeWpm,
+          burstExact: burstWpm,
+          words: wordCount,
+          errorCount: 0,
+        };
+
+        if (!recordedSecondsRef.current.has(currentSecond)) {
+          setStats((prev) => ({
+            ...prev,
+            wpmHistory: [...prev.wpmHistory, dataPoint],
+            wpm: dataPoint.wpm,
+            wpmExact: dataPoint.wpmExact,
+            rawWpm: dataPoint.rawWpm,
+            rawWpmExact: dataPoint.rawWpmExact,
+          }));
+          recordedSecondsRef.current.add(currentSecond);
+          lastHistoryTimeRef.current = currentSecond;
+        }
+      }
+
+      if (isFinal) {
+        const finalTime = timeElapsedInSeconds;
+        const sliceDuration = finalTime - (lastHistoryTimeRef.current || 0);
+
+        const cumulativeWpm = (totalChars / 5) * (60 / (finalTime || 0.0001));
+
+        if (
+          !recordedSecondsRef.current.has(finalTime) &&
+          sliceDuration >= 0.495
+        ) {
+          const newCharsSinceLast =
+            totalTypedCharsRef.current - lastTypedCharCountRef.current;
+          const burstExact = (newCharsSinceLast / 5) * (60 / sliceDuration);
+
+          const dataPoint = {
+            time: finalTime,
+            wpm: Math.round(cumulativeWpm),
+            rawWpm: Math.round(cumulativeWpm),
+            burst: Math.round(burstExact),
+            wpmExact: cumulativeWpm,
+            rawWpmExact: cumulativeWpm,
+            burstExact,
+            words: wordCount,
+            errorCount: 0,
+          };
+
+          setStats((prev) => ({
+            ...prev,
+            wpmHistory: [...prev.wpmHistory, dataPoint],
+            wpm: dataPoint.wpm,
+            wpmExact: dataPoint.wpmExact,
+            rawWpm: dataPoint.rawWpm,
+            rawWpmExact: dataPoint.rawWpmExact,
+          }));
+          recordedSecondsRef.current.add(finalTime);
+          lastHistoryTimeRef.current = finalTime;
+          lastTypedCharCountRef.current = totalTypedCharsRef.current;
+        } else if (!recordedSecondsRef.current.has(finalTime)) {
+          setStats((prev) => ({
+            ...prev,
+            wpm: Math.round(cumulativeWpm),
+            wpmExact: cumulativeWpm,
+            rawWpm: Math.round(cumulativeWpm),
+            rawWpmExact: cumulativeWpm,
+          }));
+          recordedSecondsRef.current.add(finalTime);
+        }
+      }
+
+      const calculateConsistency = (wpmHistory) => {
+        if (!wpmHistory || wpmHistory.length < 2) return 100;
+
+        const burstWpms = wpmHistory.map(
+          (point) => point.burstExact || point.burst,
+        );
+        const mean =
+          burstWpms.reduce((sum, val) => sum + val, 0) / burstWpms.length;
+
+        if (mean === 0) return 100;
+
+        const variance =
+          burstWpms.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) /
+          burstWpms.length;
+        const stdDev = Math.sqrt(variance);
+        const cv = (stdDev / mean) * 100;
+
+        return Math.max(0, 100 - cv);
+      };
+
+      setStats((prev) => {
+        const consistencyValue = calculateConsistency(prev.wpmHistory);
+        const next = {
+          ...prev,
+          correctChars: totalChars,
+          incorrectChars: 0,
+          extraChars: 0,
+          missedChars: 0,
+          correctWords: wordCount,
+          incorrectWords: 0,
+          accuracy: 100,
+          accuracyExact: 100,
+          totalTyped: totalTypedCharsRef.current,
+          totalCorrected: totalTypedCharsRef.current,
+          totalMistakes: 0,
+          currentErrors: 0,
+          totalErrors: 0,
+          consistency: Math.round(consistencyValue),
+          consistencyExact: consistencyValue,
+        };
+        if (JSON.stringify(prev) === JSON.stringify(next)) return prev;
+        return next;
+      });
+
+      previousInputRef.current = input;
+      return;
+    }
+
     if ((!input || input.length === 0) && timeElapsed === 0) {
       setStats({
         correctChars: 0,
