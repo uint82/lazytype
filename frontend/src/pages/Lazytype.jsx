@@ -85,6 +85,20 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const prevWordsRef = useRef(words);
 
   const isTyping = !showConfig;
+
+  const isZenMode = selectedMode === "zen";
+
+  useEffect(() => {
+    if (isZenMode) {
+      setDisplayWords("");
+    }
+  }, [isZenMode]);
+
+  const zenWordCount = useMemo(() => {
+    if (!input || input.trim() === "") return 0;
+    return input.trim().split(/\s+/).length;
+  }, [input]);
+
   const isInSearchMode = useMemo(
     () =>
       selectedMode === "quotes" &&
@@ -156,14 +170,21 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
 
   const handleNewTestWithScroll = useCallback(() => {
     setHasScrolledToResults(false);
+
     if (isInSearchMode) {
       performTransition(() => loadSpecificQuote(selectedQuoteId));
+    } else if (isZenMode) {
+      performTransition(() => {
+        handleNewTest(true);
+        setTimeout(scrollToTypingTest, SCROLL_DELAY);
+      });
     } else {
       handleNewTest(true);
       setTimeout(scrollToTypingTest, SCROLL_DELAY);
     }
   }, [
     isInSearchMode,
+    isZenMode,
     selectedQuoteId,
     loadSpecificQuote,
     handleNewTest,
@@ -263,7 +284,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const handleKeyDown = useCallback(
     (e) => {
       if (
-        isInInfinityMode &&
+        (isInInfinityMode || isZenMode) &&
         isTestActive &&
         !isTestComplete &&
         (e.key === "Escape" || (e.key === "Enter" && e.shiftKey))
@@ -286,13 +307,15 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       if (e.key === " ") {
         const words = input.split(" ");
         const currentWord = words[words.length - 1];
-        if (currentWord.length === 0) {
+        if (currentWord.length === 0 && !isZenMode) {
           e.preventDefault();
           return;
         }
       }
 
       if (e.key === "Backspace") {
+        if (isZenMode) return;
+
         const quoteWords = displayWords.trim().split(" ");
         const inputWords = input.trim().split(" ");
         const hasTrailingSpace = input.endsWith(" ");
@@ -324,6 +347,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       input,
       displayWords,
       isInInfinityMode,
+      isZenMode,
       isTestActive,
       isTestComplete,
       completeTest,
@@ -396,15 +420,28 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
           .trim()
           .split(/\s+/)
           .filter((w) => w.length > 0).length;
-        if (testWordCount < 10) {
-          addNotification("Test invalid - too short!", "notice");
+        if (testWordCount < 1 && !isZenMode) {
+          // zen mode might technically be empty if they pressed shift+enter immediately
+        } else if (
+          testWordCount < 10 &&
+          !isZenMode &&
+          selectedMode !== "quotes"
+        ) {
+          addNotification("Test invalid - too short!", "notice", 4000);
         }
         notificationShownRef.current = true;
       }
     } else {
       notificationShownRef.current = false;
     }
-  }, [isTestComplete, stats, displayWords, addNotification]);
+  }, [
+    isTestComplete,
+    stats,
+    displayWords,
+    addNotification,
+    isZenMode,
+    selectedMode,
+  ]);
 
   useEffect(() => {
     onShowConfigChange?.(showConfig);
@@ -520,17 +557,24 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                     <LanguageSelector
                       selectedLanguage={selectedLanguage}
                       setSelectedLanguage={setSelectedLanguage}
+                      isZenMode={isZenMode}
                     />
                   </div>
                 ) : (
-                  <div className="flex px-2 content-grid">
+                  <div className="flex px-2 content-grid justify-center">
                     <TestStatus
                       selectedMode={selectedMode}
                       selectedDuration={selectedDuration}
                       selectedWordCount={selectedWordCount}
                       totalQuoteWords={totalQuoteWords}
                       totalWords={totalWords}
-                      wordsTyped={wordsTyped}
+                      wordsTyped={
+                        isZenMode
+                          ? input.endsWith(" ")
+                            ? zenWordCount
+                            : Math.max(zenWordCount - 1, 0)
+                          : wordsTyped
+                      }
                       timeElapsed={timeElapsed}
                     />
                   </div>
@@ -584,8 +628,9 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                       >
                         <WordGenerator
                           key={`${selectedMode}-${selectedLanguage}-${displayWords.substring(0, 20)}`}
-                          text={displayWords}
+                          text={isZenMode ? input : displayWords}
                           input={input}
+                          isZenMode={isZenMode}
                           onWordComplete={handleWordComplete}
                           isInfinityMode={isInfinityMode}
                           onDeletedCountChange={setDeletedCount}
