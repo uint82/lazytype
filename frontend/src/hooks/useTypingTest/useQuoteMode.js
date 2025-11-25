@@ -24,56 +24,97 @@ export default function useQuoteMode(
   const prevModeRef = useRef(selectedMode);
   const prevLanguageRef = useRef(selectedLanguage);
 
-  useEffect(() => {
-    if (selectedMode !== "quotes") {
-      prevModeRef.current = selectedMode;
-      return;
-    }
+  useEffect(
+    () => {
+      if (selectedMode !== "quotes") {
+        prevModeRef.current = selectedMode;
+        return;
+      }
 
-    const justSwitchedToQuotes =
-      prevModeRef.current !== "quotes" && selectedMode === "quotes";
-    const languageChanged = prevLanguageRef.current !== selectedLanguage;
+      const justSwitchedToQuotes =
+        prevModeRef.current !== "quotes" && selectedMode === "quotes";
+      const languageChanged = prevLanguageRef.current !== selectedLanguage;
 
-    if (selectedQuoteId !== null && languageChanged && selectedGroup === null) {
-      const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
-      if (quoteData) {
-        setQuote(quoteData);
-        setFullQuoteText(quoteData.text);
+      if (
+        selectedQuoteId !== null &&
+        languageChanged &&
+        selectedGroup === null
+      ) {
+        const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
+        if (quoteData) {
+          setQuote(quoteData);
+          setFullQuoteText(quoteData.text);
 
-        const quoteWords = quoteData.text.split(" ");
-        if (quoteWords.length > INITIAL_WORD_COUNT) {
-          const initialWords = quoteWords
-            .slice(0, INITIAL_WORD_COUNT)
-            .join(" ");
-          setWords(initialWords);
-          setDisplayedWordCount(INITIAL_WORD_COUNT);
+          const quoteWords = quoteData.text.split(" ");
+          if (quoteWords.length > INITIAL_WORD_COUNT) {
+            const initialWords = quoteWords
+              .slice(0, INITIAL_WORD_COUNT)
+              .join(" ");
+            setWords(initialWords);
+            setDisplayedWordCount(INITIAL_WORD_COUNT);
+          } else {
+            setWords(quoteData.text);
+            setDisplayedWordCount(quoteWords.length);
+          }
+
+          setInput("");
+          setActualQuoteGroup(quoteData.group);
+
+          if (!isModalOpen) {
+            inputRef.current?.focus();
+          }
+          prevLanguageRef.current = selectedLanguage;
+          prevModeRef.current = selectedMode;
+          prevQuoteIdRef.current = selectedQuoteId;
         } else {
-          setWords(quoteData.text);
-          setDisplayedWordCount(quoteWords.length);
+          prevLanguageRef.current = selectedLanguage;
         }
+        return;
+      }
 
-        setInput("");
-        setActualQuoteGroup(quoteData.group);
+      if (selectedQuoteId !== null && justSwitchedToQuotes) {
+        const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
+        if (quoteData) {
+          setQuote(quoteData);
+          setFullQuoteText(quoteData.text);
 
-        if (!isModalOpen) {
-          inputRef.current?.focus();
+          const quoteWords = quoteData.text.split(" ");
+          if (quoteWords.length > INITIAL_WORD_COUNT) {
+            const initialWords = quoteWords
+              .slice(0, INITIAL_WORD_COUNT)
+              .join(" ");
+            setWords(initialWords);
+            setDisplayedWordCount(INITIAL_WORD_COUNT);
+          } else {
+            setWords(quoteData.text);
+            setDisplayedWordCount(quoteWords.length);
+          }
+
+          setInput("");
+          setActualQuoteGroup(quoteData.group);
+
+          if (!isModalOpen) {
+            inputRef.current?.focus();
+          }
         }
-        prevLanguageRef.current = selectedLanguage;
         prevModeRef.current = selectedMode;
         prevQuoteIdRef.current = selectedQuoteId;
-      } else {
         prevLanguageRef.current = selectedLanguage;
+        return;
       }
-      return;
-    }
 
-    if (selectedQuoteId !== null && justSwitchedToQuotes) {
-      const quoteData = getQuoteById(selectedQuoteId, selectedLanguage);
-      if (quoteData) {
-        setQuote(quoteData);
-        setFullQuoteText(quoteData.text);
+      const quoteIdCleared =
+        prevQuoteIdRef.current !== null && selectedQuoteId === null;
 
-        const quoteWords = quoteData.text.split(" ");
+      if (selectedQuoteId === null || quoteIdCleared) {
+        const { quote, actualGroup } = getRandomQuote(
+          selectedGroup,
+          selectedLanguage,
+        );
+        setQuote(quote);
+        setFullQuoteText(quote.text);
+
+        const quoteWords = quote.text.split(" ");
         if (quoteWords.length > INITIAL_WORD_COUNT) {
           const initialWords = quoteWords
             .slice(0, INITIAL_WORD_COUNT)
@@ -81,67 +122,34 @@ export default function useQuoteMode(
           setWords(initialWords);
           setDisplayedWordCount(INITIAL_WORD_COUNT);
         } else {
-          setWords(quoteData.text);
+          setWords(quote.text);
           setDisplayedWordCount(quoteWords.length);
         }
 
         setInput("");
-        setActualQuoteGroup(quoteData.group);
+        setActualQuoteGroup(actualGroup);
 
         if (!isModalOpen) {
           inputRef.current?.focus();
         }
       }
-      prevModeRef.current = selectedMode;
+
       prevQuoteIdRef.current = selectedQuoteId;
+      prevModeRef.current = selectedMode;
       prevLanguageRef.current = selectedLanguage;
-      return;
-    }
-
-    const quoteIdCleared =
-      prevQuoteIdRef.current !== null && selectedQuoteId === null;
-
-    if (selectedQuoteId === null || quoteIdCleared) {
-      const { quote, actualGroup } = getRandomQuote(
-        selectedGroup,
-        selectedLanguage,
-      );
-      setQuote(quote);
-      setFullQuoteText(quote.text);
-
-      const quoteWords = quote.text.split(" ");
-      if (quoteWords.length > INITIAL_WORD_COUNT) {
-        const initialWords = quoteWords.slice(0, INITIAL_WORD_COUNT).join(" ");
-        setWords(initialWords);
-        setDisplayedWordCount(INITIAL_WORD_COUNT);
-      } else {
-        setWords(quote.text);
-        setDisplayedWordCount(quoteWords.length);
-      }
-
-      setInput("");
-      setActualQuoteGroup(actualGroup);
-
-      if (!isModalOpen) {
-        inputRef.current?.focus();
-      }
-    }
-
-    prevQuoteIdRef.current = selectedQuoteId;
-    prevModeRef.current = selectedMode;
-    prevLanguageRef.current = selectedLanguage;
-  }, [
-    selectedMode,
-    selectedGroup,
-    selectedLanguage,
-    setQuote,
-    setWords,
-    setInput,
-    inputRef,
-    setActualQuoteGroup,
-    selectedQuoteId,
-    setFullQuoteText,
-    setDisplayedWordCount,
-    isModalOpen,
-  ]);
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      selectedMode,
+      selectedGroup,
+      selectedLanguage,
+      setQuote,
+      setWords,
+      setInput,
+      inputRef,
+      setActualQuoteGroup,
+      selectedQuoteId,
+      setFullQuoteText,
+      setDisplayedWordCount,
+    ],
+  );
 }

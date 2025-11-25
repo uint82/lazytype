@@ -15,37 +15,39 @@ export default function useWordsMode(
   selectedNumbers = false,
   isModalOpen = false,
 ) {
-  useEffect(() => {
-    if (selectedMode === "words") {
-      const initialCount =
-        selectedWordCount === 0
-          ? INITIAL_WORD_COUNT
-          : Math.min(selectedWordCount, INITIAL_WORD_COUNT);
+  useEffect(
+    () => {
+      if (selectedMode === "words") {
+        const initialCount =
+          selectedWordCount === 0
+            ? INITIAL_WORD_COUNT
+            : Math.min(selectedWordCount, INITIAL_WORD_COUNT);
 
-      const randomWords = getRandomWords(initialCount, selectedLanguage, {
-        punctuation: selectedPunctuation,
-        numbers: selectedNumbers,
-      });
-      setQuote({ text: randomWords });
-      setWords(randomWords);
-      setInput("");
+        const randomWords = getRandomWords(initialCount, selectedLanguage, {
+          punctuation: selectedPunctuation,
+          numbers: selectedNumbers,
+        });
+        setQuote({ text: randomWords });
+        setWords(randomWords);
+        setInput("");
 
-      if (!isModalOpen) {
-        inputRef.current?.focus();
+        if (!isModalOpen) {
+          inputRef.current?.focus();
+        }
       }
-    }
-  }, [
-    selectedMode,
-    selectedWordCount,
-    selectedLanguage,
-    selectedPunctuation,
-    selectedNumbers,
-    setQuote,
-    setWords,
-    setInput,
-    inputRef,
-    isModalOpen,
-  ]);
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      selectedMode,
+      selectedWordCount,
+      selectedLanguage,
+      selectedPunctuation,
+      selectedNumbers,
+      setQuote,
+      setWords,
+      setInput,
+      inputRef,
+    ],
+  );
 
   const handleWordComplete = () => {
     if (selectedMode === "words") {

@@ -15,32 +15,38 @@ export default function useTimeMode(
   selectedNumbers = false,
   isModalOpen = false,
 ) {
-  useEffect(() => {
-    if (selectedMode === "time") {
-      const randomWords = getRandomWords(INITIAL_WORD_COUNT, selectedLanguage, {
-        punctuation: selectedPunctuation,
-        numbers: selectedNumbers,
-      });
-      setQuote({ text: randomWords });
-      setWords(randomWords);
-      setInput("");
+  useEffect(
+    () => {
+      if (selectedMode === "time") {
+        const randomWords = getRandomWords(
+          INITIAL_WORD_COUNT,
+          selectedLanguage,
+          {
+            punctuation: selectedPunctuation,
+            numbers: selectedNumbers,
+          },
+        );
+        setQuote({ text: randomWords });
+        setWords(randomWords);
+        setInput("");
 
-      if (!isModalOpen) {
-        inputRef.current?.focus();
+        if (!isModalOpen) {
+          inputRef.current?.focus();
+        }
       }
-    }
-  }, [
-    selectedMode,
-    selectedDuration,
-    selectedLanguage,
-    selectedPunctuation,
-    selectedNumbers,
-    setQuote,
-    setWords,
-    setInput,
-    inputRef,
-    isModalOpen,
-  ]);
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      selectedMode,
+      selectedDuration,
+      selectedLanguage,
+      selectedPunctuation,
+      selectedNumbers,
+      setQuote,
+      setWords,
+      setInput,
+      inputRef,
+    ],
+  );
 
   const handleWordComplete = () => {
     if (selectedMode === "time") {
