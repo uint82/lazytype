@@ -92,9 +92,9 @@ const TestConfig = ({
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="flex flex-wrap justify-center items-center gap-2 text-[#ebdbb2]">
+      <div className="flex flex-wrap justify-center items-center text-[#ebdbb2]">
         {!isCompactView ? (
-          <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex flex-wrap gap-1 items-center">
             {(selectedMode === "time" || selectedMode === "words") && (
               <>
                 <div className="flex flex-wrap gap-1 items-center">
@@ -120,12 +120,9 @@ const TestConfig = ({
                 <span className="text-[#a89984] mx-0.5 text-xs">|</span>
               </>
             )}
-
             <div className="flex gap-1">
               <button
-                onClick={() => {
-                  setSelectedMode("time");
-                }}
+                onClick={() => setSelectedMode("time")}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "time"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
@@ -134,9 +131,7 @@ const TestConfig = ({
                 time
               </button>
               <button
-                onClick={() => {
-                  setSelectedMode("words");
-                }}
+                onClick={() => setSelectedMode("words")}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "words"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
@@ -145,9 +140,7 @@ const TestConfig = ({
                 words
               </button>
               <button
-                onClick={() => {
-                  setSelectedMode("quotes");
-                }}
+                onClick={() => setSelectedMode("quotes")}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "quotes"
                     ? "bg-[#D8A657] text-[#282828]"
                     : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
@@ -155,10 +148,19 @@ const TestConfig = ({
               >
                 quotes
               </button>
+              <button
+                onClick={() => setSelectedMode("zen")}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "zen"
+                    ? "bg-[#D8A657] text-[#282828]"
+                    : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
+                  }`}
+              >
+                zen
+              </button>
             </div>
-
-            <span className="text-[#a89984] mx-0.5 text-xs">|</span>
-
+            {selectedMode !== "zen" && (
+              <span className="text-[#a89984] mx-0.5 text-xs">|</span>
+            )}
             {selectedMode === "time" ? (
               <div className="flex flex-wrap gap-1 items-center">
                 {testDurations.map((duration) => (
@@ -209,7 +211,7 @@ const TestConfig = ({
                   <PencilRuler size={16} />
                 </button>
               </div>
-            ) : (
+            ) : selectedMode === "quotes" ? (
               <>
                 <div className="flex flex-wrap gap-1 items-center">
                   {groups.map((group) => (
@@ -238,7 +240,7 @@ const TestConfig = ({
                   <Search size={16} />
                 </button>
               </>
-            )}
+            ) : null}
           </div>
         ) : (
           <>
