@@ -67,7 +67,11 @@ export default function useTestControls(
   };
 
   const handleNewTest = () => {
-    if (selectedMode === "quotes") {
+    if (selectedMode === "zen") {
+      const q = { text: "" };
+      setQuote(q);
+      setWords("");
+    } else if (selectedMode === "quotes") {
       const { quote, actualGroup } = getRandomQuote(
         selectedGroup,
         selectedLanguage,
