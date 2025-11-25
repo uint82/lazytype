@@ -17,7 +17,20 @@ const SCROLL_DELAY = 100;
 const BLUR_DELAY = 300;
 
 const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
-  const typingTestHook = useTypingTest();
+  const addNotification = useCallback(
+    (message, type = "notice", duration = 10000) => {
+      const id = Date.now();
+      setNotifications((prev) => [...prev, { id, message, type }]);
+
+      if (duration > 0) {
+        setTimeout(() => {
+          setNotifications((prev) => prev.filter((n) => n.id !== id));
+        }, duration);
+      }
+    },
+    [],
+  );
+  const typingTestHook = useTypingTest(addNotification);
   const {
     quote,
     words,
@@ -262,20 +275,6 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
       scrollToTypingTest();
     }
   }, [isFocused, inputRef, handleFocus, scrollToTypingTest, isTestComplete]);
-
-  const addNotification = useCallback(
-    (message, type = "notice", duration = 10000) => {
-      const id = Date.now();
-      setNotifications((prev) => [...prev, { id, message, type }]);
-
-      if (duration > 0) {
-        setTimeout(() => {
-          setNotifications((prev) => prev.filter((n) => n.id !== id));
-        }, duration);
-      }
-    },
-    [],
-  );
 
   const removeNotification = useCallback((id) => {
     setNotifications((prev) => prev.filter((n) => n.id !== id));
