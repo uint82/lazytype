@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import useQuoteMode from "./useQuoteMode";
 import useTimeMode from "./useTimeMode";
 import useWordsMode from "./useWordsMode";
+import useZenMode from "./useZenMode";
 import useTestControls from "./useTestControls";
 import useInputRef from "./useInputRef";
 import useTestState from "../useTestState";
@@ -43,6 +44,61 @@ export default function useTypingTest() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const inputRef = useInputRef(true, !isModalOpen);
+
+  const prevModeRef = useRef(selectedMode);
+  const prevPunctuationRef = useRef(selectedPunctuation);
+  const prevNumbersRef = useRef(selectedNumbers);
+  const prevDurationRef = useRef(selectedDuration);
+  const prevWordCountRef = useRef(selectedWordCount);
+
+  useEffect(
+    () => {
+      const modeChanged =
+        prevModeRef.current !== selectedMode &&
+        prevModeRef.current !== undefined;
+      const punctuationChanged =
+        prevPunctuationRef.current !== selectedPunctuation &&
+        prevPunctuationRef.current !== undefined;
+      const numbersChanged =
+        prevNumbersRef.current !== selectedNumbers &&
+        prevNumbersRef.current !== undefined;
+      const durationChanged =
+        prevDurationRef.current !== selectedDuration &&
+        prevDurationRef.current !== undefined;
+      const wordCountChanged =
+        prevWordCountRef.current !== selectedWordCount &&
+        prevWordCountRef.current !== undefined;
+
+      if (
+        modeChanged ||
+        punctuationChanged ||
+        numbersChanged ||
+        durationChanged ||
+        wordCountChanged
+      ) {
+        if (
+          modeChanged ||
+          selectedMode === "time" ||
+          selectedMode === "words"
+        ) {
+          handleNewTest(true);
+        }
+      }
+
+      prevModeRef.current = selectedMode;
+      prevPunctuationRef.current = selectedPunctuation;
+      prevNumbersRef.current = selectedNumbers;
+      prevDurationRef.current = selectedDuration;
+      prevWordCountRef.current = selectedWordCount;
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      selectedMode,
+      selectedPunctuation,
+      selectedNumbers,
+      selectedDuration,
+      selectedWordCount,
+    ],
+  );
 
   const {
     isTestActive,
@@ -150,6 +206,17 @@ export default function useTypingTest() {
     isModalOpen,
   );
 
+  useZenMode(
+    selectedMode,
+    setQuote,
+    setWords,
+    setInput,
+    inputRef,
+    setFullQuoteText,
+    setDisplayedWordCount,
+    isModalOpen,
+  );
+
   const {
     handleInputChange: originalHandleInputChange,
     handleNewTest: originalHandleNewTest,
@@ -226,7 +293,10 @@ export default function useTypingTest() {
     setDeletedCount(0);
     setFullQuoteText("");
     setDisplayedWordCount(0);
-    resetWordGenerator(selectedLanguage);
+
+    if (selectedMode !== "zen") {
+      resetWordGenerator(selectedLanguage);
+    }
 
     if (clearQuote && selectedMode === "quotes") {
       setSelectedQuoteId(null);
