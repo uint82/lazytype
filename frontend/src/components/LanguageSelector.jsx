@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { Languages } from "lucide-react";
 import LanguageModal from "./LanguageModal";
+import { ChartSpline } from "lucide-react";
 
-const LanguageSelector = ({ selectedLanguage, setSelectedLanguage }) => {
+const LanguageSelector = ({
+  selectedLanguage,
+  setSelectedLanguage,
+  isZenMode,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const languages = [
@@ -13,6 +18,18 @@ const LanguageSelector = ({ selectedLanguage, setSelectedLanguage }) => {
   const currentLanguage = languages.find(
     (lang) => lang.id === selectedLanguage,
   );
+
+  if (isZenMode) {
+    return (
+      <div
+        className="flex px-3 py-1 gap-3 justify-center items-center mt-5 text-[#635851] transition-all"
+        style={{ fontFamily: "'Roboto Mono', monospace" }}
+      >
+        <ChartSpline size={20} />
+        <span>shift + Enter to finish zen</span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-center items-center mt-5">
