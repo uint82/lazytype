@@ -374,7 +374,7 @@ const TestResults = ({
                   onClick={() => toggleLine("wpm")}
                   tabIndex={-1}
                   className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.wpm
-                      ? "hoever:bg-[#0C0C0C]/40 line-through text-white"
+                      ? "hover:bg-[#0C0C0C]/40 line-through text-white"
                       : "hover:bg-[#0C0C0C]/40 hover:text-white"
                     }`}
                 >
@@ -404,7 +404,7 @@ const TestResults = ({
                   onClick={() => toggleLine("burst")}
                   tabIndex={-1}
                   className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.burst
-                      ? "hover:bg-[#0C0C0C0]/40 line-through text-white"
+                      ? "hover:bg-[#0C0C0C]/40 line-through text-white"
                       : "hover:bg-[#0C0C0C]/40 hover:text-white"
                     }`}
                 >
