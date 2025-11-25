@@ -11,7 +11,7 @@ import { resetWordGenerator } from "../../controllers/words-controller";
 import { loadTestConfig, saveTestConfig } from "../../utils/localStorage";
 import { getQuoteById } from "../../controllers/quotes-controller";
 
-export default function useTypingTest() {
+export default function useTypingTest(addNotification) {
   const savedConfig = loadTestConfig();
 
   const [quote, setQuote] = useState([]);
@@ -178,6 +178,7 @@ export default function useTypingTest() {
     setFullQuoteText,
     setDisplayedWordCount,
     isModalOpen,
+    addNotification,
   );
 
   const { handleWordComplete: wordsHandleWordComplete } = useWordsMode(
