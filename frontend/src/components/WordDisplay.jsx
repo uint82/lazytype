@@ -9,8 +9,7 @@ const Character = memo(({ char, isCorrect, isTyped, shouldTransition }) => {
     : "text-[#635851]";
   return (
     <span
-      className={`${colorClass} ${shouldTransition ? "transition-colors duration-150" : ""
-        }`}
+      className={`${colorClass} ${shouldTransition ? "transition-colors duration-150" : ""}`}
     >
       {char}
     </span>
@@ -18,7 +17,35 @@ const Character = memo(({ char, isCorrect, isTyped, shouldTransition }) => {
 });
 Character.displayName = "Character";
 
-const Word = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
+const Word = memo(({ word, wordIndex, isZenMode }) => {
+  if (isZenMode) {
+    return (
+      <div
+        className="word typed"
+        data-word-index={wordIndex}
+        style={{
+          display: "inline-block",
+          margin: "0.25em 0.3em",
+        }}
+      >
+        {word.split("").map((char, charIndex) => (
+          <Character
+            key={`${wordIndex}-${charIndex}`}
+            char={char}
+            isCorrect={true}
+            isTyped={true}
+            shouldTransition={true}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+});
+Word.displayName = "Word";
+
+const NormalWord = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
   const normalizedWord = normalizeForComparison(word);
 
   const hasError =
@@ -70,14 +97,35 @@ const Word = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
     </div>
   );
 });
-Word.displayName = "Word";
+NormalWord.displayName = "NormalWord";
 
 const WordDisplay = ({
   words,
   inputWords,
   currentWordIndex,
   currentWordInput,
+  isZenMode = false,
 }) => {
+  if (isZenMode) {
+    return (
+      <>
+        {words.map((wordObj, wordIndex) => {
+          const word = typeof wordObj === "string" ? wordObj : wordObj.word;
+          const key = typeof wordObj === "string" ? wordIndex : wordObj.id;
+
+          return (
+            <Word
+              key={key}
+              word={word}
+              wordIndex={wordIndex}
+              isZenMode={true}
+            />
+          );
+        })}
+      </>
+    );
+  }
+
   return (
     <>
       {words.map((wordObj, wordIndex) => {
@@ -91,7 +139,7 @@ const WordDisplay = ({
             ? inputWords[wordIndex]
             : null;
         return (
-          <Word
+          <NormalWord
             key={key}
             word={word}
             wordIndex={wordIndex}
