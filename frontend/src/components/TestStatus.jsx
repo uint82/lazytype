@@ -37,7 +37,9 @@ const TestStatus = ({
 
   return (
     <div className="text-[#C68C22] text-[32px] font-medium m-[0em_0.25em] mt-3">
-      {selectedMode === "quotes" ? (
+      {selectedMode === "zen" ? (
+        <div>{wordsTyped}</div>
+      ) : selectedMode === "quotes" ? (
         <div>
           {wordsTyped}/{totalQuoteWords}
         </div>
