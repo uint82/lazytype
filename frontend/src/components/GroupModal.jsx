@@ -103,6 +103,19 @@ const GroupModal = ({
             >
               quotes
             </button>
+
+            <button
+              onClick={() => {
+                setActiveTab("zen");
+                onSetMode("zen");
+              }}
+              className={`w-full px-4 py-2 rounded transition-all ${activeTab === "zen"
+                  ? "bg-[#D8AB19] text-[#282828]"
+                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
+                }`}
+            >
+              zen
+            </button>
           </div>
 
           <div className="flex flex-col gap-2 mt-3">
@@ -208,6 +221,8 @@ const GroupModal = ({
                   numbers
                 </button>
               </>
+            ) : activeTab === "zen" ? (
+              <></>
             ) : (
               <>
                 {groups.map((group) => (
