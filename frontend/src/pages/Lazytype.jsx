@@ -72,6 +72,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     completeTest,
     fullQuoteText,
     displayedWordCount,
+    typedHistory,
   } = typingTestHook;
 
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -588,6 +589,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
               {isTestComplete ? (
                 <TestResults
                   stats={stats}
+                  input={input}
                   timeElapsed={timeElapsed}
                   selectedMode={selectedMode}
                   selectedDuration={selectedDuration}
@@ -603,6 +605,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                   onTransitionStart={() => setIsTransitioning(true)}
                   addNotification={addNotification}
                   displayWords={displayWords}
+                  typedHistory={typedHistory}
                 />
               ) : (
                 <>
