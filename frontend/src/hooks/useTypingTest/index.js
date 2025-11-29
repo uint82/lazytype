@@ -223,7 +223,7 @@ export default function useTypingTest(addNotification) {
   const {
     handleInputChange: originalHandleInputChange,
     handleNewTest: originalHandleNewTest,
-    handleRepeatTest,
+    handleRepeatTest: originalHandleRepeatTest,
   } = useTestControls(
     selectedMode,
     selectedGroup,
@@ -336,6 +336,11 @@ export default function useTypingTest(addNotification) {
         setTimeout(() => completeTest(), 10);
       }
     }
+  };
+
+  const handleRepeatTest = () => {
+    setTypedHistory({});
+    originalHandleRepeatTest();
   };
 
   const handleNewTest = (clearQuote = true) => {
