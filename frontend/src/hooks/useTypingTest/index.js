@@ -41,6 +41,8 @@ export default function useTypingTest(addNotification) {
   const [fullQuoteText, setFullQuoteText] = useState("");
   const [displayedWordCount, setDisplayedWordCount] = useState(0);
 
+  const [typedHistory, setTypedHistory] = useState({});
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const inputRef = useInputRef(true, !isModalOpen);
@@ -247,6 +249,53 @@ export default function useTypingTest(addNotification) {
     } else if (value.length > 0 && isTestActive) {
       hideConfig();
     }
+
+    const currentWordIndex = value.split(" ").length - 1;
+    const currentInputWords = value.split(" ");
+    const currentWordRaw = currentInputWords[currentWordIndex] || "";
+
+    if (selectedMode === "zen") {
+      setTypedHistory((prev) => {
+        const prevHistory = prev[currentWordIndex] || "";
+
+        // in zen mode:
+        // we only update the history if the current word is LONGER than what we remember.
+        // this ensures that if the user types "Hello" and backspaces to "Hell",
+        // we remember "Hello" was the peak, allowing us to detect the deletion.
+        if (currentWordRaw.length > prevHistory.length) {
+          return { ...prev, [currentWordIndex]: currentWordRaw };
+        }
+        return prev;
+      });
+    } else {
+      const targetWordsArray = words.split(" ");
+      const targetWord = targetWordsArray[currentWordIndex] || "";
+
+      setTypedHistory((prev) => {
+        const prevHistory = prev[currentWordIndex] || "";
+
+        const wasPrevWrong =
+          targetWord &&
+          !targetWord.startsWith(prevHistory) &&
+          prevHistory.length > 0;
+        const isCurrentWrong =
+          targetWord && !targetWord.startsWith(currentWordRaw);
+
+        if (wasPrevWrong) {
+          if (isCurrentWrong && currentWordRaw.length > prevHistory.length) {
+            return { ...prev, [currentWordIndex]: currentWordRaw };
+          }
+          return prev;
+        }
+
+        if (isCurrentWrong || currentWordRaw.length > prevHistory.length) {
+          return { ...prev, [currentWordIndex]: currentWordRaw };
+        }
+
+        return prev;
+      });
+    }
+
     originalHandleInputChange(e, words, input);
   };
 
@@ -294,6 +343,7 @@ export default function useTypingTest(addNotification) {
     setDeletedCount(0);
     setFullQuoteText("");
     setDisplayedWordCount(0);
+    setTypedHistory({});
 
     if (selectedMode !== "zen") {
       resetWordGenerator(selectedLanguage);
@@ -316,6 +366,7 @@ export default function useTypingTest(addNotification) {
         resetTest();
         setDeletedCount(0);
         setTestId((prev) => prev + 1);
+        setTypedHistory({});
 
         if (!isModalOpen) {
           inputRef.current?.focus();
@@ -344,6 +395,7 @@ export default function useTypingTest(addNotification) {
 
         resetTest();
         setDeletedCount(0);
+        setTypedHistory({});
         setTestId((prev) => prev + 1);
 
         if (!isModalOpen) {
@@ -406,5 +458,6 @@ export default function useTypingTest(addNotification) {
     completeTest,
     fullQuoteText,
     setIsModalOpen,
+    typedHistory,
   };
 }
