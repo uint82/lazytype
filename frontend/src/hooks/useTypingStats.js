@@ -21,6 +21,7 @@ export default function useTypingStats(
     currentErrors: 0,
     totalErrors: 0,
     consistency: 100,
+    wordIndicesBySecond: {},
   });
 
   const previousInputRef = useRef("");
@@ -32,6 +33,16 @@ export default function useTypingStats(
   const lastTypedCharCountRef = useRef(0);
   const processedWordIndexRef = useRef(-1);
   const processedWordErrorRef = useRef(new Set());
+  const wordIndicesBySecondRef = useRef({});
+  const charCountBySecondRef = useRef({});
+
+  useEffect(
+    () => {
+      const currentSecond = Math.floor(timeElapsed);
+      charCountBySecondRef.current[currentSecond] = totalTypedCharsRef.current;
+    }, // eslint-disable-next-line react-hooks/exhaustive-deps
+    [totalTypedCharsRef.current],
+  );
 
   useEffect(() => {
     if (mode === "zen") {
@@ -50,6 +61,7 @@ export default function useTypingStats(
           currentErrors: 0,
           totalErrors: 0,
           consistency: 100,
+          wordIndicesBySecond: {},
         });
         previousInputRef.current = "";
         lastHistoryTimeRef.current = 0;
@@ -60,6 +72,8 @@ export default function useTypingStats(
         lastTypedCharCountRef.current = 0;
         processedWordIndexRef.current = -1;
         processedWordErrorRef.current.clear();
+        wordIndicesBySecondRef.current = {};
+        charCountBySecondRef.current = {};
         return;
       }
 
@@ -102,6 +116,29 @@ export default function useTypingStats(
           errorCount: 0,
         };
 
+        const charAtThisSecond = totalTypedCharsRef.current;
+        const charAtPrevSecond =
+          charCountBySecondRef.current[currentSecond - 1] || 0;
+
+        let charPosition = 0;
+        const indices = [];
+
+        for (let i = 0; i < inputWords.length; i++) {
+          const typedWord = inputWords[i];
+          const wordStart = charPosition;
+          const wordEnd = charPosition + typedWord.length;
+
+          if (wordEnd > charAtPrevSecond && wordStart < charAtThisSecond) {
+            indices.push(i);
+          }
+
+          charPosition += typedWord.length;
+          if (i < inputWords.length - 1) charPosition += 1;
+        }
+        wordIndicesBySecondRef.current[currentSecond] = indices;
+        charCountBySecondRef.current[currentSecond] =
+          totalTypedCharsRef.current;
+
         if (!recordedSecondsRef.current.has(currentSecond)) {
           setStats((prev) => ({
             ...prev,
@@ -110,6 +147,7 @@ export default function useTypingStats(
             wpmExact: dataPoint.wpmExact,
             rawWpm: dataPoint.rawWpm,
             rawWpmExact: dataPoint.rawWpmExact,
+            wordIndicesBySecond: { ...wordIndicesBySecondRef.current },
           }));
           recordedSecondsRef.current.add(currentSecond);
           lastHistoryTimeRef.current = currentSecond;
@@ -142,6 +180,25 @@ export default function useTypingStats(
             errorCount: 0,
           };
 
+          const lastFullSecond = Math.floor(finalTime);
+          const charAtLastFullSecond =
+            charCountBySecondRef.current[lastFullSecond] || 0;
+          let charCount = 0;
+          const indices = [];
+          for (let i = 0; i < inputWords.length; i++) {
+            const typedWord = inputWords[i];
+            const wordStart = charCount;
+            const wordEnd = charCount + typedWord.length;
+            if (
+              wordStart >= charAtLastFullSecond &&
+              wordEnd <= totalTypedCharsRef.current
+            ) {
+              indices.push(i);
+            }
+            charCount += typedWord.length + 1;
+          }
+          wordIndicesBySecondRef.current[finalTime] = indices;
+
           setStats((prev) => ({
             ...prev,
             wpmHistory: [...prev.wpmHistory, dataPoint],
@@ -149,6 +206,7 @@ export default function useTypingStats(
             wpmExact: dataPoint.wpmExact,
             rawWpm: dataPoint.rawWpm,
             rawWpmExact: dataPoint.rawWpmExact,
+            wordIndicesBySecond: { ...wordIndicesBySecondRef.current },
           }));
           recordedSecondsRef.current.add(finalTime);
           lastHistoryTimeRef.current = finalTime;
@@ -204,6 +262,7 @@ export default function useTypingStats(
           totalErrors: 0,
           consistency: Math.round(consistencyValue),
           consistencyExact: consistencyValue,
+          wordIndicesBySecond: { ...wordIndicesBySecondRef.current },
         };
         if (JSON.stringify(prev) === JSON.stringify(next)) return prev;
         return next;
@@ -237,6 +296,8 @@ export default function useTypingStats(
       lastTypedCharCountRef.current = 0;
       processedWordIndexRef.current = -1;
       processedWordErrorRef.current.clear();
+      wordIndicesBySecondRef.current = {};
+      charCountBySecondRef.current = {};
       return;
     }
 
@@ -471,6 +532,32 @@ export default function useTypingStats(
         errorCount: newErrorsThisSecond > 0 ? newErrorsThisSecond : 0,
       };
 
+      const charAtThisSecond = totalTypedCharsRef.current;
+      const charAtPrevSecond =
+        charCountBySecondRef.current[currentSecond - 1] || 0;
+
+      let charPosition = 0;
+      const indices = [];
+
+      for (let i = 0; i < inputWords.length; i++) {
+        const typedWord = inputWords[i];
+        const wordStart = charPosition;
+        const wordEnd = charPosition + typedWord.length;
+
+        if (wordEnd > charAtPrevSecond && wordStart < charAtThisSecond) {
+          indices.push(i);
+        }
+
+        charPosition += typedWord.length;
+        if (i < inputWords.length - 1) {
+          charPosition += 1;
+        }
+      }
+
+      wordIndicesBySecondRef.current[currentSecond] = indices;
+
+      charCountBySecondRef.current[currentSecond] = totalTypedCharsRef.current;
+
       if (!recordedSecondsRef.current.has(currentSecond)) {
         setStats((prev) => ({
           ...prev,
@@ -479,6 +566,7 @@ export default function useTypingStats(
           wpmExact: dataPoint.wpmExact,
           rawWpm: dataPoint.rawWpm,
           rawWpmExact: dataPoint.rawWpmExact,
+          wordIndicesBySecond: { ...wordIndicesBySecondRef.current },
         }));
         recordedSecondsRef.current.add(currentSecond);
         lastHistoryTimeRef.current = currentSecond;
@@ -518,6 +606,31 @@ export default function useTypingStats(
           words: inputWords.length,
           errorCount: newErrorsSinceLast > 0 ? newErrorsSinceLast : 0,
         };
+
+        const lastFullSecond = Math.floor(finalTime);
+        const charAtLastFullSecond =
+          charCountBySecondRef.current[lastFullSecond] || 0;
+
+        let charCount = 0;
+        const indices = [];
+
+        for (let i = 0; i < inputWords.length; i++) {
+          const typedWord = inputWords[i];
+          const wordStart = charCount;
+          const wordEnd = charCount + typedWord.length;
+
+          if (
+            wordStart >= charAtLastFullSecond &&
+            wordEnd <= totalTypedCharsRef.current
+          ) {
+            indices.push(i);
+          }
+
+          charCount += typedWord.length + 1;
+        }
+
+        wordIndicesBySecondRef.current[finalTime] = indices;
+
         setStats((prev) => ({
           ...prev,
           wpmHistory: [...prev.wpmHistory, dataPoint],
@@ -525,6 +638,7 @@ export default function useTypingStats(
           wpmExact: dataPoint.wpmExact,
           rawWpm: dataPoint.rawWpm,
           rawWpmExact: dataPoint.rawWpmExact,
+          wordIndicesBySecond: { ...wordIndicesBySecondRef.current },
         }));
         recordedSecondsRef.current.add(finalTime);
         lastHistoryTimeRef.current = finalTime;
@@ -537,6 +651,7 @@ export default function useTypingStats(
           wpmExact: cumulativeNetWpm,
           rawWpm: Math.round(cumulativeRawWpm),
           rawWpmExact: cumulativeRawWpm,
+          wordIndicesBySecond: { ...wordIndicesBySecondRef.current },
         }));
         recordedSecondsRef.current.add(finalTime);
       }
@@ -581,6 +696,7 @@ export default function useTypingStats(
         totalErrors: totalErrorsRef.current,
         consistency: Math.round(consistencyValue),
         consistencyExact: consistencyValue,
+        wordIndicesBySecond: { ...wordIndicesBySecondRef.current },
       };
       if (JSON.stringify(prev) === JSON.stringify(next)) return prev;
       return next;
