@@ -26,8 +26,8 @@ const WordHistoryItem = ({
 
   useLayoutEffect(() => {
     if (measureRef.current && showOverlay) {
-      const tooltipWidth = measureRef.current.offsetWidth;
-      setOverlayWidth(tooltipWidth);
+      const rect = measureRef.current.getBoundingClientRect();
+      setOverlayWidth(rect.width);
     }
   }, [showOverlay, word.tooltip, word.target]);
 
@@ -43,7 +43,7 @@ const WordHistoryItem = ({
     if (isFirstInGroup && isLastInGroup) return "rounded-sm";
     if (isFirstInGroup) return "rounded-l-sm";
     if (isLastInGroup) return "rounded-r-sm";
-    return "";
+    return "rounded-none";
   };
 
   return (
