@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import TooltipHover from "./TooltipHover";
-import { ChevronRight, RefreshCcw } from "lucide-react";
+import InputHistory from "./InputHistory";
+import { useWordHistory } from "../hooks/useWordHistory";
+import { ChevronRight, RefreshCw, History } from "lucide-react";
 import {
   ComposedChart,
   Line,
@@ -14,6 +16,7 @@ import {
 
 const TestResults = ({
   stats,
+  input,
   timeElapsed,
   selectedMode,
   selectedDuration,
@@ -29,6 +32,7 @@ const TestResults = ({
   onTransitionStart,
   addNotification,
   displayWords,
+  typedHistory = {},
 }) => {
   const [visibleLines, setVisibleLines] = useState({
     wpm: true,
@@ -36,6 +40,17 @@ const TestResults = ({
     burst: true,
     errors: true,
   });
+
+  const [showWordHistory, setShowWordHistory] = useState(false);
+  const [hoveredSecond, setHoveredSecond] = useState(null);
+  const hasShownMessageRef = useRef(false);
+
+  const wordHistory = useWordHistory(
+    displayWords,
+    input,
+    typedHistory,
+    selectedMode,
+  );
 
   const handleNextTest = () => {
     if (onTransitionStart) onTransitionStart();
@@ -53,11 +68,7 @@ const TestResults = ({
 
   const formatTime = (milliseconds) => {
     const seconds = Math.round(milliseconds / 1000);
-
-    if (seconds < 60) {
-      return `${seconds}s`;
-    }
-
+    if (seconds < 60) return `${seconds}s`;
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
@@ -67,11 +78,7 @@ const TestResults = ({
     if (selectedMode === "quote" || selectedMode === "quotes") {
       const groupNames = ["short", "medium", "long", "very long"];
       let groupName;
-      if (
-        selectedGroup === null &&
-        actualQuoteGroup !== null &&
-        actualQuoteGroup !== undefined
-      ) {
+      if (selectedGroup === null && actualQuoteGroup !== null) {
         groupName = groupNames[actualQuoteGroup];
       } else if (selectedGroup !== null) {
         groupName = groupNames[selectedGroup];
@@ -108,44 +115,41 @@ const TestResults = ({
 
   const getXAxisKey = () => "time";
 
-  const transformedData = stats.wpmHistory
-    ? stats.wpmHistory.map((item, index) => {
+  const transformedData = useMemo(() => {
+    if (!stats.wpmHistory) return [];
+
+    const data = stats.wpmHistory.map((item, index) => {
       const second = Math.floor(item.time) || index + 1;
       return {
         ...item,
         second,
         time: item.time,
       };
-    })
-    : [];
+    });
 
-  if (isQuoteMode && isWordsMode && transformedData.length > 0) {
-    const lastPoint = transformedData[transformedData.length - 1];
-    const exactFinalSeconds = parseFloat((timeElapsed / 1000).toFixed(2));
-    if (Math.abs(lastPoint.time - exactFinalSeconds) > 0.01) {
-      transformedData.push({
-        time: exactFinalSeconds,
-        wpm: stats.wpm,
-        rawWpm: stats.rawWpm,
-        burst: lastPoint.burst || 0,
-        words: lastPoint.words,
-        errorCount: lastPoint.errorCount,
-      });
+    if (isQuoteMode && isWordsMode && data.length > 0) {
+      const lastPoint = data[data.length - 1];
+      const exactFinalSeconds = parseFloat((timeElapsed / 1000).toFixed(2));
+      if (Math.abs(lastPoint.time - exactFinalSeconds) > 0.01) {
+        data.push({
+          time: exactFinalSeconds,
+          wpm: stats.wpm,
+          rawWpm: stats.rawWpm,
+          burst: lastPoint.burst || 0,
+          words: lastPoint.words,
+          errorCount: lastPoint.errorCount,
+        });
+      }
     }
-  }
-
-  const Cursor = (props) => {
-    const { points } = props;
-    if (!points || points.length === 0) return null;
-
-    return (
-      <g>
-        {points.map((index) => (
-          <circle key={index} r={4} opacity={0.8} />
-        ))}
-      </g>
-    );
-  };
+    return data;
+  }, [
+    stats.wpmHistory,
+    stats.wpm,
+    stats.rawWpm,
+    isQuoteMode,
+    isWordsMode,
+    timeElapsed,
+  ]);
 
   const generateXAxisTicks = () => {
     const exactFinalSeconds = parseFloat((timeElapsed / 1000).toFixed(2));
@@ -155,51 +159,31 @@ const TestResults = ({
     if (!isQuoteMode && !isWordsMode) {
       const duration = lastFullSecond;
       const ticks = [];
-
       if (duration <= 30) {
-        for (let i = 1; i <= duration; i++) {
-          ticks.push(i);
-        }
+        for (let i = 1; i <= duration; i++) ticks.push(i);
       } else if (duration <= 60) {
-        for (let i = 1; i <= duration; i += 3) {
-          ticks.push(i);
-        }
-        if (!ticks.includes(duration)) {
-          ticks.push(duration);
-        }
+        for (let i = 1; i <= duration; i += 3) ticks.push(i);
+        if (!ticks.includes(duration)) ticks.push(duration);
       } else if (duration <= 120) {
-        for (let i = 1; i <= duration; i += 5) {
-          ticks.push(i);
-        }
-        if (!ticks.includes(duration)) {
-          ticks.push(duration);
-        }
+        for (let i = 1; i <= duration; i += 5) ticks.push(i);
+        if (!ticks.includes(duration)) ticks.push(duration);
       } else {
         const interval = duration <= 240 ? 10 : 15;
-        for (let i = interval; i <= duration; i += interval) {
-          ticks.push(i);
-        }
-        if (!ticks.includes(duration)) {
-          ticks.push(duration);
-        }
+        for (let i = interval; i <= duration; i += interval) ticks.push(i);
+        if (!ticks.includes(duration)) ticks.push(duration);
       }
-
       if (remainder >= 0.5 && !ticks.includes(exactFinalSeconds)) {
         ticks.push(exactFinalSeconds);
       }
-
       return ticks;
     }
 
     const ticks = [];
     const remainder2 = exactFinalSeconds - lastFullSecond;
-
     for (let i = 1; i <= lastFullSecond; i++) ticks.push(i);
-
     if (remainder2 >= 0.5 && !ticks.includes(exactFinalSeconds)) {
       ticks.push(exactFinalSeconds);
     }
-
     return ticks;
   };
 
@@ -243,7 +227,6 @@ const TestResults = ({
     }
     return null;
   };
-  const hasShownMessageRef = useRef(false);
 
   useEffect(() => {
     if (
@@ -259,10 +242,16 @@ const TestResults = ({
 
       if (testWordCount >= 10) {
         const funnyMessages = [
-          `Congrats, you just wasted ${formatTime(timeElapsed)} of your life. You absolute legend.`,
+          `Congrats, you just wasted ${formatTime(
+            timeElapsed,
+          )} of your life. You absolute legend.`,
           `Achievement Unlocked: 0 WPM! That's impressively bad.`,
-          `${formatTime(timeElapsed)} well spent doing absolutely nothing. Bravo!`,
-          `You managed to type 0 words in ${formatTime(timeElapsed)}. That's... something.`,
+          `${formatTime(
+            timeElapsed,
+          )} well spent doing absolutely nothing. Bravo!`,
+          `You managed to type 0 words in ${formatTime(
+            timeElapsed,
+          )}. That's... something.`,
         ];
 
         const randomMessage =
@@ -446,6 +435,18 @@ const TestResults = ({
                 data={transformedData}
                 margin={{ top: 5, right: 0, left: 0, bottom: 0 }}
                 tabIndex={-1}
+                onMouseMove={(state) => {
+                  if (
+                    state?.isTooltipActive &&
+                    state?.activeTooltipIndex !== undefined
+                  ) {
+                    const dataPoint = transformedData[state.activeTooltipIndex];
+                    if (dataPoint) {
+                      setHoveredSecond(dataPoint.time);
+                    }
+                  }
+                }}
+                onMouseLeave={() => setHoveredSecond(null)}
               >
                 <defs>
                   <linearGradient
@@ -521,7 +522,7 @@ const TestResults = ({
                     offset: 15,
                   }}
                 />
-                <Tooltip content={<CustomTooltip />} cursor={<Cursor />} />
+                <Tooltip content={<CustomTooltip />} cursor={false} />
                 {visibleLines.burst && (
                   <Area
                     yAxisId="left"
@@ -591,7 +592,7 @@ const TestResults = ({
 
         <div className="bottom-stats-grid">
           <div className="text-left">
-            <div className="text-sm text-gray-500">test type</div>
+            <div className="text-md text-gray-500">test type</div>
             <div
               className="text-md text-gray-400"
               style={{ whiteSpace: "pre-line" }}
@@ -600,7 +601,7 @@ const TestResults = ({
             </div>
           </div>
           <div className="text-left">
-            <div className="text-sm text-gray-500">raw</div>
+            <div className="text-md text-gray-500">raw</div>
             <TooltipHover text={`${stats.rawWpmExact?.toFixed(2)} wpm`}>
               <div className="text-2xl sm:text-3xl text-[#d3869b]">
                 {stats.rawWpm}
@@ -608,7 +609,7 @@ const TestResults = ({
             </TooltipHover>
           </div>
           <div className="text-left">
-            <div className="text-sm text-gray-500">characters</div>
+            <div className="text-md text-gray-500">characters</div>
             <TooltipHover
               text={
                 <>
@@ -632,7 +633,7 @@ const TestResults = ({
             </TooltipHover>
           </div>
           <div className="text-left">
-            <div className="text-sm text-gray-500">consistency</div>
+            <div className="text-md text-gray-500">consistency</div>
             <TooltipHover text={`${stats.consistencyExact.toFixed(2)}%`}>
               <div className="text-2xl sm:text-3xl text-[#d3869b]">
                 {stats.consistency}%
@@ -640,7 +641,7 @@ const TestResults = ({
             </TooltipHover>
           </div>
           <div className="text-left">
-            <div className="text-sm text-gray-500">time</div>
+            <div className="text-md text-gray-500">time</div>
             <TooltipHover text={`${(timeElapsed / 1000).toFixed(2)}s`}>
               <div className="text-2xl sm:text-3xl text-[#d3869b]">
                 {formatTime(timeElapsed)}
@@ -649,7 +650,7 @@ const TestResults = ({
           </div>
           {isQuoteMode && quote?.source && (
             <div className="text-left">
-              <div className="text-sm text-gray-500">source</div>
+              <div className="text-md text-gray-500">source</div>
               <div className="text-md font-medium text-[#b8bb26] italic">
                 {quote.source}
               </div>
@@ -657,20 +658,37 @@ const TestResults = ({
           )}
         </div>
       </div>
+
+      <InputHistory
+        wordHistory={wordHistory}
+        displayWords={displayWords}
+        addNotification={addNotification}
+        hoveredSecond={hoveredSecond}
+        wordIndicesBySecond={stats.wordIndicesBySecond}
+        isVisible={showWordHistory}
+      />
+
       <div className="flex gap-4 justify-center mt-4">
         <button
           onClick={handleNextTest}
-          className="flex items-center gap-2 px-6 py-3 bg-[#282828] rounded-lg hover:text-white cursor-pointer font-bold"
+          className="flex items-center gap-2 px-6 py-3 text-gray-500 bg-[#282828] rounded-lg hover:text-white cursor-pointer font-bold"
           aria-label="Next Test"
         >
-          <ChevronRight />
+          <ChevronRight size={20} />
         </button>
         <button
           onClick={onRepeatTest}
           className="flex items-center gap-2 px-6 py-3 bg-[#282828] rounded-lg hover:text-white cursor-pointer font-bold"
           aria-label="Repeat Test"
         >
-          <RefreshCcw />
+          <RefreshCw size={20} />
+        </button>
+        <button
+          onClick={() => setShowWordHistory(!showWordHistory)}
+          className="flex items-center gap-2 px-6 py-3 bg-[#282828] rounded-lg hover:text-white cursor-pointer font-bold transition-colors"
+          aria-label="Toggle Words History"
+        >
+          <History size={20} />
         </button>
       </div>
     </div>
