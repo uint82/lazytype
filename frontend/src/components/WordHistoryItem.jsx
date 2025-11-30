@@ -73,7 +73,7 @@ const WordHistoryItem = ({
 
       <span
         ref={measureRef}
-        className="absolute invisible whitespace-nowrap px-1 -mx-1"
+        className="fixed invisible whitespace-nowrap px-1 -mx-1"
         aria-hidden="true"
       >
         {getWidthText()}
