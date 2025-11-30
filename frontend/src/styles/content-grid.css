@@ -2,45 +2,32 @@
   .content-grid {
     --padding-inline: 2rem;
     --content-max-width: 1536px;
-    --breakout-size: calc(
-      (calc(var(--content-max-width) + 12rem) - var(--content-max-width)) / 2
-    );
+    --breakout-size: calc((calc(var(--content-max-width) + 12rem) - var(--content-max-width)) / 2);
 
     display: grid;
     justify-content: center;
     grid-template-columns:
-      [full-width-start] var(
-        --padding-inline
-      ) [full-width-padding-start] minmax(0, 1fr) [breakout-start] minmax(
-        0,
-        var(--breakout-size)
-      )
-      [content-start] min(
-        100% - (var(--padding-inline) * 2),
-        var(--content-max-width)
-      )
-      [content-end] minmax(0, var(--breakout-size)) [breakout-end] minmax(
-        0,
-        1fr
-      )
-      [full-width-padding-end] var(--padding-inline) [full-width-end];
+      [full-width-start] var(--padding-inline) [full-width-padding-start] minmax(0, 1fr) [breakout-start] minmax(0,
+        var(--breakout-size)) [content-start] min(100% - (var(--padding-inline) * 2),
+        var(--content-max-width)) [content-end] minmax(0, var(--breakout-size)) [breakout-end] minmax(0,
+        1fr) [full-width-padding-end] var(--padding-inline) [full-width-end];
     width: 100%;
     max-width: 100vw;
   }
 
-  .content-grid > :not(.breakout, .full-width, .full-width-padding) {
+  .content-grid> :not(.breakout, .full-width, .full-width-padding) {
     grid-column: content;
   }
 
-  .content-grid > .breakout {
+  .content-grid>.breakout {
     grid-column: breakout;
   }
 
-  .content-grid > .full-width {
+  .content-grid>.full-width {
     grid-column: full-width;
   }
 
-  .content-grid > .full-width-padding {
+  .content-grid>.full-width-padding {
     grid-column: full-width-padding;
   }
 
