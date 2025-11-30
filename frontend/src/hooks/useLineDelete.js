@@ -10,6 +10,7 @@ export default function useLineDelete(text) {
   });
   const [deletedCount, setDeletedCount] = useState(0);
   const lastLineIndexRef = useRef(-1);
+  const pendingDeleteRef = useRef(false);
 
   useEffect(() => {
     const newWords = tokenizeText(text);
@@ -60,11 +61,10 @@ export default function useLineDelete(text) {
       (el) => Math.round(el.getBoundingClientRect().top) === firstLineTop,
     );
 
-    requestAnimationFrame(() => {
-      setVisibleWords((prev) => prev.slice(firstLineWords.length));
-      setDeletedCount((prev) => prev + firstLineWords.length);
-      lastLineIndexRef.current = 1;
-    });
+    setVisibleWords((prev) => prev.slice(firstLineWords.length));
+    setDeletedCount((prev) => prev + firstLineWords.length);
+    lastLineIndexRef.current = 1;
+    pendingDeleteRef.current = false;
   }, []);
 
   const updateLineDelete = useCallback(
@@ -87,12 +87,14 @@ export default function useLineDelete(text) {
         lineIndex >= 2 && lineIndex > lastLineIndexRef.current;
 
       if (shouldDelete) {
+        pendingDeleteRef.current = true;
         deleteFirstLine(wordElements);
-        return { activeWord, lineIndex: 1 };
+        // Return adjusted lineIndex immediately
+        return { activeWord, lineIndex: 1, hasJumped: true };
       }
 
       lastLineIndexRef.current = Math.max(lineIndex, lastLineIndexRef.current);
-      return { activeWord, lineIndex };
+      return { activeWord, lineIndex, hasJumped: false };
     },
     [deletedCount, getLinePositions, deleteFirstLine],
   );
