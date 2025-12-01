@@ -512,6 +512,7 @@ const TestResults = ({
                     totalErrors > 0 ? { fontSize: 12, fill: "#928374" } : false
                   }
                   domain={[0, maxErrorCount]}
+                  allowDecimals={false}
                   label={{
                     value: "Errors",
                     angle: 90,
