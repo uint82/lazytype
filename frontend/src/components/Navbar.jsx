@@ -10,30 +10,50 @@ const Navbar = ({ isTyping }) => {
           className="flex items-center space-x-3 hover:opacity-80 transition"
         >
           <Keyboard
-            className={`w-10 h-15 transition-colors ${isTyping ? "text-[#635851]" : "text-[#D8AB19]"
-              }`}
+            className="w-10 h-15 transition-colors"
+            style={{
+              color: isTyping ? "var(--text-dim)" : "var(--primary)",
+            }}
           />
           <span
-            className={`font-semibold text-3xl hidden sm:inline custom-hide-text transition-colors ${isTyping ? "text-[#635851]" : "text-[#D6C7A3]"
-              }`}
+            className="font-semibold text-3xl hidden sm:inline custom-hide-text transition-colors"
+            style={{
+              color: isTyping ? "var(--text-dim)" : "var(--text-secondary)",
+              fontFamily: "Lexend Deca",
+            }}
           >
             lazytype
           </span>
         </Link>
         <div
-          className={`flex items-center space-x-6 text-[#ebdbb2] transition-opacity duration-300 ${isTyping ? "opacity-0 pointer-events-none" : "opacity-100"
+          className={`flex items-center space-x-6 transition-opacity duration-300 ${isTyping ? "opacity-0 pointer-events-none" : "opacity-100"
             }`}
+          style={{ color: "var(--text-primary)" }}
         >
           <Link
             to="/leaderboard"
-            className="flex items-center space-x-1 text-[#665c54] hover:text-white transition"
+            className="flex items-center space-x-1 transition"
+            style={{ color: "var(--text-untyped)" }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = "var(--text-primary)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = "var(--text-untyped)")
+            }
           >
             <Trophy size={22} />
             <span className="hidden sm:inline">Leaderboard</span>
           </Link>
           <Link
             to="/profile"
-            className="text-[#665c54] hover:text-white transition"
+            className="transition"
+            style={{ color: "var(--text-untyped)" }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = "var(--text-primary)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = "var(--text-untyped)")
+            }
           >
             <User size={24} />
           </Link>
