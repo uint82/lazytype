@@ -16,7 +16,11 @@ const TRANSITION_DURATION = 100;
 const SCROLL_DELAY = 100;
 const BLUR_DELAY = 300;
 
-const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
+const Lazytype = ({
+  onShowConfigChange,
+  onTestCompleteChange,
+  currentThemeKey = "gruvbox",
+}) => {
   const addNotification = useCallback(
     (message, type = "notice", duration = 10000) => {
       const id = Date.now();
@@ -504,6 +508,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
         notifications={notifications}
         removeNotification={removeNotification}
         isTyping={isActivelyTyping}
+        currentThemeKey={currentThemeKey}
       />
       {!isTestComplete && (
         <div className="w-full">
@@ -535,6 +540,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                 onModalOpen={() => setIsAnyModalOpen(true)}
                 onModalClose={() => setIsAnyModalOpen(false)}
                 setIsModalOpen={setIsModalOpen}
+                currentThemeKey={currentThemeKey}
               />
             </div>
           </div>
@@ -550,7 +556,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
             {!isTestComplete && (
               <>
                 <div className="flex justify-center relative">
-                  <CapsLockIndicator />
+                  <CapsLockIndicator currentThemeKey={currentThemeKey} />
                 </div>
                 {showConfig ? (
                   <div className="flex justify-center mb-2 relative">
@@ -558,6 +564,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                       selectedLanguage={selectedLanguage}
                       setSelectedLanguage={setSelectedLanguage}
                       isZenMode={isZenMode}
+                      currentThemeKey={currentThemeKey}
                     />
                   </div>
                 ) : (
@@ -583,7 +590,8 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
             )}
 
             <div
-              className="content-grid relative mx-auto text-gray-600 w-full"
+              className="content-grid relative mx-auto w-full"
+              style={{ color: "var(--text-muted)" }}
               ref={typingTestContainerRef}
             >
               {isTestComplete ? (
@@ -606,6 +614,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                   addNotification={addNotification}
                   displayWords={displayWords}
                   typedHistory={typedHistory}
+                  currentThemeKey={currentThemeKey}
                 />
               ) : (
                 <>
@@ -621,6 +630,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                         x={caretPosition.x}
                         y={caretPosition.y}
                         isTyping={isTyping}
+                        currentThemeKey={currentThemeKey}
                       />
 
                       <div
@@ -638,6 +648,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                           onDeletedCountChange={setDeletedCount}
                           onCaretPositionChange={setCaretPosition}
                           showConfig={showConfig}
+                          currentThemeKey={currentThemeKey}
                         />
                       </div>
 
@@ -651,14 +662,17 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                         spellCheck={false}
                         onChange={handleInputChange}
                         className="opacity-0 absolute pointer-events-none"
-                        autoFocus
+                        autoFocus={!isAnyModalOpen}
+                        disabled={isAnyModalOpen}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
                         onKeyDown={handleKeyDown}
                       />
                     </div>
                   ) : (
-                    <p className="text-[#ebdbb2]">Loading test...</p>
+                    <p style={{ color: "var(--text-primary)" }}>
+                      Loading test...
+                    </p>
                   )}
                 </>
               )}
@@ -668,7 +682,14 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handleRestartClick}
-                  className="px-4 py-2 rounded text-3xl text-gray-600 cursor-pointer hover:text-white transition"
+                  className="px-4 py-2 rounded text-3xl cursor-pointer transition"
+                  style={{ color: "var(--text-muted)" }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "var(--text-primary)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = "var(--text-muted)")
+                  }
                 >
                   ⟳
                 </button>
