@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Languages } from "lucide-react";
+import { Languages, ChartSpline } from "lucide-react";
 import LanguageModal from "./LanguageModal";
-import { ChartSpline } from "lucide-react";
 
 const LanguageSelector = ({
   selectedLanguage,
@@ -22,8 +21,11 @@ const LanguageSelector = ({
   if (isZenMode) {
     return (
       <div
-        className="flex px-3 py-1 gap-3 justify-center items-center mt-5 text-[#635851] transition-all"
-        style={{ fontFamily: "'Roboto Mono', monospace" }}
+        className="flex px-3 py-1 gap-3 justify-center items-center mt-5 transition-all"
+        style={{
+          fontFamily: "'Roboto Mono', monospace",
+          color: "var(--text-untyped)",
+        }}
       >
         <ChartSpline size={20} />
         <span>shift + Enter to finish zen</span>
@@ -35,8 +37,15 @@ const LanguageSelector = ({
     <div className="flex justify-center items-center mt-5">
       <button
         onClick={() => setIsModalOpen(true)}
-        className="px-3 py-1 rounded text-[#635851] hover:text-[#D3869B] cursor-pointer transition-all flex items-center gap-3"
-        style={{ fontFamily: "'Roboto Mono', monospace" }}
+        className="px-3 py-1 rounded cursor-pointer transition-all flex items-center gap-3"
+        style={{
+          fontFamily: "'Roboto Mono', monospace",
+          color: "var(--text-untyped)",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--secondary)")}
+        onMouseLeave={(e) =>
+          (e.currentTarget.style.color = "var(--text-untyped)")
+        }
       >
         <Languages size={20} />
         <span>{currentLanguage?.name}</span>
