@@ -36,7 +36,10 @@ const TestStatus = ({
   };
 
   return (
-    <div className="text-[#C68C22] text-[32px] font-medium m-[0em_0.25em] mt-3">
+    <div
+      className="text-[32px] font-medium m-[0em_0.25em] mt-3"
+      style={{ color: "var(--secondary)" }}
+    >
       {selectedMode === "zen" ? (
         <div>{wordsTyped}</div>
       ) : selectedMode === "quotes" ? (
