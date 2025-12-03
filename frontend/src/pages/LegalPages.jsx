@@ -255,36 +255,77 @@ const LegalPages = () => {
   const content = currentPage === "terms" ? termsContent : privacyContent;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#282828] antialiased">
+    <div
+      className="flex flex-col min-h-screen antialiased"
+      style={{ backgroundColor: "var(--bg-primary)" }}
+    >
       {/* navbar */}
       <nav className="content-grid z-20 top-0 left-0 py-2">
         <div className="py-3 flex items-center justify-between flex-wrap gap-4">
           <Link
             to="/"
-            className="flex items-center space-x-3 hover:opacity-80 transition"
+            className="flex items-center space-x-3 transition"
+            style={{ color: "var(--text-primary)" }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
-            <Keyboard className="w-10 h-15 text-[#D8AB19]" />
-            <span className="font-semibold text-3xl hidden sm:inline custom-hide-text text-[#D6C7A3]">
+            <Keyboard
+              className="w-10 h-15"
+              style={{ color: "var(--secondary)" }}
+            />
+            <span
+              className="font-semibold text-3xl hidden sm:inline custom-hide-text"
+              style={{ color: "var(--text-secondary)" }}
+            >
               lazytype
             </span>
           </Link>
-          <div className="flex items-center space-x-3 text-[#ebdbb2] flex-wrap gap-2">
+          <div
+            className="flex items-center space-x-3 flex-wrap gap-2"
+            style={{ color: "var(--text-primary)" }}
+          >
             <button
               onClick={() => navigate("/terms")}
-              className={`px-3 sm:px-4 py-2 rounded transition-colors cursor-pointer text-sm sm:text-base ${currentPage === "terms"
-                  ? "text-[#b8bb26]"
-                  : "text-[#a89984] hover:text-[#ebdbb2]"
-                }`}
+              className="px-3 sm:px-4 py-2 rounded transition-colors cursor-pointer text-sm sm:text-base"
+              style={{
+                color:
+                  currentPage === "terms"
+                    ? "var(--accent)"
+                    : "var(--text-muted)",
+              }}
+              onMouseEnter={(e) => {
+                if (currentPage !== "terms") {
+                  e.currentTarget.style.color = "var(--text-primary)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (currentPage !== "terms") {
+                  e.currentTarget.style.color = "var(--text-muted)";
+                }
+              }}
             >
               <span className="hidden sm:inline">Terms of Service</span>
               <span className="sm:hidden">Terms</span>
             </button>
             <button
               onClick={() => navigate("/privacy")}
-              className={`px-3 sm:px-4 py-2 rounded transition-colors cursor-pointer text-sm sm:text-base ${currentPage === "privacy"
-                  ? "text-[#b8bb26]"
-                  : "text-[#a89984] hover:text-[#ebdbb2]"
-                }`}
+              className="px-3 sm:px-4 py-2 rounded transition-colors cursor-pointer text-sm sm:text-base"
+              style={{
+                color:
+                  currentPage === "privacy"
+                    ? "var(--accent)"
+                    : "var(--text-muted)",
+              }}
+              onMouseEnter={(e) => {
+                if (currentPage !== "privacy") {
+                  e.currentTarget.style.color = "var(--text-primary)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (currentPage !== "privacy") {
+                  e.currentTarget.style.color = "var(--text-muted)";
+                }
+              }}
             >
               <span className="hidden sm:inline">Privacy Policy</span>
               <span className="sm:hidden">Privacy</span>
@@ -298,10 +339,16 @@ const LegalPages = () => {
         <div className="py-8 sm:py-12">
           {/* header */}
           <div className="mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-4xl font-bold text-[#fabd2f] mb-3">
+            <h1
+              className="text-3xl sm:text-4xl font-bold mb-3"
+              style={{ color: "var(--secondary)" }}
+            >
               {content.title}
             </h1>
-            <p className="text-sm sm:text-base text-[#a89984]">
+            <p
+              className="text-sm sm:text-base"
+              style={{ color: "var(--text-muted)" }}
+            >
               Last Updated: {content.lastUpdated}
             </p>
           </div>
@@ -310,12 +357,18 @@ const LegalPages = () => {
           <div className="space-y-8 sm:space-y-10">
             {content.sections.map((section, idx) => (
               <section key={idx} className="space-y-3 sm:space-y-4">
-                <h2 className="text-xl sm:text-2xl font-semibold text-[#83a598]">
+                <h2
+                  className="text-xl sm:text-2xl font-semibold"
+                  style={{ color: "var(--info)" }}
+                >
                   {section.title}
                 </h2>
 
                 {section.content && (
-                  <p className="text-sm sm:text-base text-[#ebdbb2] leading-relaxed">
+                  <p
+                    className="text-sm sm:text-base leading-relaxed"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {section.content}
                   </p>
                 )}
@@ -325,9 +378,15 @@ const LegalPages = () => {
                     {section.points.map((point, pointIdx) => (
                       <li
                         key={pointIdx}
-                        className="text-sm sm:text-base text-[#ebdbb2] leading-relaxed"
+                        className="text-sm sm:text-base leading-relaxed"
+                        style={{ color: "var(--text-primary)" }}
                       >
-                        <span className="text-[#fe8019] mr-2">•</span>
+                        <span
+                          style={{ color: "var(--primary)" }}
+                          className="mr-2"
+                        >
+                          •
+                        </span>
                         {point}
                       </li>
                     ))}
@@ -339,13 +398,19 @@ const LegalPages = () => {
                     {section.subsections.map((sub, subIdx) => (
                       <div key={subIdx} className="space-y-2 sm:space-y-3">
                         {sub.subtitle && (
-                          <h3 className="text-lg sm:text-xl font-medium text-[#d3869b]">
+                          <h3
+                            className="text-lg sm:text-xl font-medium"
+                            style={{ color: "var(--secondary)" }}
+                          >
                             {sub.subtitle}
                           </h3>
                         )}
 
                         {sub.content && (
-                          <p className="text-sm sm:text-base text-[#ebdbb2] leading-relaxed">
+                          <p
+                            className="text-sm sm:text-base leading-relaxed"
+                            style={{ color: "var(--text-primary)" }}
+                          >
                             {sub.content}
                           </p>
                         )}
@@ -355,9 +420,15 @@ const LegalPages = () => {
                             {sub.points.map((point, pointIdx) => (
                               <li
                                 key={pointIdx}
-                                className="text-sm sm:text-base text-[#ebdbb2] leading-relaxed"
+                                className="text-sm sm:text-base leading-relaxed"
+                                style={{ color: "var(--text-primary)" }}
                               >
-                                <span className="text-[#fe8019] mr-2">•</span>
+                                <span
+                                  style={{ color: "var(--primary)" }}
+                                  className="mr-2"
+                                >
+                                  •
+                                </span>
                                 {point}
                               </li>
                             ))}
@@ -372,8 +443,14 @@ const LegalPages = () => {
           </div>
 
           {/* footer */}
-          <div className="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t border-[#504945]">
-            <p className="text-sm sm:text-base text-[#a89984] text-center leading-relaxed">
+          <div
+            className="mt-12 sm:mt-16 pt-6 sm:pt-8 border-t"
+            style={{ borderColor: "var(--border)" }}
+          >
+            <p
+              className="text-sm sm:text-base text-center leading-relaxed"
+              style={{ color: "var(--text-muted)" }}
+            >
               By using this Service, you acknowledge that you have read,
               understood, and agree to be bound by these{" "}
               {currentPage === "terms" ? "Terms of Service" : "policies"}.
