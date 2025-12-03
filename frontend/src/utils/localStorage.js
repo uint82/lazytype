@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
   PUNCTUATION: "lazytype_punctuation",
   NUMBERS: "lazytype_numbers",
   SELECTED_QUOTE_ID: "lazytype_selected_quote_id",
+  THEME: "lazytype_theme",
 };
 
 const DEFAULTS = {
@@ -18,6 +19,7 @@ const DEFAULTS = {
   PUNCTUATION: false,
   NUMBERS: false,
   SELECTED_QUOTE_ID: null,
+  THEME: "gruvbox",
 };
 
 export const saveToStorage = (key, value) => {
@@ -91,4 +93,12 @@ export const clearSelectedQuote = () => {
   } catch (error) {
     console.error("Error clearing selected quote:", error);
   }
+};
+
+export const saveTheme = (themeKey) => {
+  saveToStorage(STORAGE_KEYS.THEME, themeKey);
+};
+
+export const loadTheme = () => {
+  return getFromStorage(STORAGE_KEYS.THEME, DEFAULTS.THEME);
 };
