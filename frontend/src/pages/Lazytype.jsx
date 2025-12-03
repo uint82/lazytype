@@ -16,11 +16,7 @@ const TRANSITION_DURATION = 100;
 const SCROLL_DELAY = 100;
 const BLUR_DELAY = 300;
 
-const Lazytype = ({
-  onShowConfigChange,
-  onTestCompleteChange,
-  currentThemeKey = "gruvbox",
-}) => {
+const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   const addNotification = useCallback(
     (message, type = "notice", duration = 10000) => {
       const id = Date.now();
@@ -508,7 +504,6 @@ const Lazytype = ({
         notifications={notifications}
         removeNotification={removeNotification}
         isTyping={isActivelyTyping}
-        currentThemeKey={currentThemeKey}
       />
       {!isTestComplete && (
         <div className="w-full">
@@ -540,7 +535,6 @@ const Lazytype = ({
                 onModalOpen={() => setIsAnyModalOpen(true)}
                 onModalClose={() => setIsAnyModalOpen(false)}
                 setIsModalOpen={setIsModalOpen}
-                currentThemeKey={currentThemeKey}
               />
             </div>
           </div>
@@ -556,7 +550,7 @@ const Lazytype = ({
             {!isTestComplete && (
               <>
                 <div className="flex justify-center relative">
-                  <CapsLockIndicator currentThemeKey={currentThemeKey} />
+                  <CapsLockIndicator />
                 </div>
                 {showConfig ? (
                   <div className="flex justify-center mb-2 relative">
@@ -564,7 +558,6 @@ const Lazytype = ({
                       selectedLanguage={selectedLanguage}
                       setSelectedLanguage={setSelectedLanguage}
                       isZenMode={isZenMode}
-                      currentThemeKey={currentThemeKey}
                     />
                   </div>
                 ) : (
@@ -614,7 +607,6 @@ const Lazytype = ({
                   addNotification={addNotification}
                   displayWords={displayWords}
                   typedHistory={typedHistory}
-                  currentThemeKey={currentThemeKey}
                 />
               ) : (
                 <>
@@ -630,7 +622,6 @@ const Lazytype = ({
                         x={caretPosition.x}
                         y={caretPosition.y}
                         isTyping={isTyping}
-                        currentThemeKey={currentThemeKey}
                       />
 
                       <div
@@ -648,7 +639,6 @@ const Lazytype = ({
                           onDeletedCountChange={setDeletedCount}
                           onCaretPositionChange={setCaretPosition}
                           showConfig={showConfig}
-                          currentThemeKey={currentThemeKey}
                         />
                       </div>
 
