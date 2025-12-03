@@ -92,7 +92,10 @@ const TestConfig = ({
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <div className="flex flex-wrap justify-center items-center text-[#ebdbb2]">
+      <div
+        className="flex flex-wrap justify-center items-center"
+        style={{ color: "var(--text-primary)" }}
+      >
         {!isCompactView ? (
           <div className="flex flex-wrap gap-1 items-center">
             {(selectedMode === "time" || selectedMode === "words") && (
@@ -100,66 +103,182 @@ const TestConfig = ({
                 <div className="flex flex-wrap gap-1 items-center">
                   <button
                     onClick={handleTogglePunctuation}
-                    className={`px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs font-medium ${selectedPunctuation
-                        ? "bg-[#83A598] text-[#282828]"
-                        : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
-                      }`}
+                    className="px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs font-medium"
+                    style={{
+                      backgroundColor: selectedPunctuation
+                        ? "var(--info)"
+                        : "var(--button-bg)",
+                      color: selectedPunctuation
+                        ? "var(--bg-primary)"
+                        : "var(--text-primary)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!selectedPunctuation) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-hover)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!selectedPunctuation) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-bg)";
+                      }
+                    }}
                   >
                     punctuation
                   </button>
                   <button
                     onClick={handleToggleNumbers}
-                    className={`px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs font-medium ${selectedNumbers
-                        ? "bg-[#83A598] text-[#282828]"
-                        : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
-                      }`}
+                    className="px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs font-medium"
+                    style={{
+                      backgroundColor: selectedNumbers
+                        ? "var(--info)"
+                        : "var(--button-bg)",
+                      color: selectedNumbers
+                        ? "var(--bg-primary)"
+                        : "var(--text-primary)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!selectedNumbers) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-hover)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!selectedNumbers) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-bg)";
+                      }
+                    }}
                   >
                     numbers
                   </button>
                 </div>
-                <span className="text-[#a89984] mx-0.5 text-xs">|</span>
+                <span
+                  className="mx-0.5 text-xs"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  |
+                </span>
               </>
             )}
             <div className="flex gap-1">
               <button
                 onClick={() => setSelectedMode("time")}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "time"
-                    ? "bg-[#D8A657] text-[#282828]"
-                    : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
-                  }`}
+                className="px-3 py-2 rounded-md text-sm font-medium transition-all"
+                style={{
+                  backgroundColor:
+                    selectedMode === "time"
+                      ? "var(--secondary)"
+                      : "var(--button-bg)",
+                  color:
+                    selectedMode === "time"
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedMode !== "time") {
+                    e.currentTarget.style.backgroundColor =
+                      "var(--button-hover)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedMode !== "time") {
+                    e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                  }
+                }}
               >
                 time
               </button>
               <button
                 onClick={() => setSelectedMode("words")}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "words"
-                    ? "bg-[#D8A657] text-[#282828]"
-                    : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
-                  }`}
+                className="px-3 py-2 rounded-md text-sm font-medium transition-all"
+                style={{
+                  backgroundColor:
+                    selectedMode === "words"
+                      ? "var(--secondary)"
+                      : "var(--button-bg)",
+                  color:
+                    selectedMode === "words"
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedMode !== "words") {
+                    e.currentTarget.style.backgroundColor =
+                      "var(--button-hover)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedMode !== "words") {
+                    e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                  }
+                }}
               >
                 words
               </button>
               <button
                 onClick={() => setSelectedMode("quotes")}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "quotes"
-                    ? "bg-[#D8A657] text-[#282828]"
-                    : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
-                  }`}
+                className="px-3 py-2 rounded-md text-sm font-medium transition-all"
+                style={{
+                  backgroundColor:
+                    selectedMode === "quotes"
+                      ? "var(--secondary)"
+                      : "var(--button-bg)",
+                  color:
+                    selectedMode === "quotes"
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedMode !== "quotes") {
+                    e.currentTarget.style.backgroundColor =
+                      "var(--button-hover)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedMode !== "quotes") {
+                    e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                  }
+                }}
               >
                 quotes
               </button>
               <button
                 onClick={() => setSelectedMode("zen")}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-all ${selectedMode === "zen"
-                    ? "bg-[#D8A657] text-[#282828]"
-                    : "bg-[#3c3836] hover:bg-[#504945] cursor-pointer"
-                  }`}
+                className="px-3 py-2 rounded-md text-sm font-medium transition-all"
+                style={{
+                  backgroundColor:
+                    selectedMode === "zen"
+                      ? "var(--secondary)"
+                      : "var(--button-bg)",
+                  color:
+                    selectedMode === "zen"
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                }}
+                onMouseEnter={(e) => {
+                  if (selectedMode !== "zen") {
+                    e.currentTarget.style.backgroundColor =
+                      "var(--button-hover)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (selectedMode !== "zen") {
+                    e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                  }
+                }}
               >
                 zen
               </button>
             </div>
             {selectedMode !== "zen" && (
-              <span className="text-[#a89984] mx-0.5 text-xs">|</span>
+              <span
+                className="mx-0.5 text-xs"
+                style={{ color: "var(--text-muted)" }}
+              >
+                |
+              </span>
             )}
             {selectedMode === "time" ? (
               <div className="flex flex-wrap gap-1 items-center">
@@ -167,21 +286,76 @@ const TestConfig = ({
                   <button
                     key={duration}
                     onClick={() => handleSelectTime(duration)}
-                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "time" && selectedDuration === duration
-                        ? "bg-[#83A598] text-[#282828]"
-                        : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2] cursor-pointer"
-                      }`}
+                    className="px-2.5 py-1 rounded-md transition-all text-xs font-medium"
+                    style={{
+                      backgroundColor:
+                        selectedMode === "time" && selectedDuration === duration
+                          ? "var(--info)"
+                          : "var(--button-bg)",
+                      color:
+                        selectedMode === "time" && selectedDuration === duration
+                          ? "var(--bg-primary)"
+                          : "var(--text-primary)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (
+                        !(
+                          selectedMode === "time" &&
+                          selectedDuration === duration
+                        )
+                      ) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-hover)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (
+                        !(
+                          selectedMode === "time" &&
+                          selectedDuration === duration
+                        )
+                      ) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-bg)";
+                      }
+                    }}
                   >
                     {duration}
                   </button>
                 ))}
                 <button
                   onClick={() => setIsCustomConfigOpen(true)}
-                  className={`p-1.5 rounded-md transition-all cursor-pointer ${![15, 30, 60, 120].includes(selectedDuration) ||
-                      selectedDuration === 0
-                      ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
-                    }`}
+                  className="p-1.5 rounded-md transition-all cursor-pointer"
+                  style={{
+                    backgroundColor:
+                      ![15, 30, 60, 120].includes(selectedDuration) ||
+                        selectedDuration === 0
+                        ? "var(--info)"
+                        : "var(--button-bg)",
+                    color:
+                      ![15, 30, 60, 120].includes(selectedDuration) ||
+                        selectedDuration === 0
+                        ? "var(--bg-primary)"
+                        : "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (
+                      [15, 30, 60, 120].includes(selectedDuration) &&
+                      selectedDuration !== 0
+                    ) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (
+                      [15, 30, 60, 120].includes(selectedDuration) &&
+                      selectedDuration !== 0
+                    ) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   <PencilRuler size={16} />
                 </button>
@@ -192,21 +366,76 @@ const TestConfig = ({
                   <button
                     key={count}
                     onClick={() => handleSelectWords(count)}
-                    className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "words" && selectedWordCount === count
-                        ? "bg-[#83A598] text-[#282828]"
-                        : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2] cursor-pointer"
-                      }`}
+                    className="px-2.5 py-1 rounded-md transition-all text-xs font-medium"
+                    style={{
+                      backgroundColor:
+                        selectedMode === "words" && selectedWordCount === count
+                          ? "var(--info)"
+                          : "var(--button-bg)",
+                      color:
+                        selectedMode === "words" && selectedWordCount === count
+                          ? "var(--bg-primary)"
+                          : "var(--text-primary)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (
+                        !(
+                          selectedMode === "words" &&
+                          selectedWordCount === count
+                        )
+                      ) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-hover)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (
+                        !(
+                          selectedMode === "words" &&
+                          selectedWordCount === count
+                        )
+                      ) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-bg)";
+                      }
+                    }}
                   >
                     {count}
                   </button>
                 ))}
                 <button
                   onClick={() => setIsCustomConfigOpen(true)}
-                  className={`p-1.5 rounded-md transition-all cursor-pointer ${![10, 25, 50, 100].includes(selectedWordCount) ||
-                      selectedWordCount === 0
-                      ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
-                    }`}
+                  className="p-1.5 rounded-md transition-all cursor-pointer"
+                  style={{
+                    backgroundColor:
+                      ![10, 25, 50, 100].includes(selectedWordCount) ||
+                        selectedWordCount === 0
+                        ? "var(--info)"
+                        : "var(--button-bg)",
+                    color:
+                      ![10, 25, 50, 100].includes(selectedWordCount) ||
+                        selectedWordCount === 0
+                        ? "var(--bg-primary)"
+                        : "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (
+                      [10, 25, 50, 100].includes(selectedWordCount) &&
+                      selectedWordCount !== 0
+                    ) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (
+                      [10, 25, 50, 100].includes(selectedWordCount) &&
+                      selectedWordCount !== 0
+                    ) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   <PencilRuler size={16} />
                 </button>
@@ -218,12 +447,45 @@ const TestConfig = ({
                     <button
                       key={group.index ?? "all"}
                       onClick={() => handleSelectGroup(group.index)}
-                      className={`px-2.5 py-1 rounded-md transition-all text-xs font-medium ${selectedMode === "quotes" &&
-                          selectedGroup === group.index &&
-                          !selectedQuoteId
-                          ? "bg-[#83A598] text-[#282828]"
-                          : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2] cursor-pointer"
-                        }`}
+                      className="px-2.5 py-1 rounded-md transition-all text-xs font-medium"
+                      style={{
+                        backgroundColor:
+                          selectedMode === "quotes" &&
+                            selectedGroup === group.index &&
+                            !selectedQuoteId
+                            ? "var(--info)"
+                            : "var(--button-bg)",
+                        color:
+                          selectedMode === "quotes" &&
+                            selectedGroup === group.index &&
+                            !selectedQuoteId
+                            ? "var(--bg-primary)"
+                            : "var(--text-primary)",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (
+                          !(
+                            selectedMode === "quotes" &&
+                            selectedGroup === group.index &&
+                            !selectedQuoteId
+                          )
+                        ) {
+                          e.currentTarget.style.backgroundColor =
+                            "var(--button-hover)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (
+                          !(
+                            selectedMode === "quotes" &&
+                            selectedGroup === group.index &&
+                            !selectedQuoteId
+                          )
+                        ) {
+                          e.currentTarget.style.backgroundColor =
+                            "var(--button-bg)";
+                        }
+                      }}
                     >
                       {group.label}
                     </button>
@@ -231,11 +493,28 @@ const TestConfig = ({
                 </div>
                 <button
                   onClick={() => setIsSearchModalOpen(true)}
-                  className={`p-1.5 rounded-md transition-all cursor-pointer ${selectedQuoteId
-                      ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
-                    }`}
+                  className="p-1.5 rounded-md transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: selectedQuoteId
+                      ? "var(--info)"
+                      : "var(--button-bg)",
+                    color: selectedQuoteId
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                  }}
                   title="Search quotes"
+                  onMouseEnter={(e) => {
+                    if (!selectedQuoteId) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!selectedQuoteId) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   <Search size={16} />
                 </button>
@@ -246,7 +525,17 @@ const TestConfig = ({
           <>
             <button
               onClick={() => setIsGroupModalOpen(true)}
-              className="px-3 py-1.5 rounded-md text-sm bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] transition-all cursor-pointer font-medium"
+              className="px-3 py-1.5 rounded-md text-sm transition-all cursor-pointer font-medium"
+              style={{
+                backgroundColor: "var(--button-bg)",
+                color: "var(--text-primary)",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "var(--button-hover)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "var(--button-bg)")
+              }
             >
               Test Configuration ▼
             </button>
@@ -290,6 +579,8 @@ const TestConfig = ({
           initialSelectedLength={searchModalState.selectedLength}
           initialCurrentPage={searchModalState.currentPage}
           onStateChange={setSearchModalState}
+          onModalOpen={() => setIsModalOpen?.(true)}
+          onModalClose={() => setIsModalOpen?.(false)}
         />
       )}
 
