@@ -14,14 +14,6 @@
   }
 }
 
-.caret {
-  width: 3px;
-  height: 2.3rem;
-  background-color: #d1a918;
-  pointer-events: none;
-  border-radius: 1px;
-}
-
 .bottom-stats-grid {
   display: grid;
   grid-template-columns: 1fr;
