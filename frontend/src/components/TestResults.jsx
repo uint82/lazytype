@@ -33,6 +33,7 @@ const TestResults = ({
   addNotification,
   displayWords,
   typedHistory = {},
+  currentThemeKey,
 }) => {
   const [visibleLines, setVisibleLines] = useState({
     wpm: true,
@@ -44,6 +45,8 @@ const TestResults = ({
   const [showWordHistory, setShowWordHistory] = useState(false);
   const [hoveredSecond, setHoveredSecond] = useState(null);
   const hasShownMessageRef = useRef(false);
+
+  const [hoveredButton, setHoveredButton] = useState(null);
 
   const wordHistory = useWordHistory(
     displayWords,
@@ -211,7 +214,7 @@ const TestResults = ({
             y1={cy - 4}
             x2={cx + 4}
             y2={cy + 4}
-            stroke="#fb4934"
+            stroke="var(--error)"
             strokeWidth={2}
           />
           <line
@@ -219,7 +222,7 @@ const TestResults = ({
             y1={cy + 4}
             x2={cx + 4}
             y2={cy - 4}
-            stroke="#fb4934"
+            stroke="var(--error)"
             strokeWidth={2}
           />
         </g>
@@ -273,13 +276,22 @@ const TestResults = ({
       const data = payload[0].payload;
       return (
         <div
-          className="backdrop-blur-md border border-[#3c3836]/80 bg-[#1d2021]/90 rounded-xl shadow-lg p-3 text-xs text-[#ebdbb2] space-y-1.5"
+          className="backdrop-blur-md rounded-xl shadow-lg p-3 text-xs space-y-1.5"
           style={{
+            backgroundColor: "var(--bg-primary)",
+            borderColor: "var(--border)",
+            borderWidth: "1px",
+            color: "var(--text-primary)",
             minWidth: "150px",
-            boxShadow: "0 0 8px rgba(0,0,0,0.4), 0 0 8px rgba(184,187,38,0.1)",
           }}
         >
-          <div className="flex justify-between text-gray-400 text-[11px] border-b border-[#3c3836]/60 pb-1 mb-1">
+          <div
+            className="flex justify-between text-[11px] pb-1 mb-1"
+            style={{
+              borderBottom: `1px solid var(--border)`,
+              color: "var(--text-muted)",
+            }}
+          >
             <span>{typeof data.time === "number" ? "Time" : "Second"}</span>
             <span>
               {typeof data.time === "number"
@@ -290,26 +302,28 @@ const TestResults = ({
           <div className="flex flex-col gap-1">
             {visibleLines.errors && (
               <div className="flex justify-between">
-                <span className="text-[#fb4934]">Errors</span>
-                <span className="text-[#fb4934]">{data.errorCount}</span>
+                <span style={{ color: "var(--error)" }}>Errors</span>
+                <span style={{ color: "var(--error)" }}>{data.errorCount}</span>
               </div>
             )}
             {visibleLines.wpm && (
               <div className="flex justify-between">
-                <span className="text-[#b8bb26] ">WPM</span>
-                <span className="text-[#b8bb26] ">{data.wpm}</span>
+                <span style={{ color: "var(--text-correct)" }}>WPM</span>
+                <span style={{ color: "var(--text-correct)" }}>{data.wpm}</span>
               </div>
             )}
             {visibleLines.rawWpm && (
               <div className="flex justify-between">
-                <span className="text-[#FF9D00]">Raw WPM</span>
-                <span className="text-[#FF9D00]">{data.rawWpm}</span>
+                <span style={{ color: "var(--text-current)" }}>Raw WPM</span>
+                <span style={{ color: "var(--text-current)" }}>
+                  {data.rawWpm}
+                </span>
               </div>
             )}
             {visibleLines.burst && (
               <div className="flex justify-between">
-                <span className="text-[#625750]">Burst</span>
-                <span className="text-[#625750]">{data.burst}</span>
+                <span style={{ color: "var(--text-dim)" }}>Burst</span>
+                <span style={{ color: "var(--text-dim)" }}>{data.burst}</span>
               </div>
             )}
           </div>
@@ -326,87 +340,157 @@ const TestResults = ({
           {/* left stats */}
           <div className="flex flex-row justify-center w-full md:w-auto md:gap-0 gap-12 sm:w-auto lg:mb-0 md:flex-col">
             <div className="md:text-left text-center">
-              <div className="text-[2rem] text-gray-500">wpm</div>
-              <TooltipHover text={`${stats.wpmExact?.toFixed(2)} wpm`}>
-                <div className="text-[4rem] -mt-6 -mb-6 text-[#b8bb26]">
+              <div
+                className="text-[2rem]"
+                style={{ color: "var(--text-muted)" }}
+              >
+                wpm
+              </div>
+              <TooltipHover
+                text={`${stats.wpmExact?.toFixed(2)} wpm`}
+                currentThemeKey={currentThemeKey}
+              >
+                <div
+                  className="text-[4rem] -mt-6 -mb-6"
+                  style={{ color: "var(--text-correct)" }}
+                >
                   {stats.wpm >= 1000 ? "Infinite" : stats.wpm}
                 </div>
               </TooltipHover>
             </div>
             <div className="md:text-left text-center">
-              <div className="text-[2rem] text-gray-500">acc</div>
+              <div
+                className="text-[2rem]"
+                style={{ color: "var(--text-muted)" }}
+              >
+                acc
+              </div>
               <TooltipHover
                 text={
                   <>
-                    <div>{stats.accuracyExact?.toFixed(2)}%</div>
-                    <div className="text-[#b8bb26]">
+                    <div style={{ color: "var(--text-primary)" }}>
+                      {stats.accuracyExact?.toFixed(2)}%
+                    </div>
+                    <div style={{ color: "var(--text-correct)" }}>
                       {stats.totalCorrected} correct
                     </div>
-                    <div className="text-[#fb4934]">
+                    <div style={{ color: "var(--error)" }}>
                       {stats.totalMistakes} incorrect
                     </div>
                   </>
                 }
+                currentThemeKey={currentThemeKey}
               >
-                <div className="text-[4rem] -mt-6 text-[#83a598]">
+                <div
+                  className="text-[4rem] -mt-6"
+                  style={{ color: "var(--info)" }}
+                >
                   {stats.accuracy}%
                 </div>
               </TooltipHover>
             </div>
           </div>
           {/* graph */}
-          <div className="flex-1 bg-[#282828] rounded-lg mt-4 relative group breakout">
+          <div
+            className="flex-1 rounded-lg mt-4 relative group breakout transition-colors duration-300"
+            style={{ backgroundColor: "var(--bg-primary)" }}
+          >
             {/* legend */}
-            <div className="absolute bottom-1 right-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-[#282828]/95 backdrop-blur-sm rounded-lg pointer-events-none">
-              <div className="flex flex-row gap-3 text-[11px]">
+            <div
+              className="absolute bottom-1 right-0 z-10 opacity-0 group-hover:opacity-100 transition-colors duration-300 backdrop-blur-sm rounded-lg pointer-events-none"
+              style={{ backgroundColor: "var(--bg-primary)" }}
+            >
+              <div className="flex flex-row gap-3 text-[11px] p-2">
                 <button
                   onClick={() => toggleLine("wpm")}
                   tabIndex={-1}
-                  className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.wpm
-                      ? "hover:bg-[#0C0C0C]/40 line-through text-white"
-                      : "hover:bg-[#0C0C0C]/40 hover:text-white"
-                    }`}
+                  className="flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md hover:bg-black/20"
+                  style={{
+                    color: !visibleLines.wpm
+                      ? "var(--text-primary)"
+                      : "var(--text-correct)",
+                    textDecoration: !visibleLines.wpm ? "line-through" : "none",
+                  }}
                 >
                   <div
-                    className={`w-5 h-0.5 transition-colors ${!visibleLines.wpm ? "bg-gray-500" : "bg-[#b8bb26]"
-                      }`}
+                    className="w-5 h-0.5 transition-colors"
+                    style={{
+                      backgroundColor: !visibleLines.wpm
+                        ? "var(--text-muted)"
+                        : "var(--text-correct)",
+                    }}
                   />
-                  <span className="text-[12px] text-[#a89984]">wpm</span>
+                  <span
+                    className="text-[12px]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    wpm
+                  </span>
                 </button>
                 <button
                   onClick={() => toggleLine("rawWpm")}
                   tabIndex={-1}
-                  className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.rawWpm
-                      ? "hover:bg-[#0C0C0C]/40 line-through text-white"
-                      : "hover:bg-[#0C0C0C]/40 hover:text-white"
-                    }`}
+                  className="flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md hover:bg-black/20"
+                  style={{
+                    color: !visibleLines.rawWpm
+                      ? "var(--text-primary)"
+                      : "var(--text-current)",
+                    textDecoration: !visibleLines.rawWpm
+                      ? "line-through"
+                      : "none",
+                  }}
                 >
                   <div
-                    className={`w-5 h-[2px] transition-all ${!visibleLines.rawWpm
-                        ? "bg-[linear-gradient(90deg,#6b7280_0%,#6b7280_40%,transparent_40%,transparent_60%,#6b7280_60%,#6b7280_100%)]"
-                        : "bg-[linear-gradient(90deg,#fabd2f_0%,#fabd2f_40%,transparent_40%,transparent_60%,#fabd2f_60%,#fabd2f_100%)]"
-                      }`}
+                    className="w-5 h-[2px] transition-all"
+                    style={{
+                      background: !visibleLines.rawWpm
+                        ? `linear-gradient(90deg,var(--text-muted) 0%,var(--text-muted) 40%,transparent 40%,transparent 60%,var(--text-muted) 60%,var(--text-muted) 100%)`
+                        : `linear-gradient(90deg,var(--text-current) 0%,var(--text-current) 40%,transparent 40%,transparent 60%,var(--text-current) 60%,var(--text-current) 100%)`,
+                    }}
                   />
-                  <span className="text-[12px] text-[#a89984]">raw</span>
+                  <span
+                    className="text-[12px]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    raw
+                  </span>
                 </button>
                 <button
                   onClick={() => toggleLine("burst")}
                   tabIndex={-1}
-                  className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.burst
-                      ? "hover:bg-[#0C0C0C]/40 line-through text-white"
-                      : "hover:bg-[#0C0C0C]/40 hover:text-white"
-                    }`}
+                  className="flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md hover:bg-black/20"
+                  style={{
+                    color: !visibleLines.burst
+                      ? "var(--text-primary)"
+                      : "var(--text-dim)",
+                    textDecoration: !visibleLines.burst
+                      ? "line-through"
+                      : "none",
+                  }}
                 >
-                  <div className="w-5 h-[3px] bg-[#625750]" />
-                  <span className="text-[12px] text-[#a89984]">burst</span>
+                  <div
+                    className="w-5 h-[3px]"
+                    style={{ backgroundColor: "var(--text-dim)" }}
+                  />
+                  <span
+                    className="text-[12px]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    burst
+                  </span>
                 </button>
                 <button
                   onClick={() => toggleLine("errors")}
                   tabIndex={-1}
-                  className={`flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md ${!visibleLines.errors
-                      ? "hover:bg-[#0C0C0C]/40 line-through text-white"
-                      : "hover:bg-[#0C0C0C]/40 hover:text-white"
-                    }`}
+                  className="flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md hover:bg-black/20"
+                  style={{
+                    color: !visibleLines.errors
+                      ? "var(--text-primary)"
+                      : "var(--error)",
+                    textDecoration: !visibleLines.errors
+                      ? "line-through"
+                      : "none",
+                  }}
                 >
                   <svg width="12" height="12" viewBox="0 0 16 16">
                     <line
@@ -414,7 +498,11 @@ const TestResults = ({
                       y1="3"
                       x2="13"
                       y2="13"
-                      stroke={!visibleLines.errors ? "#6b7280" : "#fb4934"}
+                      stroke={
+                        !visibleLines.errors
+                          ? "var(--text-muted)"
+                          : "var(--error)"
+                      }
                       strokeWidth="2"
                     />
                     <line
@@ -422,11 +510,20 @@ const TestResults = ({
                       y1="13"
                       x2="13"
                       y2="3"
-                      stroke={!visibleLines.errors ? "#6b7280" : "#fb4934"}
+                      stroke={
+                        !visibleLines.errors
+                          ? "var(--text-muted)"
+                          : "var(--error)"
+                      }
                       strokeWidth="2"
                     />
                   </svg>
-                  <span className="text-[12px] text-[#a89984]">Errors</span>
+                  <span
+                    className="text-[12px]"
+                    style={{ color: "var(--text-muted)" }}
+                  >
+                    Errors
+                  </span>
                 </button>
               </div>
             </div>
@@ -456,17 +553,25 @@ const TestResults = ({
                     x2="0"
                     y2="1"
                   >
-                    <stop offset="100%" stopColor="#0C0C0C" stopOpacity={0.2} />
-                    <stop offset="100%" stopColor="#0C0C0C" stopOpacity={0.2} />
+                    <stop
+                      offset="100%"
+                      stopColor="var(--bg-primary)"
+                      stopOpacity={0.2}
+                    />
+                    <stop
+                      offset="100%"
+                      stopColor="var(--bg-primary)"
+                      stopOpacity={0.2}
+                    />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="black" strokeOpacity={0.2} />
+                <CartesianGrid stroke="var(--text-muted)" strokeOpacity={0.1} />
                 <XAxis
                   dataKey={getXAxisKey()}
-                  stroke="black"
+                  stroke="var(--text-muted)"
                   strokeWidth={1}
                   strokeOpacity={0.1}
-                  tick={{ fontSize: 12, fill: "#928374" }}
+                  tick={{ fontSize: 12, fill: "var(--text-muted)" }}
                   type="number"
                   domain={[
                     1,
@@ -488,15 +593,15 @@ const TestResults = ({
                 />
                 <YAxis
                   yAxisId="left"
-                  stroke="black"
+                  stroke="var(--text-muted)"
                   strokeWidth={1}
                   strokeOpacity={0.1}
-                  tick={{ fontSize: 12, fill: "#928374" }}
+                  tick={{ fontSize: 12, fill: "var(--text-muted)" }}
                   label={{
                     value: "Words per Minute",
                     angle: -90,
                     position: "insideLeft",
-                    fill: "#928374",
+                    fill: "var(--text-muted)",
                     fontSize: 12,
                     style: { textAnchor: "middle" },
                     offset: 15,
@@ -505,11 +610,13 @@ const TestResults = ({
                 <YAxis
                   yAxisId="right"
                   orientation="right"
-                  stroke="black"
+                  stroke="var(--text-muted)"
                   strokeWidth={1}
                   strokeOpacity={0.1}
                   tick={
-                    totalErrors > 0 ? { fontSize: 12, fill: "#928374" } : false
+                    totalErrors > 0
+                      ? { fontSize: 12, fill: "var(--text-muted)" }
+                      : false
                   }
                   domain={[0, maxErrorCount]}
                   allowDecimals={false}
@@ -517,7 +624,7 @@ const TestResults = ({
                     value: "Errors",
                     angle: 90,
                     position: "insideRight",
-                    fill: "#928374",
+                    fill: "var(--text-muted)",
                     fontSize: 12,
                     style: { textAnchor: "middle" },
                     offset: 15,
@@ -530,7 +637,7 @@ const TestResults = ({
                     type="monotone"
                     dataKey="burst"
                     fill="url(#burstGradient)"
-                    stroke="#625750"
+                    stroke="var(--text-dim)"
                     isAnimationActive={false}
                     activeDot={false}
                   />
@@ -540,7 +647,7 @@ const TestResults = ({
                     yAxisId="left"
                     type="monotone"
                     dataKey="burst"
-                    stroke="#625750"
+                    stroke="var(--text-dim)"
                     strokeWidth={3}
                     name="Burst"
                     dot={<CustomDot />}
@@ -553,7 +660,7 @@ const TestResults = ({
                     yAxisId="left"
                     type="monotone"
                     dataKey="rawWpm"
-                    stroke="#FF9D00"
+                    stroke="var(--text-current)"
                     strokeWidth={2}
                     strokeDasharray="8 8"
                     name="Raw WPM"
@@ -567,7 +674,7 @@ const TestResults = ({
                     yAxisId="left"
                     type="monotone"
                     dataKey="wpm"
-                    stroke="#b8bb26"
+                    stroke="var(--text-correct)"
                     strokeWidth={2}
                     name="WPM"
                     dot={<CustomDot />}
@@ -593,66 +700,105 @@ const TestResults = ({
 
         <div className="bottom-stats-grid">
           <div className="text-left">
-            <div className="text-md text-gray-500">test type</div>
+            <div className="text-md" style={{ color: "var(--text-muted)" }}>
+              test type
+            </div>
             <div
-              className="text-md text-gray-400"
-              style={{ whiteSpace: "pre-line" }}
+              className="text-md"
+              style={{ whiteSpace: "pre-line", color: "var(--text-dim)" }}
             >
               {formatTestType()}
             </div>
           </div>
           <div className="text-left">
-            <div className="text-md text-gray-500">raw</div>
-            <TooltipHover text={`${stats.rawWpmExact?.toFixed(2)} wpm`}>
-              <div className="text-2xl sm:text-3xl text-[#d3869b]">
+            <div className="text-md" style={{ color: "var(--text-muted)" }}>
+              raw
+            </div>
+            <TooltipHover
+              text={`${stats.rawWpmExact?.toFixed(2)} wpm`}
+              currentThemeKey={currentThemeKey}
+            >
+              <div
+                className="text-2xl sm:text-3xl"
+                style={{ color: "var(--primary)" }}
+              >
                 {stats.rawWpm}
               </div>
             </TooltipHover>
           </div>
           <div className="text-left">
-            <div className="text-md text-gray-500">characters</div>
+            <div className="text-md" style={{ color: "var(--text-muted)" }}>
+              characters
+            </div>
             <TooltipHover
+              currentThemeKey={currentThemeKey}
               text={
                 <>
-                  <div className="text-[#b8bb26]">
+                  <div style={{ color: "var(--text-correct)" }}>
                     {stats.correctChars} correct
                   </div>
-                  <div className="text-[#fb4934]">
+                  <div style={{ color: "var(--text-incorrect)" }}>
                     {stats.incorrectChars} incorrect
                   </div>
-                  <div className="text-[#fabd2f]">{stats.extraChars} extra</div>
-                  <div className="text-[#83a598]">
+                  <div style={{ color: "var(--text-current)" }}>
+                    {stats.extraChars} extra
+                  </div>
+                  <div style={{ color: "var(--text-muted)" }}>
                     {stats.missedChars} missed
                   </div>
                 </>
               }
             >
-              <div className="text-2xl sm:text-3xl text-[#d3869b] font-mono">
+              <div
+                className="text-2xl sm:text-3xl font-mono"
+                style={{ color: "var(--primary)" }}
+              >
                 {stats.correctChars}/{stats.incorrectChars}/{stats.extraChars}/
                 {stats.missedChars}
               </div>
             </TooltipHover>
           </div>
           <div className="text-left">
-            <div className="text-md text-gray-500">consistency</div>
-            <TooltipHover text={`${stats.consistencyExact.toFixed(2)}%`}>
-              <div className="text-2xl sm:text-3xl text-[#d3869b]">
+            <div className="text-md" style={{ color: "var(--text-muted)" }}>
+              consistency
+            </div>
+            <TooltipHover
+              text={`${stats.consistencyExact.toFixed(2)}%`}
+              currentThemeKey={currentThemeKey}
+            >
+              <div
+                className="text-2xl sm:text-3xl"
+                style={{ color: "var(--primary)" }}
+              >
                 {stats.consistency}%
               </div>
             </TooltipHover>
           </div>
           <div className="text-left">
-            <div className="text-md text-gray-500">time</div>
-            <TooltipHover text={`${(timeElapsed / 1000).toFixed(2)}s`}>
-              <div className="text-2xl sm:text-3xl text-[#d3869b]">
+            <div className="text-md" style={{ color: "var(--text-muted)" }}>
+              time
+            </div>
+            <TooltipHover
+              text={`${(timeElapsed / 1000).toFixed(2)}s`}
+              currentThemeKey={currentThemeKey}
+            >
+              <div
+                className="text-2xl sm:text-3xl"
+                style={{ color: "var(--primary)" }}
+              >
                 {formatTime(timeElapsed)}
               </div>
             </TooltipHover>
           </div>
           {isQuoteMode && quote?.source && (
             <div className="text-left">
-              <div className="text-md text-gray-500">source</div>
-              <div className="text-md font-medium text-[#b8bb26] italic">
+              <div className="text-md" style={{ color: "var(--text-muted)" }}>
+                source
+              </div>
+              <div
+                className="text-md font-medium italic"
+                style={{ color: "var(--text-correct)" }}
+              >
                 {quote.source}
               </div>
             </div>
@@ -667,30 +813,48 @@ const TestResults = ({
         hoveredSecond={hoveredSecond}
         wordIndicesBySecond={stats.wordIndicesBySecond}
         isVisible={showWordHistory}
+        currentThemeKey={currentThemeKey}
       />
 
       <div className="flex gap-4 justify-center mt-4">
-        <button
-          onClick={handleNextTest}
-          className="flex items-center gap-2 px-6 py-3 text-gray-500 bg-[#282828] rounded-lg hover:text-white cursor-pointer font-bold"
-          aria-label="Next Test"
-        >
-          <ChevronRight size={20} />
-        </button>
-        <button
-          onClick={onRepeatTest}
-          className="flex items-center gap-2 px-6 py-3 bg-[#282828] rounded-lg hover:text-white cursor-pointer font-bold"
-          aria-label="Repeat Test"
-        >
-          <RefreshCw size={20} />
-        </button>
-        <button
-          onClick={() => setShowWordHistory(!showWordHistory)}
-          className="flex items-center gap-2 px-6 py-3 bg-[#282828] rounded-lg hover:text-white cursor-pointer font-bold transition-colors"
-          aria-label="Toggle Words History"
-        >
-          <History size={20} />
-        </button>
+        {[
+          {
+            id: "next",
+            icon: ChevronRight,
+            action: handleNextTest,
+            label: "Next Test",
+          },
+          {
+            id: "repeat",
+            icon: RefreshCw,
+            action: onRepeatTest,
+            label: "Repeat Test",
+          },
+          {
+            id: "history",
+            icon: History,
+            action: () => setShowWordHistory(!showWordHistory),
+            label: "Toggle History",
+          },
+        ].map((btn) => (
+          <button
+            key={btn.id}
+            onClick={btn.action}
+            onMouseEnter={() => setHoveredButton(btn.id)}
+            onMouseLeave={() => setHoveredButton(null)}
+            className="flex items-center gap-2 px-6 py-3 rounded-lg cursor-pointer font-bold transition-colors duration-300"
+            style={{
+              backgroundColor: "var(--bg-primary)",
+              color:
+                hoveredButton === btn.id
+                  ? "var(--text-primary)"
+                  : "var(--text-muted)",
+            }}
+            aria-label={btn.label}
+          >
+            <btn.icon size={20} />
+          </button>
+        ))}
       </div>
     </div>
   );
