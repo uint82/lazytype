@@ -5,16 +5,19 @@ const FocusOverlay = ({ isFocused, onClick }) => {
 
   return (
     <div
-      className="absolute inset-0 z-10 flex items-center justify-center bg-[#282828]/10 backdrop-blur-sm rounded cursor-pointer transition-opacity duration-300 opacity-0 animate-fadeIn"
+      className="absolute inset-0 z-10 flex items-center justify-center backdrop-blur-sm rounded cursor-pointer transition-all duration-300 opacity-0 animate-fadeIn"
       onClick={onClick}
       style={{
+        backgroundColor:
+          "color-mix(in srgb, var(--bg-primary) 10%, transparent)",
         animation: "fadeIn 0.3s ease-in forwards",
       }}
     >
       <p
-        className="flex items-center gap-2 text-[#EDD7AB] text-lg font-medium transform translate-y-4 opacity-0"
+        className="flex items-center gap-2 text-lg font-medium transform translate-y-4 opacity-0"
         style={{
           fontFamily: "Roboto Mono, monospace",
+          color: "var(--secondary)",
           animation: "slideUp 0.5s ease-out 0.1s forwards",
         }}
       >
@@ -23,23 +26,13 @@ const FocusOverlay = ({ isFocused, onClick }) => {
       </p>
       <style>{`
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
 
         @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(0px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(0px); }
+          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </div>

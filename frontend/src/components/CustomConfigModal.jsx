@@ -33,41 +33,36 @@ const CustomConfigModal = ({
   };
 
   const parseTimeInput = (input) => {
-    if (!input || input.trim() === "" || input === "0") {
-      return 0;
-    }
+    if (!input || input.trim() === "" || input === "0") return 0;
 
     if (input.includes("h") || input.includes("m") || input.includes("s")) {
-      let totalSeconds = 0;
+      let total = 0;
+      let rest = input;
 
-      let remaining = input;
-
-      const hoursMatch = input.match(/(\d+)h/);
-      if (hoursMatch) {
-        totalSeconds += parseInt(hoursMatch[1]) * 3600;
-        remaining = remaining.replace(hoursMatch[0], " ");
+      const hours = input.match(/(\d+)h/);
+      if (hours) {
+        total += parseInt(hours[1]) * 3600;
+        rest = rest.replace(hours[0], " ");
       }
 
-      const minutesMatch = input.match(/(\d+)m/);
-      if (minutesMatch) {
-        totalSeconds += parseInt(minutesMatch[1]) * 60;
-        remaining = remaining.replace(minutesMatch[0], " ");
+      const mins = input.match(/(\d+)m/);
+      if (mins) {
+        total += parseInt(mins[1]) * 60;
+        rest = rest.replace(mins[0], " ");
       }
 
-      const secondsMatch = input.match(/(\d+)s/);
-      if (secondsMatch) {
-        totalSeconds += parseInt(secondsMatch[1]);
-        remaining = remaining.replace(secondsMatch[0], " ");
+      const secs = input.match(/(\d+)s/);
+      if (secs) {
+        total += parseInt(secs[1]);
+        rest = rest.replace(secs[0], " ");
       }
 
-      const remainingNumbers = remaining.match(/\d+/g);
-      if (remainingNumbers) {
-        remainingNumbers.forEach((num) => {
-          totalSeconds += parseInt(num);
-        });
+      const other = rest.match(/\d+/g);
+      if (other) {
+        other.forEach((num) => (total += parseInt(num)));
       }
 
-      return totalSeconds;
+      return total;
     }
 
     return parseInt(input, 10);
@@ -76,14 +71,14 @@ const CustomConfigModal = ({
   const formatDuration = (seconds) => {
     if (seconds === 0) return "infinite test";
 
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
 
     const parts = [];
-    if (hours > 0) parts.push(`${hours} hour${hours > 1 ? "s" : ""}`);
-    if (minutes > 0) parts.push(`${minutes} minute${minutes > 1 ? "s" : ""}`);
-    if (secs > 0) parts.push(`${secs} second${secs > 1 ? "s" : ""}`);
+    if (h > 0) parts.push(`${h} hour${h > 1 ? "s" : ""}`);
+    if (m > 0) parts.push(`${m} minute${m > 1 ? "s" : ""}`);
+    if (s > 0) parts.push(`${s} second${s > 1 ? "s" : ""}`);
 
     if (parts.length === 0) return "0 seconds";
     if (parts.length === 1) return parts[0];
@@ -94,53 +89,47 @@ const CustomConfigModal = ({
 
   const handleConfirm = () => {
     if (mode === "time") {
-      const value = parseTimeInput(inputValue);
-      if (isNaN(value) || value < 0) {
+      const val = parseTimeInput(inputValue);
+      if (isNaN(val) || val < 0) {
         addNotification(
           "Custom time must be a positive number or zero",
           "notice",
         );
         return;
       }
-      if (value === 0) {
+      if (val === 0) {
         addNotification(
           "Infinite time! Press Esc or Shift+Enter to stop the test.",
           "notice",
         );
       }
-      onConfirm(value);
+      onConfirm(val);
     } else {
-      const value = parseInt(inputValue, 10);
-      if (isNaN(value) || value < 0) {
+      const val = parseInt(inputValue, 10);
+
+      if (isNaN(val) || val < 0) {
         addNotification("Custom word amount must be at least 1", "notice");
         return;
       }
-      if (value > 10000) {
+      if (val > 10000) {
         addNotification("Maximum word count is 10,000", "warning");
         return;
       }
-      if (value === 0) {
+      if (val === 0) {
         addNotification(
           "Infinite words! Press Esc or Shift+Enter to stop the test.",
           "notice",
         );
       }
-      onConfirm(value);
+      onConfirm(val);
     }
+
     handleClose();
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleConfirm();
-    }
-  };
-
-  const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget) {
-      handleClose();
-    }
-  };
+  const handleKeyDown = (e) => e.key === "Enter" && handleConfirm();
+  const handleBackdropClick = (e) =>
+    e.target === e.currentTarget && handleClose();
 
   const displayDuration =
     mode === "time" ? formatDuration(parseTimeInput(inputValue)) : null;
@@ -151,41 +140,42 @@ const CustomConfigModal = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-black/50 flex items-center justify-center z-50 transition-opacity duration-150 ${isVisible ? "opacity-100" : "opacity-0"
+      className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-150 ${isVisible ? "opacity-100" : "opacity-0"
         }`}
+      style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
       onClick={handleBackdropClick}
     >
       <div
-        className={`bg-[#282828] rounded-lg w-full max-w-3xl
-          border-2
-          border-[#504945]
-          max-h-[79vh]
-          overflow-y-auto
-          flex flex-col
+        className={`
+          rounded-lg w-full max-w-3xl max-h-[79vh]
+          border-2 overflow-y-auto flex flex-col
           transition-all duration-150 transform
-          ${isVisible
-            ? "opacity-100 scale-100 translate-y-0"
-            : "opacity-0 scale-95 translate-y-4"
-          }
-          max-w-[75vw]
-          sm:max-w-[500px]
-          md:max-w-[500px]
-          lg:max-w-[500px]
-          mx-auto
-          sm:my-auto
-          my-4
+          mx-auto my-4 sm:my-auto
+          ${isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95 translate-y-4"}
+          max-w-[75vw] sm:max-w-[500px]
         `}
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border)",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-3 sm:p-9">
-          <h2 className="text-lg sm:text-xl font-semibold text-[#ebdbb2] mb-4">
+          <h2
+            className="text-lg sm:text-xl font-semibold mb-4"
+            style={{ color: "var(--text-primary)" }}
+          >
             {modalTitle}
           </h2>
 
           <div className="mb-6">
-            <label className="block text-sm font-medium text-[#d5c4a1] mb-2">
+            <label
+              className="block text-sm font-medium mb-2"
+              style={{ color: "var(--text-secondary)" }}
+            >
               {displayDuration}
             </label>
+
             <input
               ref={inputRef}
               type="text"
@@ -194,57 +184,75 @@ const CustomConfigModal = ({
               onKeyDown={handleKeyDown}
               onFocus={(e) => e.target.select()}
               placeholder={placeholder}
-              className="w-full px-3 py-2 bg-[#3c3836] text-[#ebdbb2] border border-[#504945] rounded-md focus:outline-none focus:border-[#D8A657] transition-colors text-sm sm:text-base"
+              className="w-full px-3 py-2 rounded-md transition-colors text-sm sm:text-base"
+              style={{
+                background: "var(--input-bg)",
+                color: "var(--text-primary)",
+                border: "1px solid var(--input-border)",
+              }}
+              onFocusCapture={(e) =>
+                (e.target.style.borderColor = "var(--input-focus)")
+              }
+              onBlur={(e) =>
+                (e.target.style.borderColor = "var(--input-border)")
+              }
               autoFocus
             />
 
-            {mode === "time" && (
-              <>
-                <p className="text-xs sm:text-sm text-[#a89984] mt-2">
-                  You can use "h" for hours and "m" for minutes, for example
-                  "1h30m".
-                </p>
-                <p className="text-xs sm:text-sm text-[#a89984] mt-2">
-                  You can start an infinite test by inputting 0. Then, to stop
-                  the test, use{" "}
-                  <span className="bg-[#3c3836] text-[#ebdbb2] px-1.5 py-0.5 rounded">
-                    esc
-                  </span>{" "}
-                  or{" "}
-                  <span className="bg-[#3c3836] text-[#ebdbb2] px-1.5 py-0.5 rounded">
-                    shift
-                  </span>{" "}
-                  +{" "}
-                  <span className="bg-[#3c3836] text-[#ebdbb2] px-1.5 py-0.5 rounded">
-                    Enter
-                  </span>
-                </p>
-              </>
-            )}
+            <p
+              className="text-xs sm:text-sm mt-2"
+              style={{ color: "var(--text-muted)" }}
+            >
+              {mode === "time"
+                ? `You can use "h" for hours and "m" for minutes, for example "1h30m".`
+                : `You can start an infinite test by inputting 0.`}
+            </p>
 
-            {mode !== "time" && (
-              <p className="text-xs sm:text-sm text-[#a89984] mt-2">
-                You can start an infinite test by inputting 0. Then, to stop the
-                test, use{" "}
-                <span className="bg-[#3c3836] text-[#ebdbb2] px-1.5 py-0.5 rounded">
-                  esc
-                </span>{" "}
-                or{" "}
-                <span className="bg-[#3c3836] text-[#ebdbb2] px-1.5 py-0.5 rounded">
-                  shift
-                </span>{" "}
-                +{" "}
-                <span className="bg-[#3c3836] text-[#ebdbb2] px-1.5 py-0.5 rounded">
-                  Enter
-                </span>
-              </p>
-            )}
+            <p
+              className="text-xs sm:text-sm mt-2"
+              style={{ color: "var(--text-muted)" }}
+            >
+              To stop the test, press{" "}
+              <span
+                className="px-1.5 py-0.5 rounded"
+                style={{
+                  background: "var(--bg-secondary)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                esc
+              </span>{" "}
+              or{" "}
+              <span
+                className="px-1.5 py-0.5 rounded"
+                style={{
+                  background: "var(--bg-secondary)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                shift
+              </span>{" "}
+              +{" "}
+              <span
+                className="px-1.5 py-0.5 rounded"
+                style={{
+                  background: "var(--bg-secondary)",
+                  color: "var(--text-primary)",
+                }}
+              >
+                Enter
+              </span>
+            </p>
           </div>
 
           <div className="flex flex-col gap-3">
             <button
               onClick={handleConfirm}
-              className="px-4 py-2 rounded-md bg-[#D8A657] text-[#282828] hover:bg-[#d9ad6f] transition-colors font-medium text-sm sm:text-base"
+              className="px-4 py-2 rounded-md font-medium text-sm sm:text-base transition-colors"
+              style={{
+                background: "var(--primary)",
+                color: "var(--bg-primary)",
+              }}
             >
               OK
             </button>

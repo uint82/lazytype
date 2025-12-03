@@ -23,7 +23,13 @@ const CapsLockIndicator = () => {
   if (!capsLockOn) return null;
 
   return (
-    <div className="absolute left-1/2 transform -translate-x-1/2 -top-6 bg-[#D3869B] text-black px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-50">
+    <div
+      className="absolute left-1/2 transform -translate-x-1/2 -top-6 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 z-50 transition-colors duration-200"
+      style={{
+        backgroundColor: "var(--warning)",
+        color: "var(--bg-primary)",
+      }}
+    >
       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
         <path
           fillRule="evenodd"
