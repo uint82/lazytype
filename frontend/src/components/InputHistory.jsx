@@ -13,6 +13,7 @@ const InputHistory = ({
   const [copied, setCopied] = useState(false);
   const [hoveredWordIndex, setHoveredWordIndex] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isCopyHovered, setIsCopyHovered] = useState(false);
 
   const containerRef = useRef(null);
   const previousVisibility = useRef(isVisible);
@@ -67,23 +68,38 @@ const InputHistory = ({
   return (
     <div
       ref={containerRef}
-      style={containerStyle}
-      className={`word-history-container relative full-width mt-2 bg-[#282828] text-left w-full max-w-full
-    transition-[height] duration-300 ease-out
+      style={{
+        ...containerStyle,
+        backgroundColor: "var(--bg-primary)",
+      }}
+      className={`word-history-container relative full-width mt-2 text-left w-full max-w-full
+    transition-all duration-300
     ${isAnimating || !isVisible ? "overflow-hidden" : "overflow-visible"}`}
     >
       {wordHistory.length > 0 && (
         <>
           <div className="flex items-center">
-            <h3 className="text-md text-gray-500">input history</h3>
+            <h3
+              className="text-md transition-colors duration-300"
+              style={{ color: "var(--text-muted)" }}
+            >
+              input history
+            </h3>
             <button
               tabIndex={-1}
               onClick={handleCopyWords}
+              onMouseEnter={() => setIsCopyHovered(true)}
+              onMouseLeave={() => setIsCopyHovered(false)}
               aria-label="Copy words list"
-              className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:text-white transition-colors text-sm text-gray-500"
+              className="flex items-center gap-2 px-2 py-1.5 rounded-md transition-colors duration-300 text-sm"
+              style={{
+                color: isCopyHovered
+                  ? "var(--text-primary)"
+                  : "var(--text-muted)",
+              }}
             >
               {copied ? (
-                <Check size={16} className="text-[#b8bb26]" />
+                <Check size={16} style={{ color: "var(--text-correct)" }} />
               ) : (
                 <Copy size={16} />
               )}

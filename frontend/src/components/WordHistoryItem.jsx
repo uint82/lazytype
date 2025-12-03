@@ -46,6 +46,11 @@ const WordHistoryItem = ({
     return "rounded-none";
   };
 
+  const highlightStyle = {
+    backgroundColor: "var(--text-untyped)",
+    color: "var(--bg-primary)",
+  };
+
   return (
     <span
       onMouseEnter={() => setHoveredWordIndex(index)}
@@ -53,10 +58,9 @@ const WordHistoryItem = ({
       className="relative inline-block cursor-default select-none group"
     >
       <span
-        className={`px-1 -mx-1 inline-block ${isHighlighted && !showOverlay
-            ? `text-black/70 bg-[#665c54] ${getRoundingClass()}`
-            : word.styleClass
+        className={`px-1 -mx-1 inline-block ${isHighlighted && !showOverlay ? getRoundingClass() : word.styleClass
           } ${showOverlay ? "opacity-0" : "opacity-100"}`}
+        style={isHighlighted && !showOverlay ? highlightStyle : {}}
       >
         {Array.isArray(word.typed)
           ? word.typed.map((charObj, i) => (
@@ -81,8 +85,12 @@ const WordHistoryItem = ({
 
       {showOverlay && overlayWidth && (
         <span
-          className={`absolute left-0 top-0 whitespace-nowrap px-1 -mx-1 text-black/70 bg-[#665c54] z-10 pointer-events-none ${getRoundingClass()}`}
-          style={{ width: `${overlayWidth}px` }}
+          className={`absolute left-0 top-0 whitespace-nowrap px-1 -mx-1 z-10 pointer-events-none transition-colors duration-300 ${getRoundingClass()}`}
+          style={{
+            width: `${overlayWidth}px`,
+            backgroundColor: "var(--text-untyped)",
+            color: "var(--bg-primary)",
+          }}
         >
           {word.tooltip}
         </span>

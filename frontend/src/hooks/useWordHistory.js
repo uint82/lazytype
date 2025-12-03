@@ -2,13 +2,13 @@ import { useMemo } from "react";
 
 export const useWordHistory = (displayWords, input, typedHistory, mode) => {
   return useMemo(() => {
-    const DARK_RED_COLOR = "text-[#cc241d]";
-    const DARK_GRAY = "text-[#665c54]";
-    const RED_COLOR = "text-[#fb4934]";
-    const YELLOW_COLOR = "text-[#fabd2f]";
-    const DEFAULT_COLOR = "text-[#ebdbb2]";
-    const BORDER_RED = "border-b-2 border-[#fb4934]/50";
-    const BORDER_YELLOW = "border-b-2 border-[#fabd2f]/50";
+    const DARK_RED_COLOR = "text-[var(--accuracy-low)]";
+    const DARK_GRAY = "text-[var(--text-untyped)]";
+    const RED_COLOR = "text-[var(--text-incorrect)]";
+    const YELLOW_COLOR = "text-[var(--text-current)]";
+    const DEFAULT_COLOR = "text-[var(--text-primary)]";
+    const BORDER_RED = "border-b-2 border-[var(--text-incorrect)]/50";
+    const BORDER_YELLOW = "border-b-2 border-[var(--text-current)]/50";
 
     const finalInputWords = input ? input.trim().split(/\s+/) : [];
 
@@ -29,7 +29,7 @@ export const useWordHistory = (displayWords, input, typedHistory, mode) => {
           // if we deleted characters at the end, mark the last remaining character
           // with a right border to indicate hidden extras
           if (hasDeletedExtras && charIndex === word.length - 1) {
-            charClasses += " border-r-2 border-[#fabd2f]/50";
+            charClasses += " border-r-2 border-[var(--text-current)]/50";
           }
 
           return {
