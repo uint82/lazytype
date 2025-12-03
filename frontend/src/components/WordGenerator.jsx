@@ -248,8 +248,13 @@ const WordGenerator = ({
               isZenMode={true}
             />
           ) : (
-            <div className="text-[#635851]" style={{ margin: "0.25em 0.3em" }}>
-              {/* Placeholder */}
+            <div
+              style={{
+                margin: "0.25em 0.3em",
+                color: "var(--text-muted)",
+              }}
+            >
+              {/* placeholder */}
             </div>
           )
         ) : (

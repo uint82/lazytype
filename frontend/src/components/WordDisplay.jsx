@@ -2,14 +2,18 @@ import { memo } from "react";
 import { normalizeForComparison } from "../utils/textTokenizer";
 
 const Character = memo(({ char, isCorrect, isTyped, shouldTransition }) => {
-  const colorClass = isTyped
+  const color = isTyped
     ? isCorrect
-      ? "text-[#DBCBA6]"
-      : "text-red-500"
-    : "text-[#635851]";
+      ? "var(--text-correct)"
+      : "var(--text-incorrect)"
+    : "var(--text-untyped)";
+
   return (
     <span
-      className={`${colorClass} ${shouldTransition ? "transition-colors duration-150" : ""}`}
+      style={{
+        color,
+        transition: shouldTransition ? "color 150ms ease" : undefined,
+      }}
     >
       {char}
     </span>
@@ -85,6 +89,7 @@ const NormalWord = memo(({ word, wordIndex, isActive, isTyped, userInput }) => {
           />
         );
       })}
+
       {extraChars.split("").map((char, extraIndex) => (
         <Character
           key={`${wordIndex}-extra-${extraIndex}`}
@@ -138,6 +143,7 @@ const WordDisplay = ({
           : isTyped
             ? inputWords[wordIndex]
             : null;
+
         return (
           <NormalWord
             key={key}
