@@ -15,6 +15,8 @@ const QuoteSearchModal = ({
   initialSelectedLength = "all",
   initialCurrentPage = 1,
   onStateChange,
+  onModalOpen,
+  onModalClose,
 }) => {
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [debouncedSearchTerm, setDebouncedSearchTerm] =
@@ -26,7 +28,7 @@ const QuoteSearchModal = ({
   const [isVisible, setIsVisible] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [interactionMode, setInteractionMode] = useState("keyboard");
-  const [sortOrder, setSortOrder] = useState("desc"); // "desc" or "asc"
+  const [sortOrder, setSortOrder] = useState("desc");
 
   const searchInputRef = useRef(null);
   const itemRefs = useRef([]);
@@ -49,6 +51,11 @@ const QuoteSearchModal = ({
       length: quote.length,
     }));
   }, [quotes, normalizeText]);
+
+  useEffect(() => {
+    onModalOpen?.();
+    return () => onModalClose?.();
+  }, [onModalOpen, onModalClose]);
 
   useEffect(() => {
     requestAnimationFrame(() => {
@@ -179,7 +186,7 @@ const QuoteSearchModal = ({
                 }
               }
               if (minDistance !== Infinity && minDistance < 50) {
-                score += 500 - minDistance * 5; // Closer = higher score
+                score += 500 - minDistance * 5;
               }
             }
 
@@ -279,7 +286,11 @@ const QuoteSearchModal = ({
         if (highlightRegex.test(part)) {
           highlightRegex.lastIndex = 0;
           return (
-            <mark key={i} className="text-[#D8A657] bg-transparent font-bold">
+            <mark
+              key={i}
+              className="bg-transparent font-bold"
+              style={{ color: "var(--secondary)" }}
+            >
               {part}
             </mark>
           );
@@ -396,37 +407,57 @@ const QuoteSearchModal = ({
 
   return (
     <div
-      className={`fixed inset-0 bg-black/50 flex items-center justify-center z-50 transition-opacity duration-150 ${isVisible ? "opacity-100" : "opacity-0"}`}
+      className={`fixed inset-0 flex items-center justify-center z-50 transition-opacity duration-150 ${isVisible ? "opacity-100" : "opacity-0"}`}
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
       onClick={handleClose}
     >
       <div
-        className={`bg-[#282828] rounded-lg w-full max-w-3xl border-2 border-[#504945] max-h-[79vh] overflow-y-auto flex flex-col transition-all duration-150 transform ${isVisible
+        className={`rounded-lg w-full max-w-3xl max-h-[79vh] overflow-y-auto flex flex-col transition-all duration-150 transform ${isVisible
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 translate-y-4"
           } max-w-[75vw] sm:max-w-[600px] md:max-w-[600px] lg:max-w-[850px] mx-auto sm:my-auto my-4`}
         style={{
+          backgroundColor: "var(--bg-primary)",
+          border: "2px solid var(--border)",
           fontFamily:
             "'Roboto Mono', monospace, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center p-3 sm:p-4 border-b border-[#3c3836] shrink-0">
-          <h2 className="text-lg sm:text-xl font-semibold text-[#ebdbb2]">
+        <div
+          className="flex justify-between items-center p-3 sm:p-4 border-b shrink-0"
+          style={{ borderColor: "var(--border)" }}
+        >
+          <h2
+            className="text-lg sm:text-xl font-semibold"
+            style={{ color: "var(--text-primary)" }}
+          >
             Search Quotes
           </h2>
           <button
             onClick={handleClose}
-            className="text-[#a89984] hover:text-[#ebdbb2] transition-colors cursor-pointer"
+            className="transition-colors cursor-pointer"
+            style={{ color: "var(--text-muted)" }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = "var(--text-primary)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = "var(--text-muted)")
+            }
             aria-label="Close"
           >
             <X size={24} />
           </button>
         </div>
 
-        <div className="p-3 sm:p-4 border-b border-[#3c3836] space-y-3">
+        <div
+          className="p-3 sm:p-4 border-b space-y-3"
+          style={{ borderColor: "var(--border)" }}
+        >
           <div className="relative">
             <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[#a89984]"
+              className="absolute left-3 top-1/2 -translate-y-1/2"
+              style={{ color: "var(--text-muted)" }}
               size={18}
             />
             <input
@@ -435,12 +466,24 @@ const QuoteSearchModal = ({
               placeholder="Search by text, source, or ID... (e.g., 'resume')"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-[#3c3836] text-[#ebdbb2] rounded-md focus:outline-none focus:ring-2 focus:ring-[#83A598] text-sm sm:text-base"
+              className="w-full pl-10 pr-4 py-2 rounded-md focus:outline-none focus:ring-2 text-sm sm:text-base"
+              style={{
+                backgroundColor: "var(--button-bg)",
+                color: "var(--text-primary)",
+                borderColor: "var(--input-focus)",
+              }}
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89984] hover:text-[#ebdbb2] transition-colors cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
+                style={{ color: "var(--text-muted)" }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.color = "var(--text-primary)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.color = "var(--text-muted)")
+                }
                 aria-label="Clear search"
               >
                 <X size={18} />
@@ -449,15 +492,34 @@ const QuoteSearchModal = ({
           </div>
 
           <div className="w-full">
-            <div className="flex gap-2 overflow-x-auto pb-1 -mx-3 px-3 scrollbar-thin scrollbar-thumb-[#504945]">
+            <div className="flex gap-2 overflow-x-auto pb-1 -mx-3 px-3">
               {Object.entries(lengthCategories).map(([key, { label }]) => (
                 <button
                   key={key}
                   onClick={() => setSelectedLength(key)}
-                  className={`flex-shrink-0 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all ${selectedLength === key
-                      ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2] cursor-pointer"
-                    }`}
+                  className="flex-shrink-0 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all"
+                  style={{
+                    backgroundColor:
+                      selectedLength === key
+                        ? "var(--info)"
+                        : "var(--button-bg)",
+                    color:
+                      selectedLength === key
+                        ? "var(--bg-primary)"
+                        : "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (selectedLength !== key) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (selectedLength !== key) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   {label}
                 </button>
@@ -465,7 +527,10 @@ const QuoteSearchModal = ({
             </div>
           </div>
 
-          <div className="flex justify-between items-center text-xs sm:text-sm text-[#a89984]">
+          <div
+            className="flex justify-between items-center text-xs sm:text-sm"
+            style={{ color: "var(--text-muted)" }}
+          >
             <div className="flex items-center gap-2">
               <span>
                 {filteredQuotes.length}{" "}
@@ -476,7 +541,18 @@ const QuoteSearchModal = ({
                   onClick={() =>
                     setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"))
                   }
-                  className="flex items-center gap-1 px-2 py-1 rounded bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2] transition-colors cursor-pointer"
+                  className="flex items-center gap-1 px-2 py-1 rounded transition-colors cursor-pointer"
+                  style={{
+                    backgroundColor: "var(--button-bg)",
+                    color: "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) =>
+                  (e.currentTarget.style.backgroundColor =
+                    "var(--button-hover)")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.backgroundColor = "var(--button-bg)")
+                  }
                   title={
                     sortOrder === "desc"
                       ? "Sorted: Newest first"
@@ -503,11 +579,17 @@ const QuoteSearchModal = ({
         <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-2">
           <div className="min-h-[400px] sm:min-h-[500px]">
             {isFiltering ? (
-              <div className="text-center text-[#a89984] py-8">
+              <div
+                className="text-center py-8"
+                style={{ color: "var(--text-muted)" }}
+              >
                 Searching...
               </div>
             ) : currentQuotes.length === 0 ? (
-              <div className="text-center text-[#a89984] py-8">
+              <div
+                className="text-center py-8"
+                style={{ color: "var(--text-muted)" }}
+              >
                 No quotes found
               </div>
             ) : (
@@ -517,19 +599,27 @@ const QuoteSearchModal = ({
                   ref={(el) => (itemRefs.current[index] = el)}
                   onClick={() => handleQuoteClick(quote)}
                   onMouseEnter={() => handleMouseMove(index)}
-                  className={`w-full text-left p-3 rounded-md transition-all mb-2 group cursor-pointer ${index === selectedIndex
-                      ? "bg-[#504945] ring-2 ring-[#83A598]"
-                      : "bg-[#3c3836] hover:bg-[#504945]"
-                    }`}
+                  className="w-full text-left p-3 rounded-md transition-all mb-2 group cursor-pointer"
+                  style={{
+                    ...(index === selectedIndex && {
+                      boxShadow: "0 0 0 2px var(--info)",
+                    }),
+                  }}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <span className="text-[10px] sm:text-xs font-medium text-[#D8A657] group-hover:text-[#fabd2f] transition-colors">
+                    <span
+                      className="text-[10px] sm:text-xs font-medium transition-colors"
+                      style={{ color: "var(--secondary)" }}
+                    >
                       ID: {highlightText(quote.id.toString())}
                     </span>
-                    <div className="flex gap-2 text-[10px] sm:text-xs text-[#a89984]">
+                    <div
+                      className="flex gap-2 text-[10px] sm:text-xs"
+                      style={{ color: "var(--text-muted)" }}
+                    >
                       <span>{quote.length} chars</span>
                       <span>•</span>
-                      <span className="text-[#83A598]">
+                      <span style={{ color: "var(--info)" }}>
                         {quote.length <= 100
                           ? "Short"
                           : quote.length <= 300
@@ -540,10 +630,16 @@ const QuoteSearchModal = ({
                       </span>
                     </div>
                   </div>
-                  <p className="text-[#ebdbb2] text-xs sm:text-sm mb-2 leading-relaxed">
+                  <p
+                    className="text-xs sm:text-sm mb-2 leading-relaxed"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     {highlightText(quote.text)}
                   </p>
-                  <p className="text-[10px] sm:text-xs text-[#a89984] italic">
+                  <p
+                    className="text-[10px] sm:text-xs italic"
+                    style={{ color: "var(--text-muted)" }}
+                  >
                     — {highlightText(quote.source)}
                   </p>
                 </button>
@@ -553,15 +649,32 @@ const QuoteSearchModal = ({
         </div>
 
         {totalPages > 1 && (
-          <div className="p-3 sm:p-4 border-t border-[#3c3836]">
+          <div
+            className="p-3 sm:p-4 border-t"
+            style={{ borderColor: "var(--border)" }}
+          >
             <div className="flex items-center justify-center gap-2">
               <button
                 onClick={goToPrevPage}
                 disabled={currentPage === 1}
-                className={`p-2 rounded-md transition-all ${currentPage === 1
-                    ? "bg-[#3c3836] text-[#665c54]"
-                    : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
-                  }`}
+                className="p-2 rounded-md transition-all"
+                style={{
+                  backgroundColor: "var(--button-bg)",
+                  color:
+                    currentPage === 1
+                      ? "var(--text-dim)"
+                      : "var(--text-primary)",
+                  cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  if (currentPage !== 1) {
+                    e.currentTarget.style.backgroundColor =
+                      "var(--button-hover)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                }}
                 aria-label="Previous page"
               >
                 <ChevronLeft size={18} />
@@ -571,7 +684,8 @@ const QuoteSearchModal = ({
                   page === "..." ? (
                     <span
                       key={`e-${i}`}
-                      className="px-2 sm:px-3 py-1.5 text-[#a89984]"
+                      className="px-2 sm:px-3 py-1.5"
+                      style={{ color: "var(--text-muted)" }}
                     >
                       …
                     </span>
@@ -579,10 +693,29 @@ const QuoteSearchModal = ({
                     <button
                       key={page}
                       onClick={() => goToPage(page)}
-                      className={`px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all ${page === currentPage
-                          ? "bg-[#83A598] text-[#282828]"
-                          : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
-                        }`}
+                      className="px-2 sm:px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all"
+                      style={{
+                        backgroundColor:
+                          page === currentPage
+                            ? "var(--info)"
+                            : "var(--button-bg)",
+                        color:
+                          page === currentPage
+                            ? "var(--bg-primary)"
+                            : "var(--text-primary)",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (page !== currentPage) {
+                          e.currentTarget.style.backgroundColor =
+                            "var(--button-hover)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (page !== currentPage) {
+                          e.currentTarget.style.backgroundColor =
+                            "var(--button-bg)";
+                        }
+                      }}
                     >
                       {page}
                     </button>
@@ -592,10 +725,25 @@ const QuoteSearchModal = ({
               <button
                 onClick={goToNextPage}
                 disabled={currentPage === totalPages}
-                className={`p-2 rounded-md transition-all ${currentPage === totalPages
-                    ? "bg-[#3c3836] text-[#665c54]"
-                    : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
-                  }`}
+                className="p-2 rounded-md transition-all"
+                style={{
+                  backgroundColor: "var(--button-bg)",
+                  color:
+                    currentPage === totalPages
+                      ? "var(--text-dim)"
+                      : "var(--text-primary)",
+                  cursor:
+                    currentPage === totalPages ? "not-allowed" : "pointer",
+                }}
+                onMouseEnter={(e) => {
+                  if (currentPage !== totalPages) {
+                    e.currentTarget.style.backgroundColor =
+                      "var(--button-hover)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                }}
                 aria-label="Next page"
               >
                 <ChevronRight size={18} />
