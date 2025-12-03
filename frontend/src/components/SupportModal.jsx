@@ -5,31 +5,52 @@ const SupportModal = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 flex items-center justify-center z-50 p-4"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
       onClick={onClose}
     >
       <div
-        className="bg-[#282828] border-2 border-[#504945] rounded-lg max-w-2xl w-full"
+        className="border-2 rounded-lg max-w-2xl w-full"
+        style={{
+          backgroundColor: "var(--bg-primary)",
+          borderColor: "var(--border)",
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between p-6 border-b border-[#504945]">
+        <div
+          className="flex items-center justify-between p-6 border-b"
+          style={{ borderColor: "var(--border)" }}
+        >
           <div className="flex items-center space-x-3">
-            <Heart className="w-6 h-6 text-[#fb4934]" />
-            <h2 className="text-2xl font-bold text-[#ebdbb2]">
+            <Heart className="w-6 h-6" style={{ color: "var(--error)" }} />
+            <h2
+              className="text-2xl font-bold"
+              style={{ color: "var(--text-primary)" }}
+            >
               Support Lazytype
             </h2>
           </div>
 
           <button
             onClick={onClose}
-            className="text-[#a89984] hover:text-[#ebdbb2] cursor-pointer transition-colors"
+            className="cursor-pointer transition-colors"
+            style={{ color: "var(--text-muted)" }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.color = "var(--text-primary)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.color = "var(--text-muted)")
+            }
           >
             <X className="w-6 h-6" />
           </button>
         </div>
 
         <div className="p-6 space-y-6">
-          <p className="text-[#a89984] text-center leading-relaxed">
+          <p
+            className="text-center leading-relaxed"
+            style={{ color: "var(--text-muted)" }}
+          >
             Thank you so much for thinking about supporting this project.
           </p>
         </div>
