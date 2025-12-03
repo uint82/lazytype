@@ -50,72 +50,55 @@ const GroupModal = ({
 
   const modalContent = (
     <div
-      className={`fixed inset-0 bg-black/60 flex items-center justify-center z-[9999]
+      className={`fixed inset-0 flex items-center justify-center z-[9999]
       transition-opacity duration-150 ${isVisible ? "opacity-100" : "opacity-0"}`}
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
       onClick={handleOverlayClick}
     >
       <div
-        className={`bg-[#282828] p-5 rounded-lg shadow-lg w-[90%] max-w-[320px] text-center
-        transition-all duration-150 transform ${isVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"
-          }`}
+        className={`p-5 rounded-lg shadow-lg w-[90%] max-w-[320px] text-center
+        transition-all duration-150 transform ${isVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
+        style={{ backgroundColor: "var(--bg-primary)" }}
       >
         <div className="flex flex-col gap-3 max-h-[70vh] overflow-y-auto">
           <div className="flex flex-col gap-2">
-            <button
-              onClick={() => {
-                setActiveTab("time");
-                onSelectTime(selectedDuration);
-              }}
-              className={`w-full px-4 py-2 rounded transition-all ${activeTab === "time"
-                  ? "bg-[#D8AB19] text-[#282828]"
-                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
-                }`}
-            >
-              time
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("words");
-                onSelectWords(selectedWordCount);
-              }}
-              className={`w-full px-4 py-2 rounded transition-all ${activeTab === "words"
-                  ? "bg-[#D8AB19] text-[#282828]"
-                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
-                }`}
-            >
-              words
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("quotes");
-                if (selectedQuoteId) {
-                  onSetMode("quotes");
-                } else {
-                  onSelectGroup(selectedGroup ?? null);
-                }
-              }}
-              className={`w-full px-4 py-2 rounded transition-all ${activeTab === "quotes"
-                  ? "bg-[#D8AB19] text-[#282828]"
-                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
-                }`}
-            >
-              quotes
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("zen");
-                onSetMode("zen");
-              }}
-              className={`w-full px-4 py-2 rounded transition-all ${activeTab === "zen"
-                  ? "bg-[#D8AB19] text-[#282828]"
-                  : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
-                }`}
-            >
-              zen
-            </button>
+            {["time", "words", "quotes", "zen"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => {
+                  setActiveTab(tab);
+                  if (tab === "time") onSelectTime(selectedDuration);
+                  if (tab === "words") onSelectWords(selectedWordCount);
+                  if (tab === "quotes") {
+                    if (selectedQuoteId) onSetMode("quotes");
+                    else onSelectGroup(selectedGroup ?? null);
+                  }
+                  if (tab === "zen") onSetMode("zen");
+                }}
+                className="w-full px-4 py-2 rounded transition-all"
+                style={{
+                  backgroundColor:
+                    activeTab === tab ? "var(--secondary)" : "var(--button-bg)",
+                  color:
+                    activeTab === tab
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== tab) {
+                    e.currentTarget.style.backgroundColor =
+                      "var(--button-hover)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== tab) {
+                    e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                  }
+                }}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
 
           <div className="flex flex-col gap-2 mt-3">
@@ -125,10 +108,39 @@ const GroupModal = ({
                   <button
                     key={duration}
                     onClick={() => onSelectTime(duration)}
-                    className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedMode === "time" && selectedDuration === duration
-                        ? "bg-[#D8AB19] text-[#282828]"
-                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
-                      }`}
+                    className="w-full px-4 py-2 rounded text-sm transition-all"
+                    style={{
+                      backgroundColor:
+                        selectedMode === "time" && selectedDuration === duration
+                          ? "var(--secondary)"
+                          : "var(--button-bg)",
+                      color:
+                        selectedMode === "time" && selectedDuration === duration
+                          ? "var(--bg-primary)"
+                          : "var(--text-primary)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (
+                        !(
+                          selectedMode === "time" &&
+                          selectedDuration === duration
+                        )
+                      ) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-hover)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (
+                        !(
+                          selectedMode === "time" &&
+                          selectedDuration === duration
+                        )
+                      ) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-bg)";
+                      }
+                    }}
                   >
                     {duration}
                   </button>
@@ -139,33 +151,89 @@ const GroupModal = ({
                     handleClose();
                     onOpenCustomConfig("time");
                   }}
-                  className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded text-sm transition-all cursor-pointer ${![15, 30, 60, 120].includes(selectedDuration)
-                      ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
-                    }`}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded text-sm transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: ![15, 30, 60, 120].includes(
+                      selectedDuration,
+                    )
+                      ? "var(--info)"
+                      : "var(--button-bg)",
+                    color: ![15, 30, 60, 120].includes(selectedDuration)
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if ([15, 30, 60, 120].includes(selectedDuration)) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if ([15, 30, 60, 120].includes(selectedDuration)) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   <WrenchIcon size={16} />
                   Custom
                 </button>
 
-                <div className="border-t border-[#3c3836] my-2"></div>
+                <div
+                  className="my-2"
+                  style={{ borderTop: "1px solid var(--border)" }}
+                ></div>
 
                 <button
                   onClick={onTogglePunctuation}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedPunctuation
-                      ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
-                    }`}
+                  className="w-full px-4 py-2 rounded text-sm transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: selectedPunctuation
+                      ? "var(--info)"
+                      : "var(--button-bg)",
+                    color: selectedPunctuation
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!selectedPunctuation) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!selectedPunctuation) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   punctuation
                 </button>
 
                 <button
                   onClick={onToggleNumbers}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedNumbers
-                      ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
-                    }`}
+                  className="w-full px-4 py-2 rounded text-sm transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: selectedNumbers
+                      ? "var(--info)"
+                      : "var(--button-bg)",
+                    color: selectedNumbers
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!selectedNumbers) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!selectedNumbers) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   numbers
                 </button>
@@ -176,10 +244,39 @@ const GroupModal = ({
                   <button
                     key={count}
                     onClick={() => onSelectWords(count)}
-                    className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedMode === "words" && selectedWordCount === count
-                        ? "bg-[#D8AB19] text-[#282828]"
-                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
-                      }`}
+                    className="w-full px-4 py-2 rounded text-sm transition-all"
+                    style={{
+                      backgroundColor:
+                        selectedMode === "words" && selectedWordCount === count
+                          ? "var(--secondary)"
+                          : "var(--button-bg)",
+                      color:
+                        selectedMode === "words" && selectedWordCount === count
+                          ? "var(--bg-primary)"
+                          : "var(--text-primary)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (
+                        !(
+                          selectedMode === "words" &&
+                          selectedWordCount === count
+                        )
+                      ) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-hover)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (
+                        !(
+                          selectedMode === "words" &&
+                          selectedWordCount === count
+                        )
+                      ) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-bg)";
+                      }
+                    }}
                   >
                     {count}
                   </button>
@@ -190,33 +287,89 @@ const GroupModal = ({
                     handleClose();
                     onOpenCustomConfig("words");
                   }}
-                  className={`w-full flex items-center justify-center gap-2 px-4 py-2 rounded text-sm transition-all cursor-pointer ${![10, 25, 50, 100].includes(selectedWordCount)
-                      ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
-                    }`}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded text-sm transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: ![10, 25, 50, 100].includes(
+                      selectedWordCount,
+                    )
+                      ? "var(--info)"
+                      : "var(--button-bg)",
+                    color: ![10, 25, 50, 100].includes(selectedWordCount)
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if ([10, 25, 50, 100].includes(selectedWordCount)) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if ([10, 25, 50, 100].includes(selectedWordCount)) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   <WrenchIcon size={16} />
                   Custom
                 </button>
 
-                <div className="border-t border-[#3c3836] my-2"></div>
+                <div
+                  className="my-2"
+                  style={{ borderTop: "1px solid var(--border)" }}
+                ></div>
 
                 <button
                   onClick={onTogglePunctuation}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedPunctuation
-                      ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
-                    }`}
+                  className="w-full px-4 py-2 rounded text-sm transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: selectedPunctuation
+                      ? "var(--info)"
+                      : "var(--button-bg)",
+                    color: selectedPunctuation
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!selectedPunctuation) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!selectedPunctuation) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   punctuation
                 </button>
 
                 <button
                   onClick={onToggleNumbers}
-                  className={`w-full px-4 py-2 rounded text-sm transition-all cursor-pointer ${selectedNumbers
-                      ? "bg-[#83A598] text-[#282828]"
-                      : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945]"
-                    }`}
+                  className="w-full px-4 py-2 rounded text-sm transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: selectedNumbers
+                      ? "var(--info)"
+                      : "var(--button-bg)",
+                    color: selectedNumbers
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!selectedNumbers) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!selectedNumbers) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   numbers
                 </button>
@@ -229,12 +382,45 @@ const GroupModal = ({
                   <button
                     key={group.index ?? "all"}
                     onClick={() => onSelectGroup(group.index)}
-                    className={`w-full px-4 py-2 rounded text-sm transition-all ${selectedMode === "quotes" &&
-                        selectedGroup === group.index &&
-                        !selectedQuoteId
-                        ? "bg-[#D8AB19] text-[#282828]"
-                        : "bg-[#3c3836] text-[#ebdbb2] hover:bg-[#504945] cursor-pointer"
-                      }`}
+                    className="w-full px-4 py-2 rounded text-sm transition-all"
+                    style={{
+                      backgroundColor:
+                        selectedMode === "quotes" &&
+                          selectedGroup === group.index &&
+                          !selectedQuoteId
+                          ? "var(--secondary)"
+                          : "var(--button-bg)",
+                      color:
+                        selectedMode === "quotes" &&
+                          selectedGroup === group.index &&
+                          !selectedQuoteId
+                          ? "var(--bg-primary)"
+                          : "var(--text-primary)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (
+                        !(
+                          selectedMode === "quotes" &&
+                          selectedGroup === group.index &&
+                          !selectedQuoteId
+                        )
+                      ) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-hover)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (
+                        !(
+                          selectedMode === "quotes" &&
+                          selectedGroup === group.index &&
+                          !selectedQuoteId
+                        )
+                      ) {
+                        e.currentTarget.style.backgroundColor =
+                          "var(--button-bg)";
+                      }
+                    }}
                   >
                     {group.label}
                   </button>
@@ -245,10 +431,27 @@ const GroupModal = ({
                     handleClose();
                     onOpenSearchModal();
                   }}
-                  className={`mt-2 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md transition-all cursor-pointer ${selectedQuoteId
-                      ? "bg-[#D8AB19] text-[#282828]"
-                      : "bg-[#3c3836] hover:bg-[#504945] text-[#ebdbb2]"
-                    }`}
+                  className="mt-2 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md transition-all cursor-pointer"
+                  style={{
+                    backgroundColor: selectedQuoteId
+                      ? "var(--secondary)"
+                      : "var(--button-bg)",
+                    color: selectedQuoteId
+                      ? "var(--bg-primary)"
+                      : "var(--text-primary)",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!selectedQuoteId) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-hover)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!selectedQuoteId) {
+                      e.currentTarget.style.backgroundColor =
+                        "var(--button-bg)";
+                    }
+                  }}
                 >
                   Search
                 </button>
