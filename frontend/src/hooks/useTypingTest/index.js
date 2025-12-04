@@ -7,6 +7,7 @@ import useTestControls from "./useTestControls";
 import useInputRef from "./useInputRef";
 import useTestState from "../useTestState";
 import useTypingStats from "../useTypingStats";
+import useSessionTracking from "../useSessionTracking";
 import { resetWordGenerator } from "../../controllers/words-controller";
 import { loadTestConfig, saveTestConfig } from "../../utils/localStorage";
 import { getQuoteById } from "../../controllers/quotes-controller";
@@ -123,6 +124,12 @@ export default function useTypingTest(addNotification) {
     timeElapsed,
     selectedMode,
     isTestComplete,
+  );
+
+  const { sessionTime } = useSessionTracking(
+    isTestActive,
+    isTestComplete,
+    timeElapsed,
   );
 
   useEffect(() => {
@@ -258,10 +265,6 @@ export default function useTypingTest(addNotification) {
       setTypedHistory((prev) => {
         const prevHistory = prev[currentWordIndex] || "";
 
-        // in zen mode:
-        // we only update the history if the current word is LONGER than what we remember.
-        // this ensures that if the user types "Hello" and backspaces to "Hell",
-        // we remember "Hello" was the peak, allowing us to detect the deletion.
         if (currentWordRaw.length > prevHistory.length) {
           return { ...prev, [currentWordIndex]: currentWordRaw };
         }
@@ -464,5 +467,7 @@ export default function useTypingTest(addNotification) {
     fullQuoteText,
     setIsModalOpen,
     typedHistory,
+    displayedWordCount,
+    sessionTime,
   };
 }
