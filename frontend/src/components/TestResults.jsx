@@ -34,6 +34,7 @@ const TestResults = ({
   displayWords,
   typedHistory = {},
   currentThemeKey,
+  sessionTime,
 }) => {
   const [visibleLines, setVisibleLines] = useState({
     wpm: true,
@@ -67,6 +68,16 @@ const TestResults = ({
       ...prev,
       [lineKey]: !prev[lineKey],
     }));
+  };
+
+  // Add this helper function at the top of TestResults.jsx (around line 70-80)
+  const formatSessionTime = (milliseconds) => {
+    const totalSeconds = Math.round(milliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const formatTime = (milliseconds) => {
@@ -789,6 +800,12 @@ const TestResults = ({
                 {formatTime(timeElapsed)}
               </div>
             </TooltipHover>
+            <div
+              className="text-[12px] mt-1"
+              style={{ color: "var(--text-muted)" }}
+            >
+              {formatSessionTime(sessionTime)} session
+            </div>
           </div>
           {isQuoteMode && quote?.source && (
             <div className="text-left">
