@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-const useSessionTracking = (isTestComplete, timeElapsed) => {
+const useSessionTracking = (isTestActive, isTestComplete, timeElapsed) => {
   const [accumulatedTime, setAccumulatedTime] = useState(0);
   const [currentSessionTime, setCurrentSessionTime] = useState(0);
 
