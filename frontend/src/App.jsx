@@ -25,6 +25,8 @@ const App = () => {
   const isLegalPage =
     location.pathname === "/terms" || location.pathname === "/privacy";
 
+  const isHomePage = location.pathname === "/";
+
   useEffect(() => {
     const theme = themes[currentTheme];
     if (theme) {
@@ -52,21 +54,21 @@ const App = () => {
       {!isLegalPage && <Navbar isTyping={!showConfig && !isTestComplete} />}
       <main className="flex-grow flex justify-center">
         <div className="w-full">
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Lazytype
-                  onShowConfigChange={setShowConfig}
-                  onTestCompleteChange={setIsTestComplete}
-                />
-              }
+          <div style={{ display: isHomePage ? "contents" : "none" }}>
+            <Lazytype
+              onShowConfigChange={setShowConfig}
+              onTestCompleteChange={setIsTestComplete}
             />
-            <Route path="/leaderboard" element={<WorkingOnIt />} />
-            <Route path="/profile" element={<WorkingOnIt />} />
-            <Route path="/terms" element={<LegalPages />} />
-            <Route path="/privacy" element={<LegalPages />} />
-          </Routes>
+          </div>
+
+          {!isHomePage && (
+            <Routes>
+              <Route path="/leaderboard" element={<WorkingOnIt />} />
+              <Route path="/profile" element={<WorkingOnIt />} />
+              <Route path="/terms" element={<LegalPages />} />
+              <Route path="/privacy" element={<LegalPages />} />
+            </Routes>
+          )}
         </div>
       </main>
       {!isLegalPage && (
