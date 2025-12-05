@@ -13,10 +13,9 @@ const Caret = ({ x, y, isTyping }) => {
         top: y + 5,
       }}
       transition={{
-        type: "spring",
-        stiffness: 600,
-        damping: 30,
-        mass: 0.4,
+        type: "tween",
+        duration: 0.1,
+        ease: "easeOut",
       }}
       style={{
         width: "3px",
