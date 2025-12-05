@@ -417,19 +417,39 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
   useEffect(() => {
     if (isTestComplete) {
       if (!notificationShownRef.current) {
-        const testWordCount = displayWords
-          .trim()
-          .split(/\s+/)
-          .filter((w) => w.length > 0).length;
-        if (testWordCount < 1 && !isZenMode) {
-          // zen mode might technically be empty if they pressed shift+enter immediately
-        } else if (
-          testWordCount < 10 &&
-          !isZenMode &&
-          selectedMode !== "quotes"
-        ) {
+        let actualWordsTyped = 0;
+
+        if (isZenMode) {
+          actualWordsTyped =
+            input.trim() === ""
+              ? 0
+              : input
+                .trim()
+                .split(/\s+/)
+                .filter((w) => w.length > 0).length;
+        } else {
+          const displayWordCount = displayWords
+            .trim()
+            .split(/\s+/)
+            .filter((w) => w.length > 0).length;
+
+          const typedWordCount =
+            input.trim() === ""
+              ? 0
+              : input
+                .trim()
+                .split(/\s+/)
+                .filter((w) => w.length > 0).length;
+
+          actualWordsTyped = Math.min(displayWordCount, typedWordCount);
+        }
+
+        if (actualWordsTyped < 1 && !isZenMode) {
+          // don't show notification for completely empty tests
+        } else if (actualWordsTyped < 10 && selectedMode !== "quotes") {
           addNotification("Test invalid - too short!", "notice", 4000);
         }
+
         notificationShownRef.current = true;
       }
     } else {
@@ -439,6 +459,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
     isTestComplete,
     stats,
     displayWords,
+    input,
     addNotification,
     isZenMode,
     selectedMode,
