@@ -58,7 +58,7 @@ const GroupModal = ({
       <div
         className={`p-5 rounded-lg shadow-lg w-[90%] max-w-[320px] text-center
         transition-all duration-150 transform ${isVisible ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
-        style={{ backgroundColor: "var(--bg-primary)" }}
+        style={{ backgroundColor: "var(--bg)" }}
       >
         <div className="flex flex-col gap-3 max-h-[70vh] overflow-y-auto">
           <div className="flex flex-col gap-2">
@@ -78,21 +78,19 @@ const GroupModal = ({
                 className="w-full px-4 py-2 rounded transition-all"
                 style={{
                   backgroundColor:
-                    activeTab === tab ? "var(--secondary)" : "var(--button-bg)",
-                  color:
-                    activeTab === tab
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                    activeTab === tab ? "var(--main)" : "var(--sub-alt)",
+                  color: activeTab === tab ? "var(--bg)" : "var(--text)",
                 }}
                 onMouseEnter={(e) => {
                   if (activeTab !== tab) {
-                    e.currentTarget.style.backgroundColor =
-                      "var(--button-hover)";
+                    e.currentTarget.style.backgroundColor = "var(--text)";
+                    e.currentTarget.style.color = "var(--bg)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (activeTab !== tab) {
-                    e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                    e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                    e.currentTarget.style.color = "var(--text)";
                   }
                 }}
               >
@@ -112,12 +110,12 @@ const GroupModal = ({
                     style={{
                       backgroundColor:
                         selectedMode === "time" && selectedDuration === duration
-                          ? "var(--secondary)"
-                          : "var(--button-bg)",
+                          ? "var(--main)"
+                          : "var(--sub-alt)",
                       color:
                         selectedMode === "time" && selectedDuration === duration
-                          ? "var(--bg-primary)"
-                          : "var(--text-primary)",
+                          ? "var(--bg)"
+                          : "var(--text)",
                     }}
                     onMouseEnter={(e) => {
                       if (
@@ -126,8 +124,8 @@ const GroupModal = ({
                           selectedDuration === duration
                         )
                       ) {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--button-hover)";
+                        e.currentTarget.style.backgroundColor = "var(--text)";
+                        e.currentTarget.style.color = "var(--bg)";
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -138,7 +136,8 @@ const GroupModal = ({
                         )
                       ) {
                         e.currentTarget.style.backgroundColor =
-                          "var(--button-bg)";
+                          "var(--sub-alt)";
+                        e.currentTarget.style.color = "var(--text)";
                       }
                     }}
                   >
@@ -156,22 +155,22 @@ const GroupModal = ({
                     backgroundColor: ![15, 30, 60, 120].includes(
                       selectedDuration,
                     )
-                      ? "var(--info)"
-                      : "var(--button-bg)",
+                      ? "var(--main)"
+                      : "var(--sub-alt)",
                     color: ![15, 30, 60, 120].includes(selectedDuration)
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                      ? "var(--bg)"
+                      : "var(--text)",
                   }}
                   onMouseEnter={(e) => {
                     if ([15, 30, 60, 120].includes(selectedDuration)) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if ([15, 30, 60, 120].includes(selectedDuration)) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >
@@ -181,7 +180,7 @@ const GroupModal = ({
 
                 <div
                   className="my-2"
-                  style={{ borderTop: "1px solid var(--border)" }}
+                  style={{ borderTop: "1px solid var(--sub-alt)" }}
                 ></div>
 
                 <button
@@ -189,22 +188,20 @@ const GroupModal = ({
                   className="w-full px-4 py-2 rounded text-sm transition-all cursor-pointer"
                   style={{
                     backgroundColor: selectedPunctuation
-                      ? "var(--info)"
-                      : "var(--button-bg)",
-                    color: selectedPunctuation
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                      ? "var(--main)"
+                      : "var(--sub-alt)",
+                    color: selectedPunctuation ? "var(--bg)" : "var(--text)",
                   }}
                   onMouseEnter={(e) => {
                     if (!selectedPunctuation) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!selectedPunctuation) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >
@@ -216,22 +213,20 @@ const GroupModal = ({
                   className="w-full px-4 py-2 rounded text-sm transition-all cursor-pointer"
                   style={{
                     backgroundColor: selectedNumbers
-                      ? "var(--info)"
-                      : "var(--button-bg)",
-                    color: selectedNumbers
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                      ? "var(--main)"
+                      : "var(--sub-alt)",
+                    color: selectedNumbers ? "var(--bg)" : "var(--text)",
                   }}
                   onMouseEnter={(e) => {
                     if (!selectedNumbers) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!selectedNumbers) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >
@@ -248,12 +243,12 @@ const GroupModal = ({
                     style={{
                       backgroundColor:
                         selectedMode === "words" && selectedWordCount === count
-                          ? "var(--secondary)"
-                          : "var(--button-bg)",
+                          ? "var(--main)"
+                          : "var(--sub-alt)",
                       color:
                         selectedMode === "words" && selectedWordCount === count
-                          ? "var(--bg-primary)"
-                          : "var(--text-primary)",
+                          ? "var(--bg)"
+                          : "var(--text)",
                     }}
                     onMouseEnter={(e) => {
                       if (
@@ -262,8 +257,8 @@ const GroupModal = ({
                           selectedWordCount === count
                         )
                       ) {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--button-hover)";
+                        e.currentTarget.style.backgroundColor = "var(--text)";
+                        e.currentTarget.style.color = "var(--bg)";
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -274,7 +269,8 @@ const GroupModal = ({
                         )
                       ) {
                         e.currentTarget.style.backgroundColor =
-                          "var(--button-bg)";
+                          "var(--sub-alt)";
+                        e.currentTarget.style.color = "var(--text)";
                       }
                     }}
                   >
@@ -292,22 +288,22 @@ const GroupModal = ({
                     backgroundColor: ![10, 25, 50, 100].includes(
                       selectedWordCount,
                     )
-                      ? "var(--info)"
-                      : "var(--button-bg)",
+                      ? "var(--main)"
+                      : "var(--sub-alt)",
                     color: ![10, 25, 50, 100].includes(selectedWordCount)
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                      ? "var(--bg)"
+                      : "var(--text)",
                   }}
                   onMouseEnter={(e) => {
                     if ([10, 25, 50, 100].includes(selectedWordCount)) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if ([10, 25, 50, 100].includes(selectedWordCount)) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >
@@ -317,7 +313,7 @@ const GroupModal = ({
 
                 <div
                   className="my-2"
-                  style={{ borderTop: "1px solid var(--border)" }}
+                  style={{ borderTop: "1px solid var(--sub-alt)" }}
                 ></div>
 
                 <button
@@ -325,22 +321,20 @@ const GroupModal = ({
                   className="w-full px-4 py-2 rounded text-sm transition-all cursor-pointer"
                   style={{
                     backgroundColor: selectedPunctuation
-                      ? "var(--info)"
-                      : "var(--button-bg)",
-                    color: selectedPunctuation
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                      ? "var(--main)"
+                      : "var(--sub-alt)",
+                    color: selectedPunctuation ? "var(--bg)" : "var(--text)",
                   }}
                   onMouseEnter={(e) => {
                     if (!selectedPunctuation) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!selectedPunctuation) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >
@@ -352,22 +346,20 @@ const GroupModal = ({
                   className="w-full px-4 py-2 rounded text-sm transition-all cursor-pointer"
                   style={{
                     backgroundColor: selectedNumbers
-                      ? "var(--info)"
-                      : "var(--button-bg)",
-                    color: selectedNumbers
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                      ? "var(--main)"
+                      : "var(--sub-alt)",
+                    color: selectedNumbers ? "var(--bg)" : "var(--text)",
                   }}
                   onMouseEnter={(e) => {
                     if (!selectedNumbers) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!selectedNumbers) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >
@@ -388,14 +380,14 @@ const GroupModal = ({
                         selectedMode === "quotes" &&
                           selectedGroup === group.index &&
                           !selectedQuoteId
-                          ? "var(--secondary)"
-                          : "var(--button-bg)",
+                          ? "var(--main)"
+                          : "var(--sub-alt)",
                       color:
                         selectedMode === "quotes" &&
                           selectedGroup === group.index &&
                           !selectedQuoteId
-                          ? "var(--bg-primary)"
-                          : "var(--text-primary)",
+                          ? "var(--bg)"
+                          : "var(--text)",
                     }}
                     onMouseEnter={(e) => {
                       if (
@@ -405,8 +397,8 @@ const GroupModal = ({
                           !selectedQuoteId
                         )
                       ) {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--button-hover)";
+                        e.currentTarget.style.backgroundColor = "var(--text)";
+                        e.currentTarget.style.color = "var(--bg)";
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -418,7 +410,8 @@ const GroupModal = ({
                         )
                       ) {
                         e.currentTarget.style.backgroundColor =
-                          "var(--button-bg)";
+                          "var(--sub-alt)";
+                        e.currentTarget.style.color = "var(--text)";
                       }
                     }}
                   >
@@ -434,22 +427,20 @@ const GroupModal = ({
                   className="mt-2 w-full flex items-center justify-center gap-2 px-4 py-2 rounded-md transition-all cursor-pointer"
                   style={{
                     backgroundColor: selectedQuoteId
-                      ? "var(--secondary)"
-                      : "var(--button-bg)",
-                    color: selectedQuoteId
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                      ? "var(--main)"
+                      : "var(--sub-alt)",
+                    color: selectedQuoteId ? "var(--bg)" : "var(--text)",
                   }}
                   onMouseEnter={(e) => {
                     if (!selectedQuoteId) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!selectedQuoteId) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >

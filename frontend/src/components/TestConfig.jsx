@@ -94,7 +94,7 @@ const TestConfig = ({
     <div className="flex flex-col items-center gap-2">
       <div
         className="flex flex-wrap justify-center items-center"
-        style={{ color: "var(--text-primary)" }}
+        style={{ color: "var(--text)" }}
       >
         {!isCompactView ? (
           <div className="flex flex-wrap gap-1 items-center">
@@ -106,22 +106,21 @@ const TestConfig = ({
                     className="px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs font-medium"
                     style={{
                       backgroundColor: selectedPunctuation
-                        ? "var(--info)"
-                        : "var(--button-bg)",
-                      color: selectedPunctuation
-                        ? "var(--bg-primary)"
-                        : "var(--text-primary)",
+                        ? "var(--main)"
+                        : "var(--sub-alt)",
+                      color: selectedPunctuation ? "var(--bg)" : "var(--text)",
                     }}
                     onMouseEnter={(e) => {
                       if (!selectedPunctuation) {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--button-hover)";
+                        e.currentTarget.style.backgroundColor = "var(--text)";
+                        e.currentTarget.style.color = "var(--bg)";
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!selectedPunctuation) {
                         e.currentTarget.style.backgroundColor =
-                          "var(--button-bg)";
+                          "var(--sub-alt)";
+                        e.currentTarget.style.color = "var(--text)";
                       }
                     }}
                   >
@@ -132,22 +131,21 @@ const TestConfig = ({
                     className="px-2.5 py-1 rounded-md transition-all cursor-pointer text-xs font-medium"
                     style={{
                       backgroundColor: selectedNumbers
-                        ? "var(--info)"
-                        : "var(--button-bg)",
-                      color: selectedNumbers
-                        ? "var(--bg-primary)"
-                        : "var(--text-primary)",
+                        ? "var(--main)"
+                        : "var(--sub-alt)",
+                      color: selectedNumbers ? "var(--bg)" : "var(--text)",
                     }}
                     onMouseEnter={(e) => {
                       if (!selectedNumbers) {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--button-hover)";
+                        e.currentTarget.style.backgroundColor = "var(--text)";
+                        e.currentTarget.style.color = "var(--bg)";
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!selectedNumbers) {
                         e.currentTarget.style.backgroundColor =
-                          "var(--button-bg)";
+                          "var(--sub-alt)";
+                        e.currentTarget.style.color = "var(--text)";
                       }
                     }}
                   >
@@ -156,7 +154,7 @@ const TestConfig = ({
                 </div>
                 <span
                   className="mx-0.5 text-xs"
-                  style={{ color: "var(--text-muted)" }}
+                  style={{ color: "var(--sub)" }}
                 >
                   |
                 </span>
@@ -168,23 +166,19 @@ const TestConfig = ({
                 className="px-3 py-2 rounded-md text-sm font-medium transition-all"
                 style={{
                   backgroundColor:
-                    selectedMode === "time"
-                      ? "var(--secondary)"
-                      : "var(--button-bg)",
-                  color:
-                    selectedMode === "time"
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                    selectedMode === "time" ? "var(--main)" : "var(--sub-alt)",
+                  color: selectedMode === "time" ? "var(--bg)" : "var(--text)",
                 }}
                 onMouseEnter={(e) => {
                   if (selectedMode !== "time") {
-                    e.currentTarget.style.backgroundColor =
-                      "var(--button-hover)";
+                    e.currentTarget.style.backgroundColor = "var(--text)";
+                    e.currentTarget.style.color = "var(--bg)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (selectedMode !== "time") {
-                    e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                    e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                    e.currentTarget.style.color = "var(--text)";
                   }
                 }}
               >
@@ -195,23 +189,19 @@ const TestConfig = ({
                 className="px-3 py-2 rounded-md text-sm font-medium transition-all"
                 style={{
                   backgroundColor:
-                    selectedMode === "words"
-                      ? "var(--secondary)"
-                      : "var(--button-bg)",
-                  color:
-                    selectedMode === "words"
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                    selectedMode === "words" ? "var(--main)" : "var(--sub-alt)",
+                  color: selectedMode === "words" ? "var(--bg)" : "var(--text)",
                 }}
                 onMouseEnter={(e) => {
                   if (selectedMode !== "words") {
-                    e.currentTarget.style.backgroundColor =
-                      "var(--button-hover)";
+                    e.currentTarget.style.backgroundColor = "var(--text)";
+                    e.currentTarget.style.color = "var(--bg)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (selectedMode !== "words") {
-                    e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                    e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                    e.currentTarget.style.color = "var(--text)";
                   }
                 }}
               >
@@ -223,22 +213,21 @@ const TestConfig = ({
                 style={{
                   backgroundColor:
                     selectedMode === "quotes"
-                      ? "var(--secondary)"
-                      : "var(--button-bg)",
+                      ? "var(--main)"
+                      : "var(--sub-alt)",
                   color:
-                    selectedMode === "quotes"
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                    selectedMode === "quotes" ? "var(--bg)" : "var(--text)",
                 }}
                 onMouseEnter={(e) => {
                   if (selectedMode !== "quotes") {
-                    e.currentTarget.style.backgroundColor =
-                      "var(--button-hover)";
+                    e.currentTarget.style.backgroundColor = "var(--text)";
+                    e.currentTarget.style.color = "var(--bg)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (selectedMode !== "quotes") {
-                    e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                    e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                    e.currentTarget.style.color = "var(--text)";
                   }
                 }}
               >
@@ -249,23 +238,19 @@ const TestConfig = ({
                 className="px-3 py-2 rounded-md text-sm font-medium transition-all"
                 style={{
                   backgroundColor:
-                    selectedMode === "zen"
-                      ? "var(--secondary)"
-                      : "var(--button-bg)",
-                  color:
-                    selectedMode === "zen"
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                    selectedMode === "zen" ? "var(--main)" : "var(--sub-alt)",
+                  color: selectedMode === "zen" ? "var(--bg)" : "var(--text)",
                 }}
                 onMouseEnter={(e) => {
                   if (selectedMode !== "zen") {
-                    e.currentTarget.style.backgroundColor =
-                      "var(--button-hover)";
+                    e.currentTarget.style.backgroundColor = "var(--text)";
+                    e.currentTarget.style.color = "var(--bg)";
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (selectedMode !== "zen") {
-                    e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                    e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                    e.currentTarget.style.color = "var(--text)";
                   }
                 }}
               >
@@ -273,10 +258,7 @@ const TestConfig = ({
               </button>
             </div>
             {selectedMode !== "zen" && (
-              <span
-                className="mx-0.5 text-xs"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <span className="mx-0.5 text-xs" style={{ color: "var(--sub)" }}>
                 |
               </span>
             )}
@@ -290,12 +272,12 @@ const TestConfig = ({
                     style={{
                       backgroundColor:
                         selectedMode === "time" && selectedDuration === duration
-                          ? "var(--info)"
-                          : "var(--button-bg)",
+                          ? "var(--main)"
+                          : "var(--sub-alt)",
                       color:
                         selectedMode === "time" && selectedDuration === duration
-                          ? "var(--bg-primary)"
-                          : "var(--text-primary)",
+                          ? "var(--bg)"
+                          : "var(--text)",
                     }}
                     onMouseEnter={(e) => {
                       if (
@@ -304,8 +286,8 @@ const TestConfig = ({
                           selectedDuration === duration
                         )
                       ) {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--button-hover)";
+                        e.currentTarget.style.backgroundColor = "var(--text)";
+                        e.currentTarget.style.color = "var(--bg)";
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -316,7 +298,8 @@ const TestConfig = ({
                         )
                       ) {
                         e.currentTarget.style.backgroundColor =
-                          "var(--button-bg)";
+                          "var(--sub-alt)";
+                        e.currentTarget.style.color = "var(--text)";
                       }
                     }}
                   >
@@ -330,21 +313,21 @@ const TestConfig = ({
                     backgroundColor:
                       ![15, 30, 60, 120].includes(selectedDuration) ||
                         selectedDuration === 0
-                        ? "var(--info)"
-                        : "var(--button-bg)",
+                        ? "var(--main)"
+                        : "var(--sub-alt)",
                     color:
                       ![15, 30, 60, 120].includes(selectedDuration) ||
                         selectedDuration === 0
-                        ? "var(--bg-primary)"
-                        : "var(--text-primary)",
+                        ? "var(--bg)"
+                        : "var(--text)",
                   }}
                   onMouseEnter={(e) => {
                     if (
                       [15, 30, 60, 120].includes(selectedDuration) &&
                       selectedDuration !== 0
                     ) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -352,8 +335,8 @@ const TestConfig = ({
                       [15, 30, 60, 120].includes(selectedDuration) &&
                       selectedDuration !== 0
                     ) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >
@@ -370,12 +353,12 @@ const TestConfig = ({
                     style={{
                       backgroundColor:
                         selectedMode === "words" && selectedWordCount === count
-                          ? "var(--info)"
-                          : "var(--button-bg)",
+                          ? "var(--main)"
+                          : "var(--sub-alt)",
                       color:
                         selectedMode === "words" && selectedWordCount === count
-                          ? "var(--bg-primary)"
-                          : "var(--text-primary)",
+                          ? "var(--bg)"
+                          : "var(--text)",
                     }}
                     onMouseEnter={(e) => {
                       if (
@@ -384,8 +367,8 @@ const TestConfig = ({
                           selectedWordCount === count
                         )
                       ) {
-                        e.currentTarget.style.backgroundColor =
-                          "var(--button-hover)";
+                        e.currentTarget.style.backgroundColor = "var(--text)";
+                        e.currentTarget.style.color = "var(--bg)";
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -396,7 +379,8 @@ const TestConfig = ({
                         )
                       ) {
                         e.currentTarget.style.backgroundColor =
-                          "var(--button-bg)";
+                          "var(--sub-alt)";
+                        e.currentTarget.style.color = "var(--text)";
                       }
                     }}
                   >
@@ -410,21 +394,21 @@ const TestConfig = ({
                     backgroundColor:
                       ![10, 25, 50, 100].includes(selectedWordCount) ||
                         selectedWordCount === 0
-                        ? "var(--info)"
-                        : "var(--button-bg)",
+                        ? "var(--main)"
+                        : "var(--sub-alt)",
                     color:
                       ![10, 25, 50, 100].includes(selectedWordCount) ||
                         selectedWordCount === 0
-                        ? "var(--bg-primary)"
-                        : "var(--text-primary)",
+                        ? "var(--bg)"
+                        : "var(--text)",
                   }}
                   onMouseEnter={(e) => {
                     if (
                       [10, 25, 50, 100].includes(selectedWordCount) &&
                       selectedWordCount !== 0
                     ) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
@@ -432,8 +416,8 @@ const TestConfig = ({
                       [10, 25, 50, 100].includes(selectedWordCount) &&
                       selectedWordCount !== 0
                     ) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >
@@ -453,14 +437,14 @@ const TestConfig = ({
                           selectedMode === "quotes" &&
                             selectedGroup === group.index &&
                             !selectedQuoteId
-                            ? "var(--info)"
-                            : "var(--button-bg)",
+                            ? "var(--main)"
+                            : "var(--sub-alt)",
                         color:
                           selectedMode === "quotes" &&
                             selectedGroup === group.index &&
                             !selectedQuoteId
-                            ? "var(--bg-primary)"
-                            : "var(--text-primary)",
+                            ? "var(--bg)"
+                            : "var(--text)",
                       }}
                       onMouseEnter={(e) => {
                         if (
@@ -470,8 +454,8 @@ const TestConfig = ({
                             !selectedQuoteId
                           )
                         ) {
-                          e.currentTarget.style.backgroundColor =
-                            "var(--button-hover)";
+                          e.currentTarget.style.backgroundColor = "var(--text)";
+                          e.currentTarget.style.color = "var(--bg)";
                         }
                       }}
                       onMouseLeave={(e) => {
@@ -483,7 +467,8 @@ const TestConfig = ({
                           )
                         ) {
                           e.currentTarget.style.backgroundColor =
-                            "var(--button-bg)";
+                            "var(--sub-alt)";
+                          e.currentTarget.style.color = "var(--text)";
                         }
                       }}
                     >
@@ -496,23 +481,21 @@ const TestConfig = ({
                   className="p-1.5 rounded-md transition-all cursor-pointer"
                   style={{
                     backgroundColor: selectedQuoteId
-                      ? "var(--info)"
-                      : "var(--button-bg)",
-                    color: selectedQuoteId
-                      ? "var(--bg-primary)"
-                      : "var(--text-primary)",
+                      ? "var(--main)"
+                      : "var(--sub-alt)",
+                    color: selectedQuoteId ? "var(--bg)" : "var(--text)",
                   }}
                   title="Search quotes"
                   onMouseEnter={(e) => {
                     if (!selectedQuoteId) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!selectedQuoteId) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >
@@ -527,14 +510,14 @@ const TestConfig = ({
               onClick={() => setIsGroupModalOpen(true)}
               className="px-3 py-1.5 rounded-md text-sm transition-all cursor-pointer font-medium"
               style={{
-                backgroundColor: "var(--button-bg)",
-                color: "var(--text-primary)",
+                backgroundColor: "var(--sub-alt)",
+                color: "var(--text)",
               }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = "var(--button-hover)")
+                (e.currentTarget.style.backgroundColor = "var(--sub)")
               }
               onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor = "var(--button-bg)")
+                (e.currentTarget.style.backgroundColor = "var(--sub-alt)")
               }
             >
               Test Configuration ▼
