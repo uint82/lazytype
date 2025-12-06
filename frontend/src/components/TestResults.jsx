@@ -70,7 +70,6 @@ const TestResults = ({
     }));
   };
 
-  // Add this helper function at the top of TestResults.jsx (around line 70-80)
   const formatSessionTime = (milliseconds) => {
     const totalSeconds = Math.round(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
@@ -289,18 +288,18 @@ const TestResults = ({
         <div
           className="backdrop-blur-md rounded-xl shadow-lg p-3 text-xs space-y-1.5"
           style={{
-            backgroundColor: "var(--bg-primary)",
-            borderColor: "var(--border)",
+            backgroundColor: "var(--bg)",
+            borderColor: "var(--sub-alt)",
             borderWidth: "1px",
-            color: "var(--text-primary)",
+            color: "var(--text)",
             minWidth: "150px",
           }}
         >
           <div
             className="flex justify-between text-[11px] pb-1 mb-1"
             style={{
-              borderBottom: `1px solid var(--border)`,
-              color: "var(--text-muted)",
+              borderBottom: `1px solid var(--sub-alt)`,
+              color: "var(--sub)",
             }}
           >
             <span>{typeof data.time === "number" ? "Time" : "Second"}</span>
@@ -319,22 +318,20 @@ const TestResults = ({
             )}
             {visibleLines.wpm && (
               <div className="flex justify-between">
-                <span style={{ color: "var(--text-correct)" }}>WPM</span>
-                <span style={{ color: "var(--text-correct)" }}>{data.wpm}</span>
+                <span style={{ color: "var(--main)" }}>WPM</span>
+                <span style={{ color: "var(--main)" }}>{data.wpm}</span>
               </div>
             )}
             {visibleLines.rawWpm && (
               <div className="flex justify-between">
-                <span style={{ color: "var(--text-current)" }}>Raw WPM</span>
-                <span style={{ color: "var(--text-current)" }}>
-                  {data.rawWpm}
-                </span>
+                <span style={{ color: "var(--caret)" }}>Raw WPM</span>
+                <span style={{ color: "var(--caret)" }}>{data.rawWpm}</span>
               </div>
             )}
             {visibleLines.burst && (
               <div className="flex justify-between">
-                <span style={{ color: "var(--text-dim)" }}>Burst</span>
-                <span style={{ color: "var(--text-dim)" }}>{data.burst}</span>
+                <span style={{ color: "var(--sub)" }}>Burst</span>
+                <span style={{ color: "var(--sub)" }}>{data.burst}</span>
               </div>
             )}
           </div>
@@ -351,10 +348,7 @@ const TestResults = ({
           {/* left stats */}
           <div className="flex flex-row justify-center w-full md:w-auto md:gap-0 gap-12 sm:w-auto lg:mb-0 md:flex-col">
             <div className="md:text-left text-center">
-              <div
-                className="text-[2rem]"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <div className="text-[2rem]" style={{ color: "var(--sub)" }}>
                 wpm
               </div>
               <TooltipHover
@@ -363,29 +357,26 @@ const TestResults = ({
               >
                 <div
                   className="text-[4rem] -mt-6 -mb-6"
-                  style={{ color: "var(--text-correct)" }}
+                  style={{ color: "var(--main)" }}
                 >
                   {stats.wpm >= 1000 ? "Infinite" : stats.wpm}
                 </div>
               </TooltipHover>
             </div>
             <div className="md:text-left text-center">
-              <div
-                className="text-[2rem]"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <div className="text-[2rem]" style={{ color: "var(--sub)" }}>
                 acc
               </div>
               <TooltipHover
                 text={
                   <>
-                    <div style={{ color: "var(--text-primary)" }}>
+                    <div style={{ color: "var(--text)" }}>
                       {stats.accuracyExact?.toFixed(2)}%
                     </div>
-                    <div style={{ color: "var(--text-correct)" }}>
+                    <div style={{ color: "var(--text)" }}>
                       {stats.totalCorrected} correct
                     </div>
-                    <div style={{ color: "var(--error)" }}>
+                    <div style={{ color: "var(--text)" }}>
                       {stats.totalMistakes} incorrect
                     </div>
                   </>
@@ -394,7 +385,7 @@ const TestResults = ({
               >
                 <div
                   className="text-[4rem] -mt-6"
-                  style={{ color: "var(--info)" }}
+                  style={{ color: "var(--main)" }}
                 >
                   {stats.accuracy}%
                 </div>
@@ -404,22 +395,20 @@ const TestResults = ({
           {/* graph */}
           <div
             className="flex-1 rounded-lg mt-4 relative group breakout transition-colors duration-300"
-            style={{ backgroundColor: "var(--bg-primary)" }}
+            style={{ backgroundColor: "var(--bg)" }}
           >
             {/* legend */}
             <div
-              className="absolute bottom-1 right-0 z-10 opacity-0 group-hover:opacity-100 transition-colors duration-300 backdrop-blur-sm rounded-lg pointer-events-none"
-              style={{ backgroundColor: "var(--bg-primary)" }}
+              className="absolute bottom-0 right-0 z-10 opacity-0 group-hover:opacity-100 transition-colors duration-300 backdrop-blur-sm rounded-lg pointer-events-none"
+              style={{ backgroundColor: "var(--bg)" }}
             >
-              <div className="flex flex-row gap-3 text-[11px] p-2">
+              <div className="flex flex-row gap-3 text-[11px] p-1">
                 <button
                   onClick={() => toggleLine("wpm")}
                   tabIndex={-1}
                   className="flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md hover:bg-black/20"
                   style={{
-                    color: !visibleLines.wpm
-                      ? "var(--text-primary)"
-                      : "var(--text-correct)",
+                    color: !visibleLines.wpm ? "var(--text)" : "var(--sub)",
                     textDecoration: !visibleLines.wpm ? "line-through" : "none",
                   }}
                 >
@@ -427,14 +416,11 @@ const TestResults = ({
                     className="w-5 h-0.5 transition-colors"
                     style={{
                       backgroundColor: !visibleLines.wpm
-                        ? "var(--text-muted)"
-                        : "var(--text-correct)",
+                        ? "var(--sub)"
+                        : "var(--main)",
                     }}
                   />
-                  <span
-                    className="text-[12px]"
-                    style={{ color: "var(--text-muted)" }}
-                  >
+                  <span className="text-[12px]" style={{ color: "var(--sub)" }}>
                     wpm
                   </span>
                 </button>
@@ -443,9 +429,7 @@ const TestResults = ({
                   tabIndex={-1}
                   className="flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md hover:bg-black/20"
                   style={{
-                    color: !visibleLines.rawWpm
-                      ? "var(--text-primary)"
-                      : "var(--text-current)",
+                    color: !visibleLines.rawWpm ? "var(--sub)" : "var(--caret)",
                     textDecoration: !visibleLines.rawWpm
                       ? "line-through"
                       : "none",
@@ -455,14 +439,11 @@ const TestResults = ({
                     className="w-5 h-[2px] transition-all"
                     style={{
                       background: !visibleLines.rawWpm
-                        ? `linear-gradient(90deg,var(--text-muted) 0%,var(--text-muted) 40%,transparent 40%,transparent 60%,var(--text-muted) 60%,var(--text-muted) 100%)`
-                        : `linear-gradient(90deg,var(--text-current) 0%,var(--text-current) 40%,transparent 40%,transparent 60%,var(--text-current) 60%,var(--text-current) 100%)`,
+                        ? `linear-gradient(90deg,var(--sub) 0%,var(--sub) 40%,transparent 40%,transparent 60%,var(--sub) 60%,var(--sub) 100%)`
+                        : `linear-gradient(90deg,var(--caret) 0%,var(--caret) 40%,transparent 40%,transparent 60%,var(--caret) 60%,var(--caret) 100%)`,
                     }}
                   />
-                  <span
-                    className="text-[12px]"
-                    style={{ color: "var(--text-muted)" }}
-                  >
+                  <span className="text-[12px]" style={{ color: "var(--sub)" }}>
                     raw
                   </span>
                 </button>
@@ -471,9 +452,7 @@ const TestResults = ({
                   tabIndex={-1}
                   className="flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md hover:bg-black/20"
                   style={{
-                    color: !visibleLines.burst
-                      ? "var(--text-primary)"
-                      : "var(--text-dim)",
+                    color: !visibleLines.burst ? "var(--sub)" : "var(--sub)",
                     textDecoration: !visibleLines.burst
                       ? "line-through"
                       : "none",
@@ -481,12 +460,9 @@ const TestResults = ({
                 >
                   <div
                     className="w-5 h-[3px]"
-                    style={{ backgroundColor: "var(--text-dim)" }}
+                    style={{ backgroundColor: "var(--sub)" }}
                   />
-                  <span
-                    className="text-[12px]"
-                    style={{ color: "var(--text-muted)" }}
-                  >
+                  <span className="text-[12px]" style={{ color: "var(--sub)" }}>
                     burst
                   </span>
                 </button>
@@ -495,9 +471,7 @@ const TestResults = ({
                   tabIndex={-1}
                   className="flex items-center gap-2 transition-all pointer-events-auto px-1 py-1 rounded-md hover:bg-black/20"
                   style={{
-                    color: !visibleLines.errors
-                      ? "var(--text-primary)"
-                      : "var(--error)",
+                    color: !visibleLines.errors ? "var(--text)" : "var(--sub)",
                     textDecoration: !visibleLines.errors
                       ? "line-through"
                       : "none",
@@ -510,9 +484,7 @@ const TestResults = ({
                       x2="13"
                       y2="13"
                       stroke={
-                        !visibleLines.errors
-                          ? "var(--text-muted)"
-                          : "var(--error)"
+                        !visibleLines.errors ? "var(--sub)" : "var(--error)"
                       }
                       strokeWidth="2"
                     />
@@ -522,17 +494,12 @@ const TestResults = ({
                       x2="13"
                       y2="3"
                       stroke={
-                        !visibleLines.errors
-                          ? "var(--text-muted)"
-                          : "var(--error)"
+                        !visibleLines.errors ? "var(--sub)" : "var(--error)"
                       }
                       strokeWidth="2"
                     />
                   </svg>
-                  <span
-                    className="text-[12px]"
-                    style={{ color: "var(--text-muted)" }}
-                  >
+                  <span className="text-[12px]" style={{ color: "var(--sub)" }}>
                     Errors
                   </span>
                 </button>
@@ -565,24 +532,24 @@ const TestResults = ({
                     y2="1"
                   >
                     <stop
-                      offset="100%"
-                      stopColor="var(--bg-primary)"
-                      stopOpacity={0.2}
+                      offset="0%"
+                      stopColor="var(--sub-alt)"
+                      stopOpacity={1}
                     />
                     <stop
                       offset="100%"
-                      stopColor="var(--bg-primary)"
-                      stopOpacity={0.2}
+                      stopColor="var(--sub-alt)"
+                      stopOpacity={1}
                     />
                   </linearGradient>
                 </defs>
-                <CartesianGrid stroke="var(--text-muted)" strokeOpacity={0.1} />
+                <CartesianGrid stroke="var(--sub)" strokeOpacity={0.1} />
                 <XAxis
                   dataKey={getXAxisKey()}
-                  stroke="var(--text-muted)"
+                  stroke="var(--sub)"
                   strokeWidth={1}
                   strokeOpacity={0.1}
-                  tick={{ fontSize: 12, fill: "var(--text-muted)" }}
+                  tick={{ fontSize: 12, fill: "var(--sub)" }}
                   type="number"
                   domain={[
                     1,
@@ -604,15 +571,15 @@ const TestResults = ({
                 />
                 <YAxis
                   yAxisId="left"
-                  stroke="var(--text-muted)"
+                  stroke="var(--sub)"
                   strokeWidth={1}
                   strokeOpacity={0.1}
-                  tick={{ fontSize: 12, fill: "var(--text-muted)" }}
+                  tick={{ fontSize: 12, fill: "var(--sub)" }}
                   label={{
                     value: "Words per Minute",
                     angle: -90,
                     position: "insideLeft",
-                    fill: "var(--text-muted)",
+                    fill: "var(--sub)",
                     fontSize: 12,
                     style: { textAnchor: "middle" },
                     offset: 15,
@@ -621,12 +588,12 @@ const TestResults = ({
                 <YAxis
                   yAxisId="right"
                   orientation="right"
-                  stroke="var(--text-muted)"
+                  stroke="var(--sub)"
                   strokeWidth={1}
                   strokeOpacity={0.1}
                   tick={
                     totalErrors > 0
-                      ? { fontSize: 12, fill: "var(--text-muted)" }
+                      ? { fontSize: 12, fill: "var(--sub)" }
                       : false
                   }
                   domain={[0, maxErrorCount]}
@@ -635,7 +602,7 @@ const TestResults = ({
                     value: "Errors",
                     angle: 90,
                     position: "insideRight",
-                    fill: "var(--text-muted)",
+                    fill: "var(--sub)",
                     fontSize: 12,
                     style: { textAnchor: "middle" },
                     offset: 15,
@@ -648,7 +615,7 @@ const TestResults = ({
                     type="monotone"
                     dataKey="burst"
                     fill="url(#burstGradient)"
-                    stroke="var(--text-dim)"
+                    stroke="var(--sub-alt)"
                     isAnimationActive={false}
                     activeDot={false}
                   />
@@ -658,7 +625,7 @@ const TestResults = ({
                     yAxisId="left"
                     type="monotone"
                     dataKey="burst"
-                    stroke="var(--text-dim)"
+                    stroke="var(--sub)"
                     strokeWidth={3}
                     name="Burst"
                     dot={<CustomDot />}
@@ -671,7 +638,7 @@ const TestResults = ({
                     yAxisId="left"
                     type="monotone"
                     dataKey="rawWpm"
-                    stroke="var(--text-current)"
+                    stroke="var(--caret)"
                     strokeWidth={2}
                     strokeDasharray="8 8"
                     name="Raw WPM"
@@ -685,7 +652,7 @@ const TestResults = ({
                     yAxisId="left"
                     type="monotone"
                     dataKey="wpm"
-                    stroke="var(--text-correct)"
+                    stroke="var(--main)"
                     strokeWidth={2}
                     name="WPM"
                     dot={<CustomDot />}
@@ -711,18 +678,18 @@ const TestResults = ({
 
         <div className="bottom-stats-grid">
           <div className="text-left">
-            <div className="text-md" style={{ color: "var(--text-muted)" }}>
+            <div className="text-md" style={{ color: "var(--sub)" }}>
               test type
             </div>
             <div
               className="text-md"
-              style={{ whiteSpace: "pre-line", color: "var(--text-dim)" }}
+              style={{ whiteSpace: "pre-line", color: "var(--main)" }}
             >
               {formatTestType()}
             </div>
           </div>
           <div className="text-left">
-            <div className="text-md" style={{ color: "var(--text-muted)" }}>
+            <div className="text-md" style={{ color: "var(--sub)" }}>
               raw
             </div>
             <TooltipHover
@@ -731,30 +698,30 @@ const TestResults = ({
             >
               <div
                 className="text-2xl sm:text-3xl"
-                style={{ color: "var(--primary)" }}
+                style={{ color: "var(--main)" }}
               >
                 {stats.rawWpm}
               </div>
             </TooltipHover>
           </div>
           <div className="text-left">
-            <div className="text-md" style={{ color: "var(--text-muted)" }}>
+            <div className="text-md" style={{ color: "var(--sub)" }}>
               characters
             </div>
             <TooltipHover
               currentThemeKey={currentThemeKey}
               text={
                 <>
-                  <div style={{ color: "var(--text-correct)" }}>
+                  <div style={{ color: "var(--text)" }}>
                     {stats.correctChars} correct
                   </div>
-                  <div style={{ color: "var(--text-incorrect)" }}>
+                  <div style={{ color: "var(--text)" }}>
                     {stats.incorrectChars} incorrect
                   </div>
-                  <div style={{ color: "var(--text-current)" }}>
+                  <div style={{ color: "var(--text)" }}>
                     {stats.extraChars} extra
                   </div>
-                  <div style={{ color: "var(--text-muted)" }}>
+                  <div style={{ color: "var(--text)" }}>
                     {stats.missedChars} missed
                   </div>
                 </>
@@ -762,7 +729,7 @@ const TestResults = ({
             >
               <div
                 className="text-2xl sm:text-3xl font-mono"
-                style={{ color: "var(--primary)" }}
+                style={{ color: "var(--main)" }}
               >
                 {stats.correctChars}/{stats.incorrectChars}/{stats.extraChars}/
                 {stats.missedChars}
@@ -770,7 +737,7 @@ const TestResults = ({
             </TooltipHover>
           </div>
           <div className="text-left">
-            <div className="text-md" style={{ color: "var(--text-muted)" }}>
+            <div className="text-md" style={{ color: "var(--sub)" }}>
               consistency
             </div>
             <TooltipHover
@@ -779,14 +746,14 @@ const TestResults = ({
             >
               <div
                 className="text-2xl sm:text-3xl"
-                style={{ color: "var(--primary)" }}
+                style={{ color: "var(--main)" }}
               >
                 {stats.consistency}%
               </div>
             </TooltipHover>
           </div>
           <div className="text-left">
-            <div className="text-md" style={{ color: "var(--text-muted)" }}>
+            <div className="text-md" style={{ color: "var(--sub)" }}>
               time
             </div>
             <TooltipHover
@@ -795,26 +762,23 @@ const TestResults = ({
             >
               <div
                 className="text-2xl sm:text-3xl"
-                style={{ color: "var(--primary)" }}
+                style={{ color: "var(--main)" }}
               >
                 {formatTime(timeElapsed)}
               </div>
             </TooltipHover>
-            <div
-              className="text-[12px] mt-1"
-              style={{ color: "var(--text-muted)" }}
-            >
+            <div className="text-[12px] mt-1" style={{ color: "var(--sub)" }}>
               {formatSessionTime(sessionTime)} session
             </div>
           </div>
           {isQuoteMode && quote?.source && (
             <div className="text-left">
-              <div className="text-md" style={{ color: "var(--text-muted)" }}>
+              <div className="text-md" style={{ color: "var(--sub)" }}>
                 source
               </div>
               <div
                 className="text-md font-medium italic"
-                style={{ color: "var(--text-correct)" }}
+                style={{ color: "var(--main)" }}
               >
                 {quote.source}
               </div>
@@ -861,11 +825,8 @@ const TestResults = ({
             onMouseLeave={() => setHoveredButton(null)}
             className="flex items-center gap-2 px-6 py-3 rounded-lg cursor-pointer font-bold transition-colors duration-300"
             style={{
-              backgroundColor: "var(--bg-primary)",
-              color:
-                hoveredButton === btn.id
-                  ? "var(--text-primary)"
-                  : "var(--text-muted)",
+              backgroundColor: "var(--bg)",
+              color: hoveredButton === btn.id ? "var(--text)" : "var(--sub)",
             }}
             aria-label={btn.label}
           >

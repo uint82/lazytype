@@ -14,10 +14,9 @@ export default function TooltipHover({ text, children }) {
         <div
           className="absolute bottom-full mb-2 px-2 py-1 text-[18px] rounded-md shadow-md whitespace-nowrap z-50 border"
           style={{
-            color: "var(--text-primary)",
-            backgroundColor:
-              "color-mix(in srgb, var(--bg-primary) 95%, transparent)",
-            borderColor: "var(--border)",
+            color: "var(--text)",
+            backgroundColor: "var(--sub-alt)",
+            borderColor: "var(--sub-alt)",
             transform: "translateY(-4px)",
             fontFamily: "Roboto Mono, monospace",
           }}

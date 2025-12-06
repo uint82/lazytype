@@ -47,8 +47,8 @@ const WordHistoryItem = ({
   };
 
   const highlightStyle = {
-    backgroundColor: "var(--text-untyped)",
-    color: "var(--bg-primary)",
+    backgroundColor: "var(--sub)",
+    color: "var(--sub-alt)",
   };
 
   return (
@@ -88,8 +88,8 @@ const WordHistoryItem = ({
           className={`absolute left-0 top-0 whitespace-nowrap px-1 -mx-1 z-10 pointer-events-none transition-colors duration-300 ${getRoundingClass()}`}
           style={{
             width: `${overlayWidth}px`,
-            backgroundColor: "var(--text-untyped)",
-            color: "var(--bg-primary)",
+            backgroundColor: "var(--sub)",
+            color: "var(--sub-alt)",
           }}
         >
           {word.tooltip}

@@ -70,7 +70,7 @@ const InputHistory = ({
       ref={containerRef}
       style={{
         ...containerStyle,
-        backgroundColor: "var(--bg-primary)",
+        backgroundColor: "var(--bg)",
       }}
       className={`word-history-container relative full-width mt-2 text-left w-full max-w-full
     transition-all duration-300
@@ -81,7 +81,7 @@ const InputHistory = ({
           <div className="flex items-center">
             <h3
               className="text-md transition-colors duration-300"
-              style={{ color: "var(--text-muted)" }}
+              style={{ color: "var(--sub)" }}
             >
               input history
             </h3>
@@ -91,15 +91,13 @@ const InputHistory = ({
               onMouseEnter={() => setIsCopyHovered(true)}
               onMouseLeave={() => setIsCopyHovered(false)}
               aria-label="Copy words list"
-              className="flex items-center gap-2 px-2 py-1.5 rounded-md transition-colors duration-300 text-sm"
+              className="flex items-center gap-2 px-2 py-1.5 rounded-md transition-colors duration-300 text-sm cursor-pointer"
               style={{
-                color: isCopyHovered
-                  ? "var(--text-primary)"
-                  : "var(--text-muted)",
+                color: isCopyHovered ? "var(--text)" : "var(--sub)",
               }}
             >
               {copied ? (
-                <Check size={16} style={{ color: "var(--text-correct)" }} />
+                <Check size={16} style={{ color: "var(--text)" }} />
               ) : (
                 <Copy size={16} />
               )}

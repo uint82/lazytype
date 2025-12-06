@@ -2,13 +2,13 @@ import { useMemo } from "react";
 
 export const useWordHistory = (displayWords, input, typedHistory, mode) => {
   return useMemo(() => {
-    const DARK_RED_COLOR = "text-[var(--accuracy-low)]";
+    const DARK_RED_COLOR = "text-[var(--error)]/70";
     const DARK_GRAY = "text-[var(--text-untyped)]";
-    const RED_COLOR = "text-[var(--text-incorrect)]";
-    const YELLOW_COLOR = "text-[var(--text-current)]";
-    const DEFAULT_COLOR = "text-[var(--text-primary)]";
-    const BORDER_RED = "border-b-2 border-[var(--text-incorrect)]/50";
-    const BORDER_YELLOW = "border-b-2 border-[var(--text-current)]/50";
+    const RED_COLOR = "text-[var(--error)]";
+    const YELLOW_COLOR = "text-[var(--caret)]";
+    const DEFAULT_COLOR = "text-[var(--text)]";
+    const BORDER_RED = "border-b-2 border-[var(--error)]/50";
+    const BORDER_YELLOW = "border-b-2 border-[var(--caret)]/50";
 
     const finalInputWords = input ? input.trim().split(/\s+/) : [];
 
