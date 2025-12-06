@@ -8,8 +8,7 @@ const FocusOverlay = ({ isFocused, onClick }) => {
       className="absolute inset-0 z-10 flex items-center justify-center backdrop-blur-sm rounded cursor-pointer transition-all duration-300 opacity-0 animate-fadeIn"
       onClick={onClick}
       style={{
-        backgroundColor:
-          "color-mix(in srgb, var(--bg-primary) 10%, transparent)",
+        backgroundColor: "color-mix(in srgb, var(--bg) 10%, transparent)",
         animation: "fadeIn 0.3s ease-in forwards",
       }}
     >
@@ -17,7 +16,7 @@ const FocusOverlay = ({ isFocused, onClick }) => {
         className="flex items-center gap-2 text-lg font-medium transform translate-y-4 opacity-0"
         style={{
           fontFamily: "Roboto Mono, monospace",
-          color: "var(--secondary)",
+          color: "var(--text)",
           animation: "slideUp 0.5s ease-out 0.1s forwards",
         }}
       >

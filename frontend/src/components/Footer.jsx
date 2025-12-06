@@ -38,13 +38,13 @@ const Footer = ({
         <div className="full-width absolute -top-10 left-1/2 transform -translate-x-1/2 text-xs sm:text-sm">
           <span
             className="full-width flex items-center gap-2 whitespace-nowrap"
-            style={{ color: "var(--text-untyped)" }}
+            style={{ color: "var(--sub)" }}
           >
             <span
               className="rounded px-2 py-0.1 shadow-sm mx-0.5"
               style={{
-                backgroundColor: "var(--text-untyped)",
-                color: "var(--bg-primary)",
+                backgroundColor: "var(--sub)",
+                color: "var(--bg)",
                 opacity: 0.6,
               }}
             >
@@ -54,32 +54,30 @@ const Footer = ({
             <span
               className="rounded px-2 py-0.1 shadow-sm mx-0.5"
               style={{
-                backgroundColor: "var(--text-untyped)",
-                color: "var(--bg-primary)",
+                backgroundColor: "var(--sub)",
+                color: "var(--bg)",
                 opacity: 0.6,
               }}
             >
               Enter
             </span>
-            -<span style={{ color: "var(--text-untyped)" }}>restart test</span>
+            -<span style={{ color: "var(--sub)" }}>restart test</span>
           </span>
         </div>
 
         <div
           className="flex flex-col sm:flex-row items-center justify-between text-sm"
-          style={{ color: "var(--text-primary)" }}
+          style={{ color: "var(--text)" }}
         >
           <div className="flex space-x-6 mb-3 sm:mb-0">
             <button
               onClick={onOpenContact}
               className="cursor-pointer transition flex items-center gap-1"
-              style={{ color: "var(--text-untyped)" }}
+              style={{ color: "var(--sub)" }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.color = "var(--text-primary)")
+                (e.currentTarget.style.color = "var(--text)")
               }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = "var(--text-untyped)")
-              }
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sub)")}
             >
               <Mail size={16} />
               contact
@@ -88,13 +86,11 @@ const Footer = ({
             <button
               onClick={onOpenSupport}
               className="cursor-pointer transition flex items-center gap-1"
-              style={{ color: "var(--text-untyped)" }}
+              style={{ color: "var(--sub)" }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.color = "var(--text-primary)")
+                (e.currentTarget.style.color = "var(--text)")
               }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = "var(--text-untyped)")
-              }
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sub)")}
             >
               <LifeBuoy size={16} />
               support
@@ -103,13 +99,11 @@ const Footer = ({
             <Link
               to="/terms"
               className="transition flex items-center gap-1"
-              style={{ color: "var(--text-untyped)" }}
+              style={{ color: "var(--sub)" }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.color = "var(--text-primary)")
+                (e.currentTarget.style.color = "var(--text)")
               }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = "var(--text-untyped)")
-              }
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sub)")}
             >
               <FileText size={16} />
               terms
@@ -118,13 +112,11 @@ const Footer = ({
             <Link
               to="/privacy"
               className="transition flex items-center gap-1"
-              style={{ color: "var(--text-untyped)" }}
+              style={{ color: "var(--sub)" }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.color = "var(--text-primary)")
+                (e.currentTarget.style.color = "var(--text)")
               }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = "var(--text-untyped)")
-              }
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sub)")}
             >
               <Shield size={16} />
               privacy
@@ -135,31 +127,29 @@ const Footer = ({
             <button
               onClick={() => setIsThemeModalOpen(true)}
               className="cursor-pointer transition flex items-center gap-1"
-              style={{ color: "var(--text-untyped)" }}
+              style={{ color: "var(--sub)" }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.color = "var(--text-primary)")
+                (e.currentTarget.style.color = "var(--text)")
               }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = "var(--text-untyped)")
-              }
+              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sub)")}
             >
               <Palette size={16} />
               {themes[currentThemeKey]?.name || "Theme"}
             </button>
 
-            <p style={{ color: "var(--text-untyped)" }}>
+            <p style={{ color: "var(--sub)" }}>
               {currentYear} inspired by{" "}
               <a
                 href="https://monkeytype.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="transition underline"
-                style={{ color: "var(--text-untyped)" }}
+                style={{ color: "var(--sub)" }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.color = "var(--primary)")
+                  (e.currentTarget.style.color = "var(--main)")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "var(--text-untyped)")
+                  (e.currentTarget.style.color = "var(--sub)")
                 }
               >
                 monkeytype

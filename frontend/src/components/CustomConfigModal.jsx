@@ -155,15 +155,15 @@ const CustomConfigModal = ({
           max-w-[75vw] sm:max-w-[500px]
         `}
         style={{
-          backgroundColor: "var(--bg-primary)",
-          borderColor: "var(--border)",
+          backgroundColor: "var(--bg)",
+          borderColor: "var(--sub-alt)",
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-3 sm:p-9">
           <h2
             className="text-lg sm:text-xl font-semibold mb-4"
-            style={{ color: "var(--text-primary)" }}
+            style={{ color: "var(--sub)" }}
           >
             {modalTitle}
           </h2>
@@ -171,7 +171,7 @@ const CustomConfigModal = ({
           <div className="mb-6">
             <label
               className="block text-sm font-medium mb-2"
-              style={{ color: "var(--text-secondary)" }}
+              style={{ color: "var(--text)" }}
             >
               {displayDuration}
             </label>
@@ -186,22 +186,19 @@ const CustomConfigModal = ({
               placeholder={placeholder}
               className="w-full px-3 py-2 rounded-md transition-colors text-sm sm:text-base"
               style={{
-                background: "var(--input-bg)",
-                color: "var(--text-primary)",
-                border: "1px solid var(--input-border)",
+                background: "var(--sub-alt)",
+                color: "var(--text)",
               }}
               onFocusCapture={(e) =>
-                (e.target.style.borderColor = "var(--input-focus)")
+                (e.target.style.borderColor = "var(--text)")
               }
-              onBlur={(e) =>
-                (e.target.style.borderColor = "var(--input-border)")
-              }
+              onBlur={(e) => (e.target.style.borderColor = "var(--text)")}
               autoFocus
             />
 
             <p
               className="text-xs sm:text-sm mt-2"
-              style={{ color: "var(--text-muted)" }}
+              style={{ color: "var(--text)" }}
             >
               {mode === "time"
                 ? `You can use "h" for hours and "m" for minutes, for example "1h30m".`
@@ -210,14 +207,14 @@ const CustomConfigModal = ({
 
             <p
               className="text-xs sm:text-sm mt-2"
-              style={{ color: "var(--text-muted)" }}
+              style={{ color: "var(--text)" }}
             >
               To stop the test, press{" "}
               <span
                 className="px-1.5 py-0.5 rounded"
                 style={{
-                  background: "var(--bg-secondary)",
-                  color: "var(--text-primary)",
+                  background: "var(--sub-alt)",
+                  color: "var(--text)",
                 }}
               >
                 esc
@@ -226,8 +223,8 @@ const CustomConfigModal = ({
               <span
                 className="px-1.5 py-0.5 rounded"
                 style={{
-                  background: "var(--bg-secondary)",
-                  color: "var(--text-primary)",
+                  background: "var(--sub-alt)",
+                  color: "var(--text)",
                 }}
               >
                 shift
@@ -236,8 +233,8 @@ const CustomConfigModal = ({
               <span
                 className="px-1.5 py-0.5 rounded"
                 style={{
-                  background: "var(--bg-secondary)",
-                  color: "var(--text-primary)",
+                  background: "var(--sub-alt)",
+                  color: "var(--text)",
                 }}
               >
                 Enter
@@ -248,10 +245,18 @@ const CustomConfigModal = ({
           <div className="flex flex-col gap-3">
             <button
               onClick={handleConfirm}
-              className="px-4 py-2 rounded-md font-medium text-sm sm:text-base transition-colors"
+              className="px-4 py-2 rounded-md font-medium text-sm sm:text-base transition-colors cursor-pointer"
               style={{
-                background: "var(--primary)",
-                color: "var(--bg-primary)",
+                background: "var(--sub-alt)",
+                color: "var(--text)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--text)";
+                e.currentTarget.style.color = "var(--bg)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                e.currentTarget.style.color = "var(--text)";
               }}
             >
               OK
