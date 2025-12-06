@@ -5,7 +5,6 @@ const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("theme");
   const [isCompactView, setIsCompactView] = useState(false);
 
-  // Toggle states for each section
   const [isThemeOpen, setIsThemeOpen] = useState(true);
   const [isAppearanceOpen, setIsAppearanceOpen] = useState(true);
   const [isSoundOpen, setIsSoundOpen] = useState(true);
@@ -45,7 +44,6 @@ const SettingsPage = () => {
 
   return (
     <div className="w-full">
-      {/* Tab Navigation - TestConfig Style */}
       <div className="flex flex-col items-center gap-2 mb-8">
         <div
           className="flex flex-wrap justify-center items-center"
@@ -128,13 +126,11 @@ const SettingsPage = () => {
         </div>
       </div>
 
-      {/* Settings Content */}
       <div className="content-grid">
         <p className="tet-center flex justify-center underline bg-red-500 text-black">
           UNDER CONSTRUCTION
         </p>
         <div className="mx-auto w-full space-y-12">
-          {/* Theme Section */}
           <div ref={themeRef} className="scroll-mt-24">
             <button
               onClick={() => setIsThemeOpen(!isThemeOpen)}
@@ -178,7 +174,6 @@ const SettingsPage = () => {
                       </p>
                     </div>
                     <div className="flex gap-2">
-                      {/* Theme buttons will go here */}
                       <div
                         className="w-8 h-8 rounded-full cursor-pointer border-2"
                         style={{
@@ -193,7 +188,6 @@ const SettingsPage = () => {
             )}
           </div>
 
-          {/* Appearance Section */}
           <div ref={appearanceRef} className="scroll-mt-24">
             <button
               onClick={() => setIsAppearanceOpen(!isAppearanceOpen)}
@@ -254,7 +248,6 @@ const SettingsPage = () => {
             )}
           </div>
 
-          {/* Sound Section */}
           <div ref={soundRef} className="scroll-mt-24">
             <button
               onClick={() => setIsSoundOpen(!isSoundOpen)}
@@ -342,7 +335,6 @@ const SettingsPage = () => {
             )}
           </div>
 
-          {/* Caret Section */}
           <div ref={caretRef} className="scroll-mt-24">
             <button
               onClick={() => setIsCaretOpen(!isCaretOpen)}
