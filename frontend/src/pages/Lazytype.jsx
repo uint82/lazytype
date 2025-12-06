@@ -583,7 +583,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                     />
                   </div>
                 ) : (
-                  <div className="flex px-2 content-grid justify-center">
+                  <div className="flex content-grid justify-center">
                     <TestStatus
                       selectedMode={selectedMode}
                       selectedDuration={selectedDuration}
