@@ -9,6 +9,7 @@ import ContactModal from "./components/ContactModal";
 import SupportModal from "./components/SupportModal";
 import WorkingOnIt from "./pages/WorkingOnIt";
 import LegalPages from "./pages/LegalPages";
+import SettingsPage from "./pages/SettingsPage";
 import { updateFavicon } from "./utils/updateFavicon";
 import { themes } from "./data/themes";
 import { loadTheme, saveTheme } from "./utils/localStorage";
@@ -47,8 +48,8 @@ const App = () => {
     <div
       className="flex flex-col min-h-screen antialiased transition-colors duration-300"
       style={{
-        backgroundColor: "var(--bg-primary)",
-        color: "var(--text-primary)",
+        backgroundColor: "var(--bg)",
+        color: "var(--text)",
       }}
     >
       {!isLegalPage && <Navbar isTyping={!showConfig && !isTestComplete} />}
@@ -63,6 +64,7 @@ const App = () => {
 
           {!isHomePage && (
             <Routes>
+              <Route path="/settings" element={<SettingsPage />} />
               <Route path="/leaderboard" element={<WorkingOnIt />} />
               <Route path="/profile" element={<WorkingOnIt />} />
               <Route path="/terms" element={<LegalPages />} />
