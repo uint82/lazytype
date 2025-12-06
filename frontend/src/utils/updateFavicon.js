@@ -1,9 +1,9 @@
 export const updateFavicon = () => {
   const bgPrimary = getComputedStyle(document.documentElement)
-    .getPropertyValue("--bg-primary")
+    .getPropertyValue("--bg")
     .trim();
   const primary = getComputedStyle(document.documentElement)
-    .getPropertyValue("--primary")
+    .getPropertyValue("--main")
     .trim();
 
   const svg = `
