@@ -606,7 +606,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
 
             <div
               className="content-grid relative mx-auto w-full"
-              style={{ color: "var(--text-muted)" }}
+              style={{ color: "var(--sub)" }}
               ref={typingTestContainerRef}
             >
               {isTestComplete ? (
@@ -683,9 +683,7 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                       />
                     </div>
                   ) : (
-                    <p style={{ color: "var(--text-primary)" }}>
-                      Loading test...
-                    </p>
+                    <p style={{ color: "var(--main)" }}>Loading test...</p>
                   )}
                 </>
               )}
@@ -696,12 +694,12 @@ const Lazytype = ({ onShowConfigChange, onTestCompleteChange }) => {
                 <button
                   onClick={handleRestartClick}
                   className="px-4 py-2 rounded text-3xl cursor-pointer transition"
-                  style={{ color: "var(--text-muted)" }}
+                  style={{ color: "var(--sub)" }}
                   onMouseEnter={(e) =>
-                    (e.currentTarget.style.color = "var(--text-primary)")
+                    (e.currentTarget.style.color = "var(--text)")
                   }
                   onMouseLeave={(e) =>
-                    (e.currentTarget.style.color = "var(--text-muted)")
+                    (e.currentTarget.style.color = "var(--sub)")
                   }
                 >
                   ⟳

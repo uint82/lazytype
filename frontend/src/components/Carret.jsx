@@ -20,7 +20,7 @@ const Caret = ({ x, y, isTyping }) => {
       style={{
         width: "3px",
         height: "2.3rem",
-        backgroundColor: "var(--text-cursor)",
+        backgroundColor: "var(--main)",
         borderRadius: "1px",
         animation: isTyping ? "none" : "blink 1.1s ease-in-out infinite",
       }}
