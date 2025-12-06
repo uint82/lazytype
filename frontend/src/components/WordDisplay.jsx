@@ -4,9 +4,9 @@ import { normalizeForComparison } from "../utils/textTokenizer";
 const Character = memo(({ char, isCorrect, isTyped, shouldTransition }) => {
   const color = isTyped
     ? isCorrect
-      ? "var(--text-correct)"
-      : "var(--text-incorrect)"
-    : "var(--text-untyped)";
+      ? "var(--text)"
+      : "var(--error)"
+    : "var(--sub)";
 
   return (
     <span

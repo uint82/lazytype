@@ -192,21 +192,10 @@ const ThemeModal = ({ isOpen, onClose, currentThemeKey, setTheme }) => {
     onClose();
   };
 
-  const getThemeContainerBg = (themeOption) => {
-    const hex = themeOption.bgPrimary.replace("#", "");
-    const r = parseInt(hex.substr(0, 2), 16);
-    const g = parseInt(hex.substr(2, 2), 16);
-    const b = parseInt(hex.substr(4, 2), 16);
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-
-    return luminance > 0.5 ? "rgba(255, 255, 255, 0.15)" : "rgba(0, 0, 0, 0.3)";
-  };
-
   return (
     <div
       className="fixed inset-0 z-50 flex justify-center p-4"
       style={{
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
         paddingTop: "10vh",
         alignItems: "flex-start",
       }}
@@ -215,19 +204,19 @@ const ThemeModal = ({ isOpen, onClose, currentThemeKey, setTheme }) => {
       <div
         className="rounded-xl shadow-2xl w-full max-w-md flex flex-col overflow-hidden transition-colors duration-300"
         style={{
-          backgroundColor: theme.bgPrimary,
-          border: `1px solid ${theme.border}`,
+          backgroundColor: theme.bg,
+          border: `2px solid ${theme.subAlt}`,
           maxHeight: "80vh",
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <div
           className="flex items-center justify-between p-4 border-b transition-colors duration-300"
-          style={{ borderColor: theme.border }}
+          style={{ borderColor: theme.subAlt }}
         >
           <div
             className="flex items-center gap-2"
-            style={{ color: theme.textPrimary }}
+            style={{ color: theme.text }}
           >
             <Palette size={18} />
             <h2 className="font-semibold">Select Theme</h2>
@@ -236,13 +225,9 @@ const ThemeModal = ({ isOpen, onClose, currentThemeKey, setTheme }) => {
           <button
             onClick={onClose}
             className="transition"
-            style={{ color: theme.textMuted }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = theme.textPrimary)
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = theme.textMuted)
-            }
+            style={{ color: theme.text }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = theme.text)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = theme.text)}
           >
             <X size={20} />
           </button>
@@ -250,9 +235,9 @@ const ThemeModal = ({ isOpen, onClose, currentThemeKey, setTheme }) => {
 
         <div
           className="flex items-center gap-2 px-4 py-2 border-b transition-colors duration-300"
-          style={{ borderColor: theme.border }}
+          style={{ borderColor: theme.subAlt }}
         >
-          <Search size={16} style={{ color: theme.textMuted }} />
+          <Search size={16} style={{ color: theme.text }} />
           <input
             ref={searchInputRef}
             type="text"
@@ -260,7 +245,7 @@ const ThemeModal = ({ isOpen, onClose, currentThemeKey, setTheme }) => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-transparent transition-colors duration-300 outline-none text-sm"
-            style={{ color: theme.textPrimary }}
+            style={{ color: theme.text }}
           />
         </div>
 
@@ -268,7 +253,7 @@ const ThemeModal = ({ isOpen, onClose, currentThemeKey, setTheme }) => {
           {filteredThemes.length === 0 ? (
             <div
               className="text-center py-4 text-sm"
-              style={{ color: theme.textMuted }}
+              style={{ color: theme.text }}
             >
               No themes found
             </div>
@@ -288,18 +273,16 @@ const ThemeModal = ({ isOpen, onClose, currentThemeKey, setTheme }) => {
                   }}
                   className="group flex items-center justify-between p-3 transition-all cursor-pointer duration-300"
                   style={{
-                    backgroundColor: isKeyboardSelected
-                      ? theme.bgSecondary
-                      : theme.bgPrimary,
+                    backgroundColor: isKeyboardSelected ? theme.text : theme.bg,
                   }}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-4 flex justify-center">
                       {isActive && (
                         <Check
-                          size={16}
+                          size={24}
                           style={{
-                            color: theme.primary,
+                            color: theme.sub,
                           }}
                         />
                       )}
@@ -307,12 +290,7 @@ const ThemeModal = ({ isOpen, onClose, currentThemeKey, setTheme }) => {
                     <span
                       className="text-sm"
                       style={{
-                        fontWeight: isActive ? 600 : 400,
-                        color: isKeyboardSelected
-                          ? theme.primary
-                          : isActive
-                            ? theme.textPrimary
-                            : theme.textSecondary,
+                        color: isKeyboardSelected ? theme.bg : theme.sub,
                       }}
                     >
                       {themeOption.name}
@@ -322,28 +300,25 @@ const ThemeModal = ({ isOpen, onClose, currentThemeKey, setTheme }) => {
                   <div
                     className="flex gap-1 px-2 py-1 rounded-full"
                     style={{
-                      backgroundColor: getThemeContainerBg(themeOption),
+                      backgroundColor: themeOption.bg,
                     }}
                   >
                     <div
                       className="w-4 h-4 rounded-full"
                       style={{
-                        backgroundColor: themeOption.bgPrimary,
-                        border: "1px solid rgba(0,0,0,0.2)",
+                        backgroundColor: themeOption.text,
                       }}
                     />
                     <div
                       className="w-4 h-4 rounded-full"
                       style={{
-                        backgroundColor: themeOption.textPrimary,
-                        border: "1px solid rgba(0,0,0,0.2)",
+                        backgroundColor: themeOption.sub,
                       }}
                     />
                     <div
                       className="w-4 h-4 rounded-full"
                       style={{
-                        backgroundColor: themeOption.primary,
-                        border: "1px solid rgba(0,0,0,0.2)",
+                        backgroundColor: themeOption.main,
                       }}
                     />
                   </div>
