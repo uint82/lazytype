@@ -289,7 +289,7 @@ const QuoteSearchModal = ({
             <mark
               key={i}
               className="bg-transparent font-bold"
-              style={{ color: "var(--secondary)" }}
+              style={{ color: "var(--main)" }}
             >
               {part}
             </mark>
@@ -417,8 +417,8 @@ const QuoteSearchModal = ({
             : "opacity-0 scale-95 translate-y-4"
           } max-w-[75vw] sm:max-w-[600px] md:max-w-[600px] lg:max-w-[850px] mx-auto sm:my-auto my-4`}
         style={{
-          backgroundColor: "var(--bg-primary)",
-          border: "2px solid var(--border)",
+          backgroundColor: "var(--bg)",
+          border: "2px solid var(--sub-alt)",
           fontFamily:
             "'Roboto Mono', monospace, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
         }}
@@ -426,24 +426,20 @@ const QuoteSearchModal = ({
       >
         <div
           className="flex justify-between items-center p-3 sm:p-4 border-b shrink-0"
-          style={{ borderColor: "var(--border)" }}
+          style={{ borderColor: "var(--sub-alt)" }}
         >
           <h2
             className="text-lg sm:text-xl font-semibold"
-            style={{ color: "var(--text-primary)" }}
+            style={{ color: "var(--sub)" }}
           >
             Search Quotes
           </h2>
           <button
             onClick={handleClose}
             className="transition-colors cursor-pointer"
-            style={{ color: "var(--text-muted)" }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = "var(--text-primary)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "var(--text-muted)")
-            }
+            style={{ color: "var(--sub)" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sub)")}
             aria-label="Close"
           >
             <X size={24} />
@@ -452,12 +448,12 @@ const QuoteSearchModal = ({
 
         <div
           className="p-3 sm:p-4 border-b space-y-3"
-          style={{ borderColor: "var(--border)" }}
+          style={{ borderColor: "var(--sub-alt)" }}
         >
           <div className="relative">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2"
-              style={{ color: "var(--text-muted)" }}
+              style={{ color: "var(--sub)" }}
               size={18}
             />
             <input
@@ -468,21 +464,21 @@ const QuoteSearchModal = ({
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 rounded-md focus:outline-none focus:ring-2 text-sm sm:text-base"
               style={{
-                backgroundColor: "var(--button-bg)",
-                color: "var(--text-primary)",
-                borderColor: "var(--input-focus)",
+                backgroundColor: "var(--sub-alt)",
+                color: "var(--text)",
+                borderColor: "var(--sub-alt)",
               }}
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm("")}
                 className="absolute right-3 top-1/2 -translate-y-1/2 transition-colors cursor-pointer"
-                style={{ color: "var(--text-muted)" }}
+                style={{ color: "var(--sub)" }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.color = "var(--text-primary)")
+                  (e.currentTarget.style.color = "var(--text)")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.color = "var(--text-muted)")
+                  (e.currentTarget.style.color = "var(--sub)")
                 }
                 aria-label="Clear search"
               >
@@ -500,24 +496,19 @@ const QuoteSearchModal = ({
                   className="flex-shrink-0 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition-all"
                   style={{
                     backgroundColor:
-                      selectedLength === key
-                        ? "var(--info)"
-                        : "var(--button-bg)",
-                    color:
-                      selectedLength === key
-                        ? "var(--bg-primary)"
-                        : "var(--text-primary)",
+                      selectedLength === key ? "var(--main)" : "var(--sub-alt)",
+                    color: selectedLength === key ? "var(--bg)" : "var(--text)",
                   }}
                   onMouseEnter={(e) => {
                     if (selectedLength !== key) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-hover)";
+                      e.currentTarget.style.backgroundColor = "var(--text)";
+                      e.currentTarget.style.color = "var(--bg)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (selectedLength !== key) {
-                      e.currentTarget.style.backgroundColor =
-                        "var(--button-bg)";
+                      e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                      e.currentTarget.style.color = "var(--text)";
                     }
                   }}
                 >
@@ -529,7 +520,7 @@ const QuoteSearchModal = ({
 
           <div
             className="flex justify-between items-center text-xs sm:text-sm"
-            style={{ color: "var(--text-muted)" }}
+            style={{ color: "var(--text)" }}
           >
             <div className="flex items-center gap-2">
               <span>
@@ -543,15 +534,14 @@ const QuoteSearchModal = ({
                   }
                   className="flex items-center gap-1 px-2 py-1 rounded transition-colors cursor-pointer"
                   style={{
-                    backgroundColor: "var(--button-bg)",
-                    color: "var(--text-primary)",
+                    backgroundColor: "var(--sub-alt)",
+                    color: "var(--text)",
                   }}
                   onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor =
-                    "var(--button-hover)")
+                    (e.currentTarget.style.backgroundColor = "var(--sub)")
                   }
                   onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor = "var(--button-bg)")
+                    (e.currentTarget.style.backgroundColor = "var(--sub-alt)")
                   }
                   title={
                     sortOrder === "desc"
@@ -579,16 +569,13 @@ const QuoteSearchModal = ({
         <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-2">
           <div className="min-h-[400px] sm:min-h-[500px]">
             {isFiltering ? (
-              <div
-                className="text-center py-8"
-                style={{ color: "var(--text-muted)" }}
-              >
+              <div className="text-center py-8" style={{ color: "var(--sub)" }}>
                 Searching...
               </div>
             ) : currentQuotes.length === 0 ? (
               <div
                 className="text-center py-8"
-                style={{ color: "var(--text-muted)" }}
+                style={{ color: "var(--text)" }}
               >
                 No quotes found
               </div>
@@ -602,24 +589,24 @@ const QuoteSearchModal = ({
                   className="w-full text-left p-3 rounded-md transition-all mb-2 group cursor-pointer"
                   style={{
                     ...(index === selectedIndex && {
-                      boxShadow: "0 0 0 2px var(--info)",
+                      boxShadow: "0 0 0 2px var(--main)",
                     }),
                   }}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <span
                       className="text-[10px] sm:text-xs font-medium transition-colors"
-                      style={{ color: "var(--secondary)" }}
+                      style={{ color: "var(--sub)" }}
                     >
                       ID: {highlightText(quote.id.toString())}
                     </span>
                     <div
                       className="flex gap-2 text-[10px] sm:text-xs"
-                      style={{ color: "var(--text-muted)" }}
+                      style={{ color: "var(--sub)" }}
                     >
                       <span>{quote.length} chars</span>
                       <span>•</span>
-                      <span style={{ color: "var(--info)" }}>
+                      <span style={{ color: "var(--sub)" }}>
                         {quote.length <= 100
                           ? "Short"
                           : quote.length <= 300
@@ -632,13 +619,13 @@ const QuoteSearchModal = ({
                   </div>
                   <p
                     className="text-xs sm:text-sm mb-2 leading-relaxed"
-                    style={{ color: "var(--text-primary)" }}
+                    style={{ color: "var(--text)" }}
                   >
                     {highlightText(quote.text)}
                   </p>
                   <p
                     className="text-[10px] sm:text-xs italic"
-                    style={{ color: "var(--text-muted)" }}
+                    style={{ color: "var(--sub)" }}
                   >
                     — {highlightText(quote.source)}
                   </p>
@@ -651,7 +638,7 @@ const QuoteSearchModal = ({
         {totalPages > 1 && (
           <div
             className="p-3 sm:p-4 border-t"
-            style={{ borderColor: "var(--border)" }}
+            style={{ borderColor: "var(--sub-alt)" }}
           >
             <div className="flex items-center justify-center gap-2">
               <button
@@ -659,21 +646,19 @@ const QuoteSearchModal = ({
                 disabled={currentPage === 1}
                 className="p-2 rounded-md transition-all"
                 style={{
-                  backgroundColor: "var(--button-bg)",
-                  color:
-                    currentPage === 1
-                      ? "var(--text-dim)"
-                      : "var(--text-primary)",
+                  backgroundColor: "var(--sub-alt)",
+                  color: currentPage === 1 ? "var(--sub)" : "var(--text)",
                   cursor: currentPage === 1 ? "not-allowed" : "pointer",
                 }}
                 onMouseEnter={(e) => {
                   if (currentPage !== 1) {
-                    e.currentTarget.style.backgroundColor =
-                      "var(--button-hover)";
+                    e.currentTarget.style.backgroundColor = "var(--text)";
+                    e.currentTarget.style.color = "var(--bg)";
                   }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                  e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                  e.currentTarget.style.color = "var(--text)";
                 }}
                 aria-label="Previous page"
               >
@@ -685,7 +670,7 @@ const QuoteSearchModal = ({
                     <span
                       key={`e-${i}`}
                       className="px-2 sm:px-3 py-1.5"
-                      style={{ color: "var(--text-muted)" }}
+                      style={{ color: "var(--text)" }}
                     >
                       …
                     </span>
@@ -697,23 +682,22 @@ const QuoteSearchModal = ({
                       style={{
                         backgroundColor:
                           page === currentPage
-                            ? "var(--info)"
-                            : "var(--button-bg)",
+                            ? "var(--main)"
+                            : "var(--sub-alt)",
                         color:
-                          page === currentPage
-                            ? "var(--bg-primary)"
-                            : "var(--text-primary)",
+                          page === currentPage ? "var(--bg)" : "var(--text)",
                       }}
                       onMouseEnter={(e) => {
                         if (page !== currentPage) {
-                          e.currentTarget.style.backgroundColor =
-                            "var(--button-hover)";
+                          e.currentTarget.style.backgroundColor = "var(--text)";
+                          e.currentTarget.style.color = "var(--bg)";
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (page !== currentPage) {
                           e.currentTarget.style.backgroundColor =
-                            "var(--button-bg)";
+                            "var(--sub-alt)";
+                          e.currentTarget.style.color = "var(--text)";
                         }
                       }}
                     >
@@ -727,22 +711,21 @@ const QuoteSearchModal = ({
                 disabled={currentPage === totalPages}
                 className="p-2 rounded-md transition-all"
                 style={{
-                  backgroundColor: "var(--button-bg)",
+                  backgroundColor: "var(--sub-alt)",
                   color:
-                    currentPage === totalPages
-                      ? "var(--text-dim)"
-                      : "var(--text-primary)",
+                    currentPage === totalPages ? "var(--sub)" : "var(--text)",
                   cursor:
                     currentPage === totalPages ? "not-allowed" : "pointer",
                 }}
                 onMouseEnter={(e) => {
                   if (currentPage !== totalPages) {
-                    e.currentTarget.style.backgroundColor =
-                      "var(--button-hover)";
+                    e.currentTarget.style.backgroundColor = "var(--text)";
+                    e.currentTarget.style.color = "var(--bg)";
                   }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "var(--button-bg)";
+                  e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                  e.currentTarget.style.color = "var(--text)";
                 }}
                 aria-label="Next page"
               >

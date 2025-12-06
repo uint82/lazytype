@@ -19,13 +19,13 @@ const LanguageModal = ({
       <div
         className="p-5 rounded-lg border-2 shadow-lg w-[90%] max-w-[320px] text-center"
         style={{
-          backgroundColor: "var(--bg-primary)",
-          borderColor: "var(--border)",
+          backgroundColor: "var(--bg)",
+          borderColor: "var(--sub-alt)",
         }}
       >
         <h2
           className="text-lg font-medium mb-4"
-          style={{ color: "var(--text-primary)" }}
+          style={{ color: "var(--sub)" }}
         >
           Select Language
         </h2>
@@ -39,21 +39,23 @@ const LanguageModal = ({
               style={{
                 backgroundColor:
                   selectedLanguage === language.id
-                    ? "var(--secondary)"
-                    : "var(--bg-secondary)",
+                    ? "var(--main)"
+                    : "var(--sub-alt)",
                 color:
                   selectedLanguage === language.id
-                    ? "var(--bg-primary)"
-                    : "var(--text-primary)",
+                    ? "var(--bg)"
+                    : "var(--text)",
               }}
               onMouseEnter={(e) => {
                 if (selectedLanguage !== language.id) {
-                  e.currentTarget.style.backgroundColor = "var(--bg-tertiary)";
+                  e.currentTarget.style.backgroundColor = "var(--text)";
+                  e.currentTarget.style.color = "var(--bg)";
                 }
               }}
               onMouseLeave={(e) => {
                 if (selectedLanguage !== language.id) {
-                  e.currentTarget.style.backgroundColor = "var(--bg-secondary)";
+                  e.currentTarget.style.backgroundColor = "var(--sub-alt)";
+                  e.currentTarget.style.color = "var(--text)";
                 }
               }}
             >

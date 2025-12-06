@@ -13,22 +13,16 @@ const NotificationSystem = ({
         );
       case "success":
         return (
-          <CheckCircle
-            className="w-5 h-5"
-            style={{ color: "var(--success)" }}
-          />
+          <CheckCircle className="w-5 h-5" style={{ color: "var(--main)" }} />
         );
       case "warning":
         return (
-          <AlertTriangle
-            className="w-5 h-5"
-            style={{ color: "var(--warning)" }}
-          />
+          <AlertTriangle className="w-5 h-5" style={{ color: "var(--main)" }} />
         );
       case "info":
       case "notice":
       default:
-        return <Info className="w-5 h-5" style={{ color: "var(--info)" }} />;
+        return <Info className="w-5 h-5" style={{ color: "var(--main)" }} />;
     }
   };
 
@@ -52,8 +46,8 @@ const NotificationSystem = ({
   const getStyles = (type) => {
     const base = {
       backgroundColor: "var(--bg-primary-alpha)",
-      color: "var(--text-primary)",
-      borderLeft: "4px solid var(--accent)",
+      color: "var(--text)",
+      borderLeft: "4px solid var(--sub-alt)",
     };
 
     switch (type) {
@@ -66,21 +60,21 @@ const NotificationSystem = ({
       case "success":
         return {
           ...base,
-          borderLeft: "4px solid var(--success)",
-          color: "var(--success)",
+          borderLeft: "4px solid var(--sub-alt)",
+          color: "var(--text)",
         };
       case "warning":
         return {
           ...base,
-          borderLeft: "4px solid var(--warning)",
-          color: "var(--warning)",
+          borderLeft: "4px solid var(--sub-alt)",
+          color: "var(--text)",
         };
       case "info":
       case "notice":
         return {
           ...base,
-          borderLeft: "4px solid var(--info)",
-          color: "var(--info)",
+          borderLeft: "4px solid var(--sub-alt)",
+          color: "var(--text)",
         };
       default:
         return base;
@@ -118,13 +112,13 @@ const NotificationSystem = ({
               <div className="flex-1 flex flex-col gap-1">
                 <span
                   className="text-sm font-semibold"
-                  style={{ color: "var(--text-primary)" }}
+                  style={{ color: "var(--main)" }}
                 >
                   {getTitle(notif.type)}
                 </span>
                 <span
                   className="text-sm leading-relaxed"
-                  style={{ color: "var(--text-muted)" }}
+                  style={{ color: "var(--text)" }}
                 >
                   {notif.message}
                 </span>
@@ -133,7 +127,7 @@ const NotificationSystem = ({
               <button
                 onClick={() => removeNotification(notif.id)}
                 className="flex-shrink-0 p-1 transition-all duration-200 hover:rotate-90"
-                style={{ color: "var(--text-muted)" }}
+                style={{ color: "var(--sub)" }}
               >
                 <X className="w-4 h-4" />
               </button>

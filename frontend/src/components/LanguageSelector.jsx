@@ -21,10 +21,10 @@ const LanguageSelector = ({
   if (isZenMode) {
     return (
       <div
-        className="flex px-3 py-1 gap-3 justify-center items-center mt-5 transition-all"
+        className="flex px-3 py-1 gap-3 justify-center items-center mt-5"
         style={{
           fontFamily: "'Roboto Mono', monospace",
-          color: "var(--text-untyped)",
+          color: "var(--sub)",
         }}
       >
         <ChartSpline size={20} />
@@ -40,12 +40,10 @@ const LanguageSelector = ({
         className="px-3 py-1 rounded cursor-pointer transition-all flex items-center gap-3"
         style={{
           fontFamily: "'Roboto Mono', monospace",
-          color: "var(--text-untyped)",
+          color: "var(--sub)",
         }}
-        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--secondary)")}
-        onMouseLeave={(e) =>
-          (e.currentTarget.style.color = "var(--text-untyped)")
-        }
+        onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text)")}
+        onMouseLeave={(e) => (e.currentTarget.style.color = "var(--sub)")}
       >
         <Languages size={20} />
         <span>{currentLanguage?.name}</span>
