@@ -80,9 +80,16 @@ export default function useTypingTest(addNotification) {
         wordCountChanged
       ) {
         if (
-          modeChanged ||
           selectedMode === "time" ||
-          selectedMode === "words"
+          selectedMode === "words" ||
+          selectedMode === "zen"
+        ) {
+          handleNewTest(true);
+        } else if (
+          punctuationChanged ||
+          numbersChanged ||
+          durationChanged ||
+          wordCountChanged
         ) {
           handleNewTest(true);
         }
@@ -157,11 +164,11 @@ export default function useTypingTest(addNotification) {
       mode: selectedMode,
       group: selectedGroup,
       duration: selectedDuration,
-      wordCount: selectedWordCount,
+      word_count: selectedWordCount,
       language: selectedLanguage,
       punctuation: selectedPunctuation,
       numbers: selectedNumbers,
-      selectedQuoteId: selectedGroup === null ? selectedQuoteId : null,
+      selectedQuoteId: selectedQuoteId,
     });
   }, [
     selectedMode,
